@@ -38,7 +38,7 @@ export interface BlogContent {
   slug: string;
   title: string;
   date: string;
-  category: "CA Knows" | "Client Stories";
+  category: "CA Knows";
   excerpt: string;
   image: string;
   status: ContentStatus;

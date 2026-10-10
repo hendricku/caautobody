@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { media } from "@/lib/media";
 
 const areas = ["Aspendale", "Braeside", "Carrum", "Chelsea", "Cheltenham", "Edithvale", "Mentone", "Mordialloc", "Parkdale", "Sandhurst"];
 
@@ -7,7 +8,7 @@ export default function SiteFooter() {
     <footer className="hp-footer">
       <div className="hp-shell hp-footer__grid">
         <div className="hp-footer__brand">
-          <img src="https://caautobody.com.au/wp-content/uploads/2021/05/logo.png" alt="CA Chelsea Autobody" />
+          <img src={media.logo} alt="CA Chelsea Autobody" />
           <p>Trusted smash repairs, body work and refinishing from Chelsea Heights, Melbourne.</p>
           <a className="hp-footer__phone" href="tel:+61397727411">03 9772 7411</a>
         </div>

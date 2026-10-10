@@ -3,11 +3,21 @@
 import { useEffect, useState } from "react";
 import { useLocalCollection } from "@/lib/adminStore";
 import { blogs as seedBlogs } from "@/lib/siteContent";
+import { localBlogImageFor } from "@/lib/media";
 import type { BlogContent } from "@/types/content";
 
 function isLegacyDefaultArticle(post: BlogContent) {
   const ids = new Set(post.blocks?.map((block) => block.id));
   return ids.has("lead-image") && ids.has("facts") && ids.has("communication");
+}
+
+function useLocalImages(post: BlogContent): BlogContent {
+  const image = localBlogImageFor(post.slug);
+  return {
+    ...post,
+    image,
+    blocks: post.blocks?.map((block) => block.type === "image" ? { ...block, image } : block),
+  };
 }
 
 function mergeLiveBlogs(current: BlogContent[], incoming: BlogContent[]) {
@@ -18,10 +28,10 @@ function mergeLiveBlogs(current: BlogContent[], incoming: BlogContent[]) {
     // Entries saved before the source marker existed are treated as local edits too.
     const legacyDefault = local ? isLegacyDefaultArticle(local) : false;
     const isLocalOverride = local?.origin === "local" || (!local?.origin && Boolean(local?.blocks?.length) && !legacyDefault);
-    return isLocalOverride ? { ...post, ...local, origin: "local" as const } : post;
+    return useLocalImages(isLocalOverride ? { ...post, ...local, origin: "local" as const } : post);
   });
   const customOnly = current.filter((post) => !incoming.some((item) => item.slug === post.slug) && (post.origin === "local" || (!post.origin && Boolean(post.blocks?.length) && !isLegacyDefaultArticle(post))));
-  return [...imported, ...customOnly];
+  return [...imported, ...customOnly].map(useLocalImages);
 }
 
 export function useImportedBlogs() {

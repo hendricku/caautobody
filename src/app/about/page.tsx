@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import PageHero from "@/components/Common/PageHero";
 import InsurerLogoGrid from "@/components/Public/InsurerLogoGrid";
 import { insurers } from "@/lib/siteContent";
+import { media } from "@/lib/media";
 
 export const metadata: Metadata = {
   title: "About CA Autobody | Quality Vehicle Repairs in Chelsea Heights",
@@ -29,7 +30,7 @@ export default function AboutPage() {
       <PageHero
         eyebrow="Chelsea Heights, Victoria"
         title="Your premier destination for quality vehicle repairs"
-        image="https://caautobody.com.au/wp-content/uploads/2021/05/ft-img.png"
+        image={media.hero.about}
         intro="Tesla and Zeekr-approved repairs, experienced workmanship and thoughtful support when you need it most."
       />
 
@@ -48,7 +49,7 @@ export default function AboutPage() {
       </section>
 
       <section className="about-workshop hp-reveal" aria-label="CA Autobody workshop">
-        <img src="https://caautobody.com.au/wp-content/uploads/2021/05/ft-img.png" alt="CA Chelsea Autobody workshop in Chelsea Heights" />
+        <img src={media.workshop.floor} alt="CA Chelsea Autobody workshop in Chelsea Heights" />
       </section>
 
       <section className="about-assurances" aria-label="CA Autobody service assurances">

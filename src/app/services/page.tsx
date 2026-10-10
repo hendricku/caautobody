@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { originalServiceCopy } from "@/lib/originalServiceCopy";
 import { services } from "@/lib/siteContent";
+import { media } from "@/lib/media";
 
 export const metadata: Metadata = { title: "Auto Accident Repair Services Melbourne | CA Autobody" };
 
@@ -11,7 +12,7 @@ const otherServices = services.filter((service) => !originalServiceCopy[service.
 export default function ServicesPage() {
   return <main className="ca-services-landing">
     <section className="ca-services-landing__hero" aria-labelledby="services-title">
-      <img src="https://caautobody.com.au/wp-content/uploads/2021/06/homepage-spray-paint.jpg" alt="" aria-hidden="true" fetchPriority="high" />
+      <img src={media.hero.services} alt="" aria-hidden="true" fetchPriority="high" />
       <div className="shell ca-services-landing__hero-inner">
         <span className="ca-services-landing__eyebrow">CA CHELSEA AUTOBODY <span>/</span> OUR SERVICES</span>
         <h1 id="services-title">Expert care, for every repair.</h1>

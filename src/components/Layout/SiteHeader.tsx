@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { media } from "@/lib/media";
 
 const chevron = (
   <svg className="hp-chevron" viewBox="0 0 12 8" aria-hidden="true" focusable="false"><path d="M1 1.5 6 6.5 11 1.5" /></svg>
@@ -67,7 +68,7 @@ export default function SiteHeader() {
     <header className={`hp-header ${scrollY > 18 ? "is-scrolled" : ""} ${scrollY > 88 ? "is-compact" : ""}`}>
       <div className="hp-header__inner">
         <Link className="hp-logo" href="/" aria-label="CA Chelsea Autobody home">
-          <img src="https://caautobody.com.au/wp-content/uploads/2021/05/logo.png" alt="CA Chelsea Autobody" />
+          <img src={media.logo} alt="CA Chelsea Autobody" />
         </Link>
 
         <button

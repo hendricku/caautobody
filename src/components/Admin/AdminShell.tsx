@@ -19,6 +19,7 @@ import ContactMailOutlined from "@mui/icons-material/ContactMailOutlined";
 import NotificationsNoneRounded from "@mui/icons-material/NotificationsNoneRounded";
 import CircleRounded from "@mui/icons-material/CircleRounded";
 import { contactMockEvent, getContactEnquiries, markContactNotificationsRead, type ContactEnquiry } from "@/lib/contactMock";
+import { media } from "@/lib/media";
 
 const links = [
   ["Dashboard", "/caautobodyadmin/dashboard", DashboardRounded],
@@ -69,7 +70,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
 
   return <div className={`admin-root ${collapsed ? "admin-root--collapsed" : ""}`}>
     <aside className={`admin-sidebar ${open ? "open" : ""}`}>
-      <div className="admin-brand"><img src="https://caautobody.com.au/wp-content/uploads/2021/05/logo.png" alt="CA Chelsea Autobody" /><span>Website Admin<small>Content workspace</small></span><button className="admin-sidebar__toggle" type="button" onClick={() => setCollapsed((value) => !value)} aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}>{collapsed ? <MenuRounded fontSize="small" /> : <ChevronLeftRounded fontSize="small" />}</button></div>
+      <div className="admin-brand"><img src={media.logo} alt="CA Chelsea Autobody" /><span>Website Admin<small>Content workspace</small></span><button className="admin-sidebar__toggle" type="button" onClick={() => setCollapsed((value) => !value)} aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}>{collapsed ? <MenuRounded fontSize="small" /> : <ChevronLeftRounded fontSize="small" />}</button></div>
       <nav>{links.map(([label, href, Icon]) => <Link key={href} className={pathname === href || pathname.startsWith(`${href}/`) ? "active" : ""} href={href} onClick={() => setOpen(false)} title={collapsed ? label : undefined}><Icon fontSize="small" /><span>{label}</span></Link>)}</nav>
       <div className="admin-sidebar__foot"><Link href="/" target="_blank"><OpenInNewRounded fontSize="small" /><span>View website</span></Link><button type="button" onClick={signOut}><LogoutRounded fontSize="small" /><span>Sign out</span></button></div>
     </aside>

@@ -1,0 +1,177 @@
+/* Shared inner-page hero treatment: the workshop photography remains the lead visual. */
+.page-hero__content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: clamp(1.5rem, 5vw, 5.75rem);
+}
+
+.page-hero__content.shell {
+  width: var(--hp-shell);
+  padding-inline: 0;
+}
+
+.page-hero__copy {
+  max-width: 770px;
+}
+
+.page-hero__copy .hp-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.page-hero__copy .hp-eyebrow::after {
+  content: "";
+  width: clamp(30px, 4vw, 52px);
+  height: 1px;
+  background: #d3a75d;
+}
+
+.page-hero__folio {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  align-self: end;
+  min-width: 180px;
+  margin-bottom: 7px;
+  padding-left: clamp(18px, 2vw, 30px);
+  border-left: 1px solid rgba(234, 226, 211, 0.52);
+  color: #e4c583;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.page-hero__folio i {
+  display: block;
+  width: 18px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.68;
+}
+
+@media (max-width: 1020px) {
+  .page-hero__content {
+    display: block;
+  }
+
+  .page-hero__content.shell,
+  .ca-service .ca-service__hero-grid.shell,
+  .ca-services-landing .ca-services-landing__hero-inner.shell {
+    width: calc(100% - 48px);
+    min-width: 0;
+    margin-inline: auto;
+    padding-inline: 0;
+  }
+
+  .page-hero__copy,
+  .ca-service .ca-service__hero-info,
+  .ca-services-landing .ca-services-landing__hero-inner {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .page-hero h1,
+  .ca-faq-page .page-hero h1,
+  .ca-service .ca-service__hero h1,
+  .ca-services-landing .ca-services-landing__hero h1 {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+  }
+
+  .page-hero p,
+  .ca-faq-page .page-hero p {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .page-hero__folio {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .page-hero {
+    min-height: 0;
+  }
+
+  .page-hero__content.shell {
+    width: calc(100% - 48px);
+    min-width: 0;
+    margin-inline: auto;
+    padding-inline: 0;
+    box-sizing: border-box;
+    padding-top: clamp(118px, 32vw, 148px);
+    padding-bottom: clamp(42px, 11vw, 58px);
+  }
+
+  .page-hero__copy {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .page-hero h1,
+  .ca-faq-page .page-hero h1 {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    margin: 13px 0 16px;
+    font-size: clamp(36px, 10.5vw, 48px) !important;
+    line-height: 1.02;
+    letter-spacing: -0.055em;
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+    word-break: normal;
+    text-wrap: balance;
+  }
+
+  .page-hero p,
+  .ca-faq-page .page-hero p {
+    width: 100%;
+    min-width: 0;
+    max-width: 34ch;
+    font-size: clamp(14px, 3.8vw, 16px);
+    line-height: 1.62;
+    overflow-wrap: anywhere;
+  }
+
+  .ca-service .ca-service__hero-grid.shell,
+  .ca-services-landing .ca-services-landing__hero-inner.shell {
+    width: calc(100% - 48px);
+    min-width: 0;
+    margin-inline: auto;
+    padding-inline: 0;
+  }
+
+  .ca-service .ca-service__hero-info,
+  .ca-services-landing .ca-services-landing__hero-inner {
+    min-width: 0;
+  }
+
+  .ca-service .ca-service__hero h1,
+  .ca-services-landing .ca-services-landing__hero h1 {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+    text-wrap: balance;
+  }
+
+  .page-hero__copy .hp-eyebrow {
+    gap: 11px;
+  }
+
+  .page-hero__copy .hp-eyebrow::after {
+    width: 30px;
+  }
+}

@@ -1,4 +1,5 @@
 import type { BlogBlock, BlogContent } from "@/types/content";
+import { localBlogImageFor } from "@/lib/media";
 
 const WORDPRESS_POSTS_URL = "https://caautobody.com.au/wp-json/wp/v2/posts?per_page=100&_embed";
 
@@ -11,7 +12,6 @@ type WordPressPost = {
   content: { rendered: string };
   _embedded?: {
     "wp:featuredmedia"?: Array<{
-      source_url?: string;
       alt_text?: string;
       title?: { rendered?: string };
     }>;
@@ -56,15 +56,6 @@ function safeHref(value: string) {
   }
 }
 
-function safeImageSource(value: string) {
-  try {
-    const url = new URL(value);
-    return url.protocol === "https:" ? url.toString() : "";
-  } catch {
-    return "";
-  }
-}
-
 function escapeAttribute(value: string) {
   return value.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
@@ -91,11 +82,9 @@ function richText(content: string) {
   return html && html !== text ? { content: text, html } : { content: text };
 }
 
-function imageBlock(markup: string, id: string, placement: "lead" | "full" = "full"): Extract<BlogBlock, { type: "image" }> | null {
+function imageBlock(markup: string, id: string, image: string, placement: "lead" | "full" = "full"): Extract<BlogBlock, { type: "image" }> | null {
   const match = markup.match(/<img\b([^>]*)>/i);
   if (!match) return null;
-  const image = safeImageSource(attributeValue(match[1], "src"));
-  if (!image) return null;
   const alt = attributeValue(match[1], "alt") || "CA Autobody repair work";
   const captionMatch = markup.match(/<figcaption\b[^>]*>([\s\S]*?)<\/figcaption>/i);
   const caption = captionMatch ? decodeHtml(captionMatch[1]) : undefined;
@@ -109,7 +98,7 @@ function listBlock(markup: string, id: string, ordered: boolean): Extract<BlogBl
   return items.length ? { id, type: "list", ordered, items } : null;
 }
 
-function blocksFromWordPress(html: string): BlogBlock[] {
+function blocksFromWordPress(html: string, localImage: string): BlogBlock[] {
   const captured: BlogBlock[] = [];
   let index = 0;
   const id = () => `import-${index++}`;
@@ -121,7 +110,7 @@ function blocksFromWordPress(html: string): BlogBlock[] {
 
   const remaining = html
     .replace(/<figure\b[^>]*>[\s\S]*?<\/figure>/gi, (markup) => {
-      const block = imageBlock(markup, id());
+      const block = imageBlock(markup, id(), localImage);
       return block ? capture(block) : "";
     })
     .replace(/<(ul|ol)\b[^>]*>[\s\S]*?<\/\1>/gi, (markup, tag) => {
@@ -134,13 +123,13 @@ function blocksFromWordPress(html: string): BlogBlock[] {
     })
     .replace(/<p\b[^>]*>([\s\S]*?)<\/p>/gi, (_, content) => {
       const onlyImage = content.match(/^\s*(?:<a\b[^>]*>)?\s*(<img\b[^>]*>)\s*(?:<\/a>)?\s*$/i);
-      const image = onlyImage ? imageBlock(onlyImage[1], id()) : null;
+      const image = onlyImage ? imageBlock(onlyImage[1], id(), localImage) : null;
       if (image) return capture(image);
       const text = richText(content);
       return text.content ? capture({ id: id(), type: "text", ...text }) : "";
     })
     .replace(/<img\b[^>]*>/gi, (markup) => {
-      const block = imageBlock(markup, id());
+      const block = imageBlock(markup, id(), localImage);
       return block ? capture(block) : "";
     });
 
@@ -168,32 +157,31 @@ function displayDate(date: string) {
 }
 
 function sourceImage(post: WordPressPost) {
-  const media = post._embedded?.["wp:featuredmedia"]?.[0];
-  return media?.source_url || "https://caautobody.com.au/wp-content/uploads/2021/05/ft-img.png";
+  return localBlogImageFor(post.slug);
 }
 
 export function wordPressPostToBlog(post: WordPressPost): BlogContent {
-  const category = post._embedded?.["wp:term"]?.flat().find((term) => term.name)?.name || "CA Knows";
   const media = post._embedded?.["wp:featuredmedia"]?.[0];
+  const image = sourceImage(post);
 
   return {
     slug: post.slug,
     title: decodeHtml(post.title.rendered),
     date: displayDate(post.date),
-    category: category === "Client Stories" ? "Client Stories" : "CA Knows",
+    category: "CA Knows",
     excerpt: decodeHtml(post.excerpt.rendered),
-    image: sourceImage(post),
+    image,
     status: post.status === "publish" ? "published" : "draft",
     origin: "live",
     blocks: [
       {
         id: "lead-image",
         type: "image",
-        image: sourceImage(post),
+        image,
         alt: decodeHtml(media?.alt_text || media?.title?.rendered || post.title.rendered),
         placement: "lead",
       },
-      ...blocksFromWordPress(post.content.rendered),
+      ...blocksFromWordPress(post.content.rendered, image),
     ],
   };
 }

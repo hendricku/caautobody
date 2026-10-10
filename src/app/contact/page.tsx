@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PageHero from "@/components/Common/PageHero";
 import ContactForm from "@/components/Public/ContactForm";
 import { site } from "@/lib/siteContent";
+import { media } from "@/lib/media";
 
 export const metadata: Metadata = {
   title: "Book a Service Chelsea Heights | CA Autobody",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return <main className="contact-page">
-    <PageHero eyebrow="Contact" title="Contact CA Autobody for Expert Auto Repair Services" image="https://caautobody.com.au/wp-content/uploads/2021/05/ft-img.png" intro="Ready to book a service Chelsea Heights locals rely on?" />
+    <PageHero eyebrow="Contact" title="Contact CA Autobody for Expert Auto Repair Services" image={media.hero.contact} intro="Ready to book a service Chelsea Heights locals rely on?" />
     <section className="contact-booking shell section-pad">
       <div className="contact-booking__intro hp-reveal"><h2>Get in touch.</h2><p>Contact us today and our dedicated CA Autobody team will take it from there. Whether it&apos;s minor touch-ups or major restoration work, we&apos;ll get your vehicle sorted quickly and properly.</p></div>
       <div className="contact-booking__layout hp-reveal">

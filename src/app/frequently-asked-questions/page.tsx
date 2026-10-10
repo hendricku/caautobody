@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PageHero from "@/components/Common/PageHero";
 import FAQList from "@/components/Public/FAQList";
 import { faqs } from "@/lib/siteContent";
+import { media } from "@/lib/media";
 
 export const metadata: Metadata = { title: "Frequently Asked Questions - CA Chelsea Autobody" };
 
@@ -22,7 +23,7 @@ export default function FAQPage(){
       <PageHero
         eyebrow="Helpful information"
         title="Frequently Asked Questions"
-        image="https://caautobody.com.au/wp-content/uploads/2021/06/homepage-spray-paint.jpg"
+        image={media.hero.faq}
         intro="Answers about repairs, insurance, replacement vehicles and specialist bodywork."
       />
       <section className="shell faq-section-wrap">

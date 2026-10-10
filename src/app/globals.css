@@ -75,7 +75,7 @@ button{cursor:pointer}
 .menu-toggle.is-open span:nth-child(1){transform:translateY(8px) rotate(45deg)}.menu-toggle.is-open span:nth-child(2){opacity:0}.menu-toggle.is-open span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
 
 .home-hero{position:relative;min-height:810px;display:flex;align-items:flex-start;overflow:hidden;background:#f8f6f1}
-.home-hero__media{position:absolute;inset:0;background:url("https://caautobody.com.au/wp-content/uploads/2021/06/homepage-Replacement-Vehicles.jpg") center/cover no-repeat;filter:saturate(.95) contrast(1.02)}
+.home-hero__media{position:absolute;inset:0;background:url("/images/homepage-Replacement-Vehicles.webp") center/cover no-repeat;filter:saturate(.95) contrast(1.02)}
 .home-hero__media::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,.91) 0%,rgba(255,255,255,.83) 38%,rgba(255,255,255,.42) 69%,rgba(255,255,255,.2) 100%),linear-gradient(180deg,rgba(0,0,0,.06),rgba(255,255,255,.05) 55%,rgba(248,246,241,.92) 100%)}
 .home-hero__fade{position:absolute;z-index:2;top:0;left:0;right:0;height:180px;background:linear-gradient(180deg,rgba(0,0,0,.58),rgba(0,0,0,.22) 55%,transparent)}
 .home-hero__content{position:relative;z-index:3;padding-top:210px;max-width:1280px}

@@ -1,5 +1,6 @@
 import type { BlogContent, FAQContent, GalleryContent, LocationContent, OfferContent, ServiceContent } from "@/types/content";
 import { originalServiceCopy } from "@/lib/originalServiceCopy";
+import { insurerLogos, media, vehicleBrandLogos } from "@/lib/media";
 
 export const site = {
   name: "CA Chelsea Autobody",
@@ -22,7 +23,7 @@ export const services: ServiceContent[] = [
       "CA Chelsea Autobody offer comprehensive assistance, with one of our client relation managers to help simplify the process and get you back on the road as soon as possible.",
       "Quite often, it may be the first time that you have had to make a motor insurance claim and knowing that our team is ready to answer your questions and assist you through the process can only add to your peace of mind."
     ],
-    image: "https://caautobody.com.au/wp-content/uploads/2021/06/homepage-Accident-Assistance.jpg",
+    image: media.service.accident,
     highlights: ["Repair assessment", "Insurer coordination", "Towing guidance", "Repair updates"]
   },
   {
@@ -35,7 +36,7 @@ export const services: ServiceContent[] = [
       "Our trained technicians understand how frustrating it is to have unattractive dents and dings on your vehicle. That’s why we are committed to delivering speedy and effective solutions to restore your car’s appearance to its former glory. We can gently massage minor dents out without needing to paint and maintain your vehicle’s original surface while saving you time and money.",
       "With our dedication to expertise and client satisfaction, you can count on us to provide outcomes that meet your expectations. Whether your car has been damaged by a shopping trolley, hail or a minor mishap, we have the knowledge and skills to handle every dent removal task with accuracy and care. Don’t let dents detract from the beauty of your vehicle; visit our website today to arrange an appointment and let our team of experts restore your car’s look quickly, affordably, and without difficulty."
     ],
-    image: "https://caautobody.com.au/wp-content/uploads/2021/06/homepage-paintless-dent.jpg",
+    image: media.service.paintlessDent,
     highlights: ["Factory paint preservation", "Minor dent assessment", "Precision reshaping", "Clean finish"]
   },
   {
@@ -49,7 +50,7 @@ export const services: ServiceContent[] = [
       "With 30+ years of experience in the industry, we specialise in delivering high-quality panel beating repair services in Melbourne. Our dedicated team is skilled in repairing damaged panels, removing dents, fixing scratches, and replacing parts as needed. We focus on restoring your vehicle to its original condition, prioritising both safety and aesthetics.",
       "Contact us today for a free quote or to schedule a consultation!"
     ],
-    image: "https://caautobody.com.au/wp-content/uploads/2021/05/services01.jpg",
+    image: media.service.panelBeating,
     highlights: ["Collision damage", "Panel alignment", "Structural checks", "Finish preparation"]
   },
   {
@@ -62,7 +63,7 @@ export const services: ServiceContent[] = [
       "We understand that being without your car can be inconvenient, which is why we offer a hassle-free solution with our rental replacement vehicles. Whether your car is in for repairs or maintenance, we have various options available to suit your needs, ensuring you can stay on the move while your car is serviced.",
       "At CA Autobody, we take pride in providing our customers with reliable and well-maintained replacement vehicles. From compact cars for urban commuting to spacious SUVs for family outings, our diverse fleet accommodates various preferences and requirements. With competitive rates and flexible rental periods, getting behind the wheel of a replacement vehicle has never been easier or more convenient."
     ],
-    image: "https://caautobody.com.au/wp-content/uploads/2021/06/homepage-Replacement-Vehicles.jpg",
+    image: media.service.replacementVehicles,
     highlights: ["Convenient transport", "Claim guidance", "Booking support", "Clear handover"]
   },
   {
@@ -75,7 +76,7 @@ export const services: ServiceContent[] = [
       "At CA Autobody, we offer top-quality car spray painting in Melbourne to help you achieve the perfect finish for your vehicle. Whether you’re looking to freshen up your car’s paintwork or completely transform its look, our team of competent technicians has the expertise and equipment to provide exceptional results that go above and beyond your expectations.",
       "Our car spray painting process begins with thorough preparation, including sanding, priming, and masking, to ensure a smooth and even finish. We use high-quality automotive paints matched to your vehicle’s original colour, providing a seamless blend with the existing paintwork. Whether you’re looking to refresh your car’s appearance or restore it to showroom condition, you can trust CA Autobody to deliver exceptional results that stand the test of time."
     ],
-    image: "https://caautobody.com.au/wp-content/uploads/2021/06/homepage-spray-paint.jpg",
+    image: media.service.sprayPainting,
     highlights: ["Colour matching", "Surface preparation", "Controlled refinishing", "Final quality inspection"]
   },
   {
@@ -87,7 +88,7 @@ export const services: ServiceContent[] = [
     body: [
       "With their cutting-edge electric vehicles (EVs), Tesla has revolutionised the automotive industry. However, with such advanced technology comes the need for specialised repair and maintenance services. This is where Tesla Approved Collision Centres like CA Autobody come into play. Located conveniently on the peninsula, CA Autobody offers state-of-the-art facilities and Tesla-certified technicians, ensuring that your Tesla vehicle is repaired to the highest standards."
     ],
-    image: "https://caautobody.com.au/wp-content/uploads/2024/05/tesla-repair.jpg",
+    image: media.service.tesla,
     highlights: ["EV-aware repair process", "Modern body construction", "Precision refinishing", "Quality checks"]
   },
   {
@@ -101,7 +102,7 @@ export const services: ServiceContent[] = [
       "CA Autobody provides Zeekr approved accident repairs in Melbourne, helping owners restore their vehicles safely, professionally and with minimal stress. From our Chelsea Heights repair facility, we support Zeekr owners across Bayside, the south eastern suburbs and the Mornington Peninsula with panel repairs, spray painting, smash repairs, insurance claim assistance and replacement vehicle options.",
       "Whether your Zeekr has minor scratches, dent damage, bumper damage, panel damage or more complex collision repairs, our team can guide you through the process and help get your vehicle back on the road with confidence."
     ],
-    image: "https://caautobody.com.au/wp-content/uploads/2026/05/zeekr-car.jpg",
+    image: media.service.zeekr,
     highlights: ["EV repair support", "Modern materials", "Careful assessment", "Final quality control"]
   },
   {
@@ -114,7 +115,7 @@ export const services: ServiceContent[] = [
       "A modern BYD repair starts with EV safety.",
       "CA Autobody coordinates the practical steps, keeps you updated and explains the repair pathway in clear language."
     ],
-    image: "https://caautobody.com.au/wp-content/uploads/2026/06/close-up-of-electric-car-charging-ecology-transpo-2026-03-10-03-08-40-utc-1024x683.jpg",
+    image: media.brandRepair.bydHero,
     highlights: ["Approved BYD Repairer", "EV battery safe repair procedures", "Genuine OEM BYD parts", "Claim assistance, towing and loan vehicle options"]
   },
   {
@@ -127,7 +128,7 @@ export const services: ServiceContent[] = [
       "Protect safety, refinement and long term value.",
       "CA Autobody coordinates the practical steps, keeps you updated and explains the repair pathway in clear language."
     ],
-    image: "https://caautobody.com.au/wp-content/uploads/2026/05/mechanic-inspects-auto-body-damage-in-automotive-s-2026-01-07-06-40-31-utc-1024x683.jpg",
+    image: media.brandRepair.lexusHero,
     highlights: ["Approved Lexus Repairer", "Genuine OEM Lexus parts", "ADAS, structural and precision refinishing capability", "Claim assistance, towing and loan vehicle options"]
   }
 ];
@@ -167,7 +168,7 @@ export const locations: LocationContent[] = [
     `CA Autobody supports ${name} drivers with accident repair, panel beating, refinishing and related repair services from our Chelsea Heights workshop.`,
     "Our focus is a clear repair process, careful workmanship and practical communication from the first assessment through to vehicle handover."
   ],
-  image: "https://caautobody.com.au/wp-content/uploads/2021/05/ft-img.png"
+  image: media.hero.areas
 }));
 
 export const offers: OfferContent[] = [
@@ -187,7 +188,7 @@ export const offers: OfferContent[] = [
     "Modern collision repair requires a controlled process, the right repair approach and clear communication throughout the job.",
     "CA Autobody combines experienced technicians, a well-equipped Chelsea Heights facility and customer-focused repair coordination from assessment to handover."
   ],
-  image: index % 2 === 0 ? "https://caautobody.com.au/wp-content/uploads/2024/05/tesla-repair.jpg" : "https://caautobody.com.au/wp-content/uploads/2021/06/homepage-Replacement-Vehicles.jpg",
+  image: [media.brandRepair.bydHero, media.service.replacementVehicles, media.brandRepair.lexusHero, media.service.accident, media.service.tesla, media.service.zeekr][index],
   bullets: ["Initial assessment", "Repair planning", "Body and refinishing work", "Final quality review"]
 }));
 
@@ -198,7 +199,7 @@ export const blogs: BlogContent[] = [
     date: "18 September 2026",
     category: "CA Knows",
     excerpt: "Booking accident repairs? Have vehicle details, impact location, photos, claim status and the car's current location ready before calling the workshop team.",
-    image: "https://caautobody.com.au/wp-content/uploads/2021/06/homepage-Accident-Assistance.jpg",
+    image: media.service.accidentCard,
     status: "published"
   },
   {
@@ -207,7 +208,7 @@ export const blogs: BlogContent[] = [
     date: "7 September 2026",
     category: "CA Knows",
     excerpt: "Approval status, repair experience, replacement parts, communication and the repair process can all help you choose a Tesla collision repairer.",
-    image: "https://caautobody.com.au/wp-content/uploads/2024/05/tesla-repair.jpg",
+    image: media.service.tesla,
     status: "published"
   },
   {
@@ -216,7 +217,7 @@ export const blogs: BlogContent[] = [
     date: "19 August 2026",
     category: "CA Knows",
     excerpt: "Key checks on dents, paint, mounting points and collision damage can help determine whether a panel is repaired or replaced.",
-    image: "https://caautobody.com.au/wp-content/uploads/2021/05/services01.jpg",
+    image: media.service.panelBeating,
     status: "published"
   },
   {
@@ -225,7 +226,7 @@ export const blogs: BlogContent[] = [
     date: "27 July 2026",
     category: "CA Knows",
     excerpt: "From assessment and panel work to paint, insurance details and final checks, understand the stages after Tesla accident damage.",
-    image: "https://caautobody.com.au/wp-content/uploads/2024/05/tesla-repair.jpg",
+    image: media.service.teslaCentre,
     status: "published"
   },
   {
@@ -234,7 +235,7 @@ export const blogs: BlogContent[] = [
     date: "10 June 2026",
     category: "CA Knows",
     excerpt: "Paintless dent removal can help repair suitable small dents while preserving factory paint, depending on access and panel condition.",
-    image: "https://caautobody.com.au/wp-content/uploads/2021/06/homepage-paintless-dent.jpg",
+    image: media.service.paintlessDent,
     status: "published"
   },
   {
@@ -243,7 +244,7 @@ export const blogs: BlogContent[] = [
     date: "19 May 2026",
     category: "CA Knows",
     excerpt: "Ask about repair methods, warranties, communication, experience and replacement parts before choosing a repairer.",
-    image: "https://caautobody.com.au/wp-content/uploads/2021/05/services01.jpg",
+    image: media.service.panelBeatingSupport,
     status: "published"
   },
   {
@@ -252,7 +253,7 @@ export const blogs: BlogContent[] = [
     date: "16 January 2026",
     category: "CA Knows",
     excerpt: "A practical guide to reputation, communication and repair quality when choosing a local panel beater.",
-    image: "https://caautobody.com.au/wp-content/uploads/2021/05/ft-img.png",
+    image: media.workshop.exterior,
     status: "published"
   },
   {
@@ -261,7 +262,7 @@ export const blogs: BlogContent[] = [
     date: "30 December 2025",
     category: "CA Knows",
     excerpt: "Local repair support can make communication and the repair journey easier after an accident.",
-    image: "https://caautobody.com.au/wp-content/uploads/2021/06/homepage-Accident-Assistance.jpg",
+    image: media.service.accidentSupport,
     status: "published"
   },
   {
@@ -270,7 +271,7 @@ export const blogs: BlogContent[] = [
     date: "27 November 2025",
     category: "CA Knows",
     excerpt: "Understand the repair journey from initial assessment through body work, paint and final quality checks.",
-    image: "https://caautobody.com.au/wp-content/uploads/2021/05/ft-img.png",
+    image: media.workshop.assessment,
     status: "published"
   },
   {
@@ -279,7 +280,7 @@ export const blogs: BlogContent[] = [
     date: "21 October 2025",
     category: "CA Knows",
     excerpt: "Know when dents, scratches or collision damage should be professionally assessed and repaired.",
-    image: "https://caautobody.com.au/wp-content/uploads/2021/05/services01.jpg",
+    image: media.service.panelBeating,
     status: "published"
   }
 ];
@@ -369,49 +370,23 @@ export const faqs: FAQContent[] = [
 ];
 
 export const gallery: GalleryContent[] = [
-  { id: "gallery-1", image: "https://caautobody.com.au/wp-content/uploads/2021/05/menu-img.jpg", caption: "Chelsea Heights workshop", category: "Workshop" },
-  { id: "gallery-2", image: "https://caautobody.com.au/wp-content/uploads/2024/05/tesla-repair.jpg", caption: "Tesla repair capability", category: "Repairs" },
-  { id: "gallery-3", image: "https://caautobody.com.au/wp-content/uploads/2021/05/services01.jpg", caption: "Panel repair in progress", category: "Repairs" },
-  { id: "gallery-4", image: "https://caautobody.com.au/wp-content/uploads/2021/06/homepage-spray-paint.jpg", caption: "Professional refinishing", category: "Paint" },
-  { id: "gallery-5", image: "https://caautobody.com.au/wp-content/uploads/2021/06/homepage-paintless-dent.jpg", caption: "Paintless dent repair", category: "Repairs" },
-  { id: "gallery-6", image: "https://caautobody.com.au/wp-content/uploads/2021/06/homepage-Replacement-Vehicles.jpg", caption: "Replacement vehicle support", category: "Customer Support" },
-  { id: "gallery-7", image: "https://caautobody.com.au/wp-content/uploads/2021/05/ft-img.png", caption: "Chelsea Heights repair facility", category: "Workshop" },
-  { id: "gallery-8", image: "https://caautobody.com.au/wp-content/uploads/2021/05/menu-img.jpg", caption: "Refinishing work area", category: "Paint" },
-  { id: "gallery-9", image: "https://caautobody.com.au/wp-content/uploads/2024/05/tesla-repair.jpg", caption: "EV collision repair", category: "EV Repair" },
-  { id: "gallery-10", image: "https://caautobody.com.au/wp-content/uploads/2021/05/services01.jpg", caption: "Body repair detail", category: "Repairs" },
-  { id: "gallery-11", image: "https://caautobody.com.au/wp-content/uploads/2021/06/homepage-spray-paint.jpg", caption: "Paint preparation and finish", category: "Paint" },
-  { id: "gallery-12", image: "https://caautobody.com.au/wp-content/uploads/2021/06/homepage-Replacement-Vehicles.jpg", caption: "Workshop vehicle support", category: "Workshop" }
+  { id: "gallery-facility", image: media.workshop.floor, caption: "The Chelsea Heights repair floor", category: "Facility" },
+  { id: "gallery-exterior", image: media.workshop.exterior, caption: "CA Autobody in Chelsea Heights", category: "Facility" },
+  { id: "gallery-reception", image: media.workshop.reception, caption: "Customer reception and vehicle handover", category: "Facility" },
+  { id: "gallery-assessment", image: media.workshop.assessment, caption: "Vehicle assessment in progress", category: "Diagnostics" },
+  { id: "gallery-structural", image: media.workshop.structural, caption: "Structural repair equipment", category: "Body Repair" },
+  { id: "gallery-alignment", image: media.workshop.alignment, caption: "Precision measurement and alignment", category: "Diagnostics" },
+  { id: "gallery-calibration", image: media.workshop.calibration, caption: "Calibration and repair systems", category: "Diagnostics" },
+  { id: "gallery-equipment", image: media.workshop.equipment, caption: "Organised repair equipment", category: "Diagnostics" },
+  { id: "gallery-paint", image: media.workshop.paintMixing, caption: "Colour preparation and paint mixing", category: "Refinishing" },
+  { id: "gallery-body", image: media.workshop.bodyRepair, caption: "Body repair on a raised vehicle", category: "Body Repair" },
+  { id: "gallery-tesla", image: media.service.tesla, caption: "Tesla repair capability", category: "EV Repair" },
+  { id: "gallery-pdr", image: media.service.paintlessDent, caption: "Paintless dent repair in progress", category: "Body Repair" },
+  { id: "gallery-panel", image: media.service.panelBeatingSupport, caption: "Panel repair equipment in the workshop", category: "Body Repair" },
+  { id: "gallery-spray", image: media.service.sprayPainting, caption: "Controlled spray-paint application", category: "Refinishing" },
+  { id: "gallery-workshop", image: "/images/Chelsea-Auto-Body-011.webp", caption: "Workshop prepared for modern repairs", category: "Facility" }
 ];
 
-export const insurers = [
-  ["AAMI", "https://caautobody.com.au/wp-content/uploads/2021/05/aami-logo.png"],
-  ["AIG", "https://caautobody.com.au/wp-content/uploads/2021/05/aig-logo-hover.png"],
-  ["Bingle", "https://caautobody.com.au/wp-content/uploads/2021/05/bingle-logo-hover.png"],
-  ["Blue Zebra", "https://caautobody.com.au/wp-content/uploads/2021/05/blue-sebra-black.png"],
-  ["CGU", "https://caautobody.com.au/wp-content/uploads/2021/05/cgu-logo-hover.png"],
-  ["Famous", "https://caautobody.com.au/wp-content/uploads/2021/05/famous-logo.png"],
-  ["One Underwriting", "https://caautobody.com.au/wp-content/uploads/2021/05/one-under-logo-hover.png"],
-  ["Allianz", "https://caautobody.com.au/wp-content/uploads/2021/05/allianz-logo.png"],
-  ["Hello Claims", "https://caautobody.com.au/wp-content/uploads/2021/05/hello-claims-logo.png"],
-  ["RACV", "https://caautobody.com.au/wp-content/uploads/2021/05/racv-logo.png"],
-  ["MB Group", "https://caautobody.com.au/wp-content/uploads/2021/05/mb-group-logo.png"],
-  ["Youi", "https://caautobody.com.au/wp-content/uploads/2021/05/youi-logo.png"],
-  ["Budget Direct", "https://caautobody.com.au/wp-content/uploads/2021/05/budget-direct-logo.png"]
-] as const;
+export const insurers = insurerLogos;
 
-export const vehicleBrands = [
-  ["Porsche", "https://caautobody.com.au/wp-content/uploads/2021/05/porsche-logo01.png"],
-  ["BMW", "https://caautobody.com.au/wp-content/uploads/2021/05/bmw-logo01.png"],
-  ["Volkswagen", "https://caautobody.com.au/wp-content/uploads/2021/05/walks-logo01.png"],
-  ["Audi", "https://caautobody.com.au/wp-content/uploads/2021/05/audi-logo01.png"],
-  ["Holden", "https://caautobody.com.au/wp-content/uploads/2021/05/lion-logo01.png"],
-  ["Skoda", "https://caautobody.com.au/wp-content/uploads/2021/05/skoda-logo01.png"],
-  ["Mercedes-Benz", "https://caautobody.com.au/wp-content/uploads/2021/05/mercedes-benz-logo01.png"],
-  ["Tesla", "https://caautobody.com.au/wp-content/uploads/2024/05/tesla-logo.png"],
-  ["Subaru", "https://caautobody.com.au/wp-content/uploads/2026/05/brand-subaru.png"],
-  ["Honda", "https://caautobody.com.au/wp-content/uploads/2021/05/honda-logo01.png"],
-  ["Ford", "https://caautobody.com.au/wp-content/uploads/2021/07/ford-logos.png"],
-  ["Mazda", "https://caautobody.com.au/wp-content/uploads/2021/05/mazda-logo01-hover.png"],
-  ["Hyundai", "https://caautobody.com.au/wp-content/uploads/2021/05/hyundai-logo01.png"],
-  ["Kia", "https://caautobody.com.au/wp-content/uploads/2021/05/kia-logo.png"]
-] as const;
+export const vehicleBrands = vehicleBrandLogos;

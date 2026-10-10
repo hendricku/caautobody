@@ -3,23 +3,7 @@ import Button from "@/components/UI/Button";
 import ServiceExperience from "@/components/Public/V4/ServiceExperience";
 import InsurerLogoGrid from "@/components/Public/InsurerLogoGrid";
 import { insurers } from "@/lib/siteContent";
-
-const brands = [
-  ["Porsche", "https://caautobody.com.au/wp-content/uploads/2021/05/porsche-logo01.png"],
-  ["BMW", "https://caautobody.com.au/wp-content/uploads/2021/05/bmw-logo01.png"],
-  ["Volkswagen", "https://caautobody.com.au/wp-content/uploads/2021/05/walks-logo01.png"],
-  ["Audi", "https://caautobody.com.au/wp-content/uploads/2021/05/audi-logo01.png"],
-  ["Holden", "https://caautobody.com.au/wp-content/uploads/2021/05/lion-logo01.png"],
-  ["Skoda", "https://caautobody.com.au/wp-content/uploads/2021/05/skoda-logo01.png"],
-  ["Mercedes-Benz", "https://caautobody.com.au/wp-content/uploads/2021/05/mercedes-benz-logo01.png"],
-  ["Tesla", "https://caautobody.com.au/wp-content/uploads/2024/05/tesla-logo.png"],
-  ["Subaru", "https://caautobody.com.au/wp-content/uploads/2026/05/brand-subaru.png"],
-  ["Honda", "https://caautobody.com.au/wp-content/uploads/2021/05/honda-logo01.png"],
-  ["Ford", "https://caautobody.com.au/wp-content/uploads/2021/07/ford-logos.png"],
-  ["Mazda", "https://caautobody.com.au/wp-content/uploads/2021/05/mazda-logo01-hover.png"],
-  ["Hyundai", "https://caautobody.com.au/wp-content/uploads/2021/05/hyundai-logo01.png"],
-  ["Kia", "https://caautobody.com.au/wp-content/uploads/2024/05/kia-logo.png"],
-] as const;
+import { media, vehicleBrandLogos } from "@/lib/media";
 
 export default function HomeV4() {
   return (
@@ -43,7 +27,7 @@ export default function HomeV4() {
         <div className="hp-brands-wrap">
           <div className="hp-brands hp-shell" aria-label="Vehicle brands serviced by CA Autobody">
             <div className="hp-brand-grid">
-              {brands.map(([name, image]) => <div className="hp-brand-logo" key={name}><img src={image} alt={name} /><span>{name}</span></div>)}
+              {vehicleBrandLogos.map(([name, image]) => <div className="hp-brand-logo" key={name}><img src={image} alt={name} /><span>{name}</span></div>)}
             </div>
             <div className="hp-brand-rule"><span /><strong>All makes &amp; models including Tesla &amp; Zeekr</strong><span /></div>
           </div>
@@ -70,6 +54,13 @@ export default function HomeV4() {
         </div>
       </section>
 
+      <section className="hp-services hp-section hp-section--warm" id="services">
+        <div className="hp-shell">
+          <div className="hp-services__heading hp-reveal"><div><span className="hp-eyebrow">Our repair services</span><h2>Specialist care for the damage you can see — and the details you can’t.</h2></div><p>Choose a service to explore how CA Autobody can help. Each repair path is handled with the same focus on workmanship, communication and finish.</p></div>
+          <ServiceExperience />
+        </div>
+      </section>
+
       <section className="hp-why hp-section hp-section--black dark-context-surface dark-context-surface--why" id="why-choose">
         <div className="hp-shell">
           <div className="hp-section-title hp-section-title--center hp-reveal"><div className="hp-title-rule"><span /><h2>Why choose CA Autobody?</h2><span /></div><p className="hp-values">Experience <i>/</i> Quality <i>/</i> Trust <i>/</i> Community</p><p className="hp-why__intro">With over 30 years of experience, VACC approval and a commitment to quality in every repair, we’re the smash repairer Melbourne drivers trust. From expert workmanship to clear customer care, we’re here to get you back on the road with confidence.</p></div>
@@ -89,22 +80,16 @@ export default function HomeV4() {
 
       <section className="hp-about hp-section">
         <div className="hp-shell hp-about__grid">
-          <div className="hp-about__image hp-reveal"><img src="https://caautobody.com.au/wp-content/uploads/2021/05/ft-img.png" alt="CA Autobody workshop in Chelsea Heights" loading="lazy" /><span className="hp-image-label">Chelsea Heights · Melbourne</span></div>
+          <div className="hp-about__image hp-reveal"><img src={media.workshop.exterior} alt="CA Autobody workshop in Chelsea Heights" loading="lazy" /><span className="hp-image-label">Chelsea Heights · Melbourne</span></div>
           <div className="hp-about__copy hp-reveal"><span className="hp-eyebrow">Trusted car smash repair in Melbourne</span><h2>Repair work that feels considered from the first call to handover.</h2><p>CA Autobody supports drivers with collision repairs across a wide range of makes and models, combining modern repair methods with practical customer service from our Chelsea Heights facility.</p><p>Whether the vehicle needs panel work, refinishing, EV-aware repairs or help navigating an insurance claim, our team keeps the process clear and focused on getting you safely back on the road.</p><Link className="hp-arrow-link" href="/about">Discover CA Autobody <span>→</span></Link></div>
         </div>
       </section>
 
-      <section className="hp-services hp-section hp-section--warm" id="services">
-        <div className="hp-shell">
-          <div className="hp-services__heading hp-reveal"><div><span className="hp-eyebrow">Our repair services</span><h2>Specialist care for the damage you can see — and the details you can’t.</h2></div><p>Choose a service to explore how CA Autobody can help. Each repair path is handled with the same focus on workmanship, communication and finish.</p></div>
-          <ServiceExperience />
-        </div>
-      </section>
 
       <section className="hp-approved hp-section hp-section--black">
         <div className="hp-shell hp-approved__grid">
           <div className="hp-approved__copy hp-reveal"><span className="hp-eyebrow hp-eyebrow--light">Electric vehicle repair expertise</span><h2>Specialists in the vehicles of tomorrow.</h2><p>Modern electric vehicles demand repair decisions that respect their construction, safety systems and refinishing requirements. CA Autobody supports Tesla and Zeekr owners with dedicated repair expertise.</p><div className="hp-approved__brands"><span>TESLA</span><span>ZEEKR</span></div><Button href="/services/tesla-approved-repair-centre" variant="gold" arrow>Explore approved repairs</Button></div>
-          <div className="hp-approved__media hp-reveal"><img src="https://caautobody.com.au/wp-content/uploads/2024/05/tesla-repair.jpg" alt="Tesla and electric vehicle repair" loading="lazy" /><div className="hp-approved__caption"><span>EV Repair</span><strong>Tesla + Zeekr</strong></div></div>
+          <div className="hp-approved__media hp-reveal"><img src={media.service.tesla} alt="Tesla and electric vehicle repair" loading="lazy" /><div className="hp-approved__caption"><span>EV Repair</span><strong>Tesla + Zeekr</strong></div></div>
         </div>
       </section>
 
@@ -112,9 +97,9 @@ export default function HomeV4() {
         <div className="hp-shell">
           <div className="hp-studio__head hp-reveal"><div><span className="hp-eyebrow">Inside CA Autobody</span><h2>A workshop built for precise, modern repairs.</h2></div><div className="hp-studio__intro"><p>See the facility, refinishing work and repair environment behind the finished result. Clean processes, experienced technicians and the equipment needed for today’s vehicles.</p><Link className="hp-arrow-link" href="/gallery">View the full gallery <span>→</span></Link></div></div>
           <div className="hp-studio__grid hp-reveal">
-            <Link className="hp-studio-card hp-studio-card--feature" href="/gallery"><img src="https://caautobody.com.au/wp-content/uploads/2021/06/homepage-Replacement-Vehicles.jpg" alt="CA Autobody workshop with repaired vehicles" loading="lazy" /><span className="hp-studio-card__shade" /><span className="hp-studio-card__meta"><small>01 · Workshop</small><strong>Built around quality repair work.</strong><b>Explore the facility →</b></span></Link>
-            <Link className="hp-studio-card" href="/gallery"><img src="https://caautobody.com.au/wp-content/uploads/2021/05/menu-img.jpg" alt="CA Autobody paint technician refinishing a vehicle" loading="lazy" /><span className="hp-studio-card__shade" /><span className="hp-studio-card__meta"><small>02 · Refinishing</small><strong>Precision colour and finish.</strong></span></Link>
-            <Link className="hp-studio-card" href="/gallery"><img src="https://caautobody.com.au/wp-content/uploads/2021/05/ft-img.png" alt="CA Autobody Chelsea Heights facility" loading="lazy" /><span className="hp-studio-card__shade" /><span className="hp-studio-card__meta"><small>03 · Chelsea Heights</small><strong>Your local repair facility.</strong></span></Link>
+            <Link className="hp-studio-card hp-studio-card--feature" href="/gallery"><img src={media.workshop.floor} alt="CA Autobody workshop with repaired vehicles" loading="lazy" /><span className="hp-studio-card__shade" /><span className="hp-studio-card__meta"><small>01 · Workshop</small><strong>Built around quality repair work.</strong><b>Explore the facility →</b></span></Link>
+            <Link className="hp-studio-card" href="/gallery"><img src={media.workshop.paintMixing} alt="CA Autobody paint technician preparing a vehicle finish" loading="lazy" /><span className="hp-studio-card__shade" /><span className="hp-studio-card__meta"><small>02 · Refinishing</small><strong>Precision colour and finish.</strong></span></Link>
+            <Link className="hp-studio-card" href="/gallery"><img src={media.workshop.exteriorWide} alt="CA Autobody Chelsea Heights facility" loading="lazy" /><span className="hp-studio-card__shade" /><span className="hp-studio-card__meta"><small>03 · Chelsea Heights</small><strong>Your local repair facility.</strong></span></Link>
           </div>
         </div>
       </section>

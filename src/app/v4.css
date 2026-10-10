@@ -377,7 +377,7 @@ body.home-v2 .hp-location__actions .hp-btn--black:hover{color:#111!important}
   position:absolute;
   inset:0;
   z-index:0;
-  background-image:url("https://caautobody.com.au/wp-content/uploads/2021/06/homepage-Replacement-Vehicles.jpg");
+  background-image:url("/images/homepage-Replacement-Vehicles.webp");
   background-size:cover;
   background-position:center 48%;
   transform:scale(1.012);

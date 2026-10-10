@@ -2,14 +2,15 @@
 
 import Link from "next/link";
 import { useRef, useState } from "react";
+import { media } from "@/lib/media";
 
 const items = [
-  { label: "Tesla Repair", kicker: "01 / Tesla", title: "Tesla Repair", image: "https://caautobody.com.au/wp-content/uploads/2024/05/tesla-repair.jpg", copy: "EV-aware collision repair, body work and refinishing for Tesla vehicles, handled with attention to modern construction and safety systems.", href: "/services/tesla-approved-repair-centre", cta: "Explore Tesla Repair" },
-  { label: "Panel Beating", kicker: "02 / Body Repair", title: "Panel Beating", image: "https://caautobody.com.au/wp-content/uploads/2021/06/homepage-spray-paint.jpg", copy: "Precision panel restoration for cosmetic damage through to more involved collision repairs.", href: "/services/panel-beating", cta: "Explore Panel Beating" },
-  { label: "Spray Painting", kicker: "03 / Refinishing", title: "Spray Painting", image: "https://caautobody.com.au/wp-content/uploads/2021/05/menu-img.jpg", copy: "Professional refinishing with careful preparation, colour matching and controlled application.", href: "/services/spray-painting", cta: "Explore Spray Painting" },
-  { label: "Replacement Vehicles", kicker: "04 / Keep Moving", title: "Replacement Vehicles", image: "https://caautobody.com.au/wp-content/uploads/2021/06/homepage-Replacement-Vehicles.jpg", copy: "Practical mobility options to help keep your routine moving while your vehicle is being repaired.", href: "/services/replacement-vehicles", cta: "Explore Replacement Vehicles" },
-  { label: "Paintless Dent Removal", kicker: "05 / Dent Repair", title: "Paintless Dent Removal", image: "https://caautobody.com.au/wp-content/uploads/2024/05/tesla-repair.jpg", copy: "A low-impact approach for suitable dents that helps preserve the vehicle’s existing paint finish.", href: "/services/paintless-dent-removal", cta: "Explore PDR" },
-  { label: "Accident Assistance", kicker: "06 / Support", title: "Accident Assistance", image: "https://caautobody.com.au/wp-content/uploads/2021/05/ft-img.png", copy: "Clear support after an accident, from repair planning and towing guidance to insurer coordination.", href: "/services/accident-assistance", cta: "Explore Accident Assistance" },
+  { label: "Tesla Repair", kicker: "01 / Tesla", title: "Tesla Repair", image: media.service.tesla, copy: "EV-aware collision repair, body work and refinishing for Tesla vehicles, handled with attention to modern construction and safety systems.", href: "/services/tesla-approved-repair-centre", cta: "Explore Tesla Repair" },
+  { label: "Panel Beating", kicker: "02 / Body Repair", title: "Panel Beating", image: media.service.panelBeating, copy: "Precision panel restoration for cosmetic damage through to more involved collision repairs.", href: "/services/panel-beating", cta: "Explore Panel Beating" },
+  { label: "Spray Painting", kicker: "03 / Refinishing", title: "Spray Painting", image: media.service.sprayPainting, copy: "Professional refinishing with careful preparation, colour matching and controlled application.", href: "/services/spray-painting", cta: "Explore Spray Painting" },
+  { label: "Replacement Vehicles", kicker: "04 / Keep Moving", title: "Replacement Vehicles", image: media.service.replacementVehiclesCard, copy: "Practical mobility options to help keep your routine moving while your vehicle is being repaired.", href: "/services/replacement-vehicles", cta: "Explore Replacement Vehicles" },
+  { label: "Paintless Dent Removal", kicker: "05 / Dent Repair", title: "Paintless Dent Removal", image: media.service.paintlessDent, copy: "A low-impact approach for suitable dents that helps preserve the vehicle’s existing paint finish.", href: "/services/paintless-dent-removal", cta: "Explore PDR" },
+  { label: "Accident Assistance", kicker: "06 / Support", title: "Accident Assistance", image: media.service.accident, copy: "Clear support after an accident, from repair planning and towing guidance to insurer coordination.", href: "/services/accident-assistance", cta: "Explore Accident Assistance" },
 ] as const;
 
 export default function ServiceExperience() {

@@ -24,17 +24,25 @@ export default function LegalPage({ title, eyebrow, description, sections, count
         </div>
       </header>
       <div className="shell ca-legal__body">
-        <nav aria-label="On this page" className="ca-legal__aside">
-          <strong>ON THIS PAGE</strong>
-          {sections.map((section, index) => <a href={`#${section.id}`} key={section.id}>{String(index + 1).padStart(2, "0")} / {section.title}</a>)}
-        </nav>
-        <article className="ca-legal__article">
-          {sections.map((section) => (
-            <section id={section.id} key={section.id} aria-labelledby={`${section.id}-title`}>
-              <h2 id={`${section.id}-title`}>{section.title}</h2>
-              {section.paragraphs?.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
-              {section.points?.length ? <ul>{section.points.map((point, index) => <li key={index}>{point}</li>)}</ul> : null}
-            </section>
+        <aside className="ca-legal__aside">
+          <strong>CA AUTOBODY</strong>
+          <p>Clear information, available when you need it.</p>
+          <a href="mailto:info@caautobody.com.au">info@caautobody.com.au</a>
+          <a href="tel:+61397727411">03 9772 7411</a>
+        </aside>
+        <article className="ca-legal__article" aria-label={`${title} details`}>
+          {sections.map((section, index) => (
+            <details id={section.id} key={section.id} className="ca-legal__section" open={index === 0}>
+              <summary>
+                <span className="ca-legal__section-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                <span className="ca-legal__section-title">{section.title}</span>
+                <span className="ca-legal__section-toggle" aria-hidden="true">+</span>
+              </summary>
+              <div className="ca-legal__section-content">
+                {section.paragraphs?.map((paragraph, paragraphIndex) => <p key={paragraphIndex}>{paragraph}</p>)}
+                {section.points?.length ? <ul>{section.points.map((point, pointIndex) => <li key={pointIndex}>{point}</li>)}</ul> : null}
+              </div>
+            </details>
           ))}
         </article>
       </div>

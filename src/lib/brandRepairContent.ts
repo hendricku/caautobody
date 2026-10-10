@@ -1,3 +1,5 @@
+import { media } from "@/lib/media";
+
 export type BrandRepairContent = {
   brand: "BYD" | "Lexus";
   eyebrow: string;
@@ -84,9 +86,9 @@ export const brandRepairContent: Record<string, BrandRepairContent> = {
     eyebrow: "APPROVED BYD COLLISION REPAIRS IN MELBOURNE",
     title: "BYD Approved Repairer Melbourne",
     intro: "BYD vehicles combine high voltage architecture, battery systems, advanced driver assistance technology and model specific body structures. CA Autobody delivers approved BYD repairs using genuine OEM BYD parts and manufacturer approved procedures.",
-    heroImage: "https://caautobody.com.au/wp-content/uploads/2026/06/close-up-of-electric-car-charging-ecology-transpo-2026-03-10-03-08-40-utc-1024x683.jpg",
+    heroImage: media.brandRepair.bydHero,
     heroAlt: "Close-up of electric car charging",
-    logo: "https://caautobody.com.au/wp-content/uploads/2026/09/byd-approved-logo.webp",
+    logo: "",
     assessmentCta: "Start My BYD Repair Assessment",
     approvalPoints: ["Approved BYD Repairer", "EV battery safe repair procedures", "Genuine OEM BYD parts within the approved plan", "Claim assistance, towing and loan vehicle options"],
     approvalTitle: "A modern BYD repair starts with EV safety",
@@ -140,9 +142,9 @@ export const brandRepairContent: Record<string, BrandRepairContent> = {
     ],
     review: { rating: "4.9 ★★★★★ 300+ five star reviews from 352 Google reviews", quote: "I do not normally leave a review but in this case it is easy. The service we received from the initial contact up until the completion of our car repair was outstanding. Communication was excellent throughout the process, and the workmanship and quality of the repair is excellent. Could not be happier with the outcome.", author: "Rodney K. Google review" },
     media: [
-      { image: "https://caautobody.com.au/wp-content/uploads/2026/06/close-up-of-electric-car-charging-ecology-transpo-2026-03-10-03-08-40-utc-1024x683.jpg", alt: "Close-up of electric car charging", label: "EV repair context" },
-      { image: "https://caautobody.com.au/wp-content/uploads/2026/06/car-mechanic-working-to-remove-dent-in-workshop-2026-01-09-07-14-08-utc-1024x683.jpg", alt: "Car mechanic working to remove dent in workshop", label: "Panel repair" },
-      { image: "https://caautobody.com.au/wp-content/uploads/2026/08/auto-mechanic-using-laptop-computer-inspecting-car-2026-01-11-10-14-25-utc-1024x681.jpg", alt: "Automotive mechanic inspecting a vehicle with diagnostic software", label: "Diagnostic checks" },
+      { image: media.brandRepair.bydHero, alt: "Close-up of electric car charging", label: "EV repair context" },
+      { image: media.brandRepair.bydPanel, alt: "Car mechanic working to remove dent in workshop", label: "Panel repair" },
+      { image: media.brandRepair.diagnostics, alt: "Automotive mechanic inspecting a vehicle with diagnostic software", label: "Diagnostic checks" },
     ],
     sections: { ...sharedSections, supportEyebrow: "Accident and claims support" },
   },
@@ -151,9 +153,9 @@ export const brandRepairContent: Record<string, BrandRepairContent> = {
     eyebrow: "APPROVED LEXUS COLLISION REPAIRS IN MELBOURNE",
     title: "Lexus Approved Repairer Melbourne",
     intro: "A Lexus repair must restore safety, body accuracy, finish quality and the quiet refinement expected from the vehicle. CA Autobody provides manufacturer approved Lexus repairs using genuine OEM Lexus parts and approved repair procedures.",
-    heroImage: "https://caautobody.com.au/wp-content/uploads/2026/05/mechanic-inspects-auto-body-damage-in-automotive-s-2026-01-07-06-40-31-utc-1024x683.jpg",
+    heroImage: media.brandRepair.lexusHero,
     heroAlt: "A panel beater inspecting vehicle damage in the workshop",
-    logo: "https://caautobody.com.au/wp-content/uploads/2026/09/lexus-approved-logo.webp",
+    logo: "",
     assessmentCta: "Start My Lexus Repair Assessment",
     approvalPoints: ["Approved Lexus Repairer", "Genuine OEM Lexus parts within the approved plan", "ADAS, structural and precision refinishing capability", "Claim assistance, towing and loan vehicle options"],
     approvalTitle: "Protect safety, refinement and long term value",
@@ -207,9 +209,9 @@ export const brandRepairContent: Record<string, BrandRepairContent> = {
     ],
     review: { rating: "4.9 ★★★★★ 300+ five star reviews from 352 Google reviews", quote: "The staff were super friendly, efficient and helpful. I received regular updates on progress of my car's repair. When the hire car ran out of time from the insurance company, CA Autobody gave me a free loan car to bridge the gap. The car was finished before the scheduled date despite having to get special parts in from the car manufacturer and looked brand new when I picked it up… I highly recommend CA autobody, especially for prestige cars.", author: "Zita P. Google review" },
     media: [
-      { image: "https://caautobody.com.au/wp-content/uploads/2026/05/mechanic-inspects-auto-body-damage-in-automotive-s-2026-01-07-06-40-31-utc-1024x683.jpg", alt: "A professional panel beater inspecting vehicle damage with a customer", label: "Damage assessment" },
-      { image: "https://caautobody.com.au/wp-content/uploads/2026/08/detailing-film-paint-protection-male-specialist-c-2026-01-08-02-05-46-utc-1024x683.jpg", alt: "Specialist preparing a vehicle finish", label: "Finish preparation" },
-      { image: "https://caautobody.com.au/wp-content/uploads/2026/08/auto-mechanic-using-laptop-computer-inspecting-car-2026-01-11-10-14-25-utc-1024x681.jpg", alt: "Automotive mechanic inspecting a vehicle with diagnostic software", label: "Diagnostic checks" },
+      { image: media.brandRepair.lexusHero, alt: "A professional panel beater inspecting vehicle damage with a customer", label: "Damage assessment" },
+      { image: media.brandRepair.lexusFinish, alt: "Specialist preparing a vehicle finish", label: "Finish preparation" },
+      { image: media.brandRepair.diagnostics, alt: "Automotive mechanic inspecting a vehicle with diagnostic software", label: "Diagnostic checks" },
     ],
     sections: { ...sharedSections, supportEyebrow: "Accident and claim support" },
   },

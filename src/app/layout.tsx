@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./v4.css";
 import "./v4-inner.css";
@@ -8,6 +8,7 @@ import "./site-enhancements.css";
 import "./service-editorial.css";
 import "./premium-refinements.css";
 import "./service-refresh.css";
+import "./page-hero-editorial.css";
 import AppChrome from "@/components/Layout/AppChrome";
 import GoogleTags from "@/components/Common/GoogleTags";
 
@@ -15,6 +16,12 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://caautobody.com.au"),
   title: { default: "CA Autobody | Smash Repairs Melbourne", template: "%s | CA Autobody" },
   description: "CA Autobody provides smash repair, panel beating, refinishing, accident assistance and EV repair services from Chelsea Heights, Melbourne."
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

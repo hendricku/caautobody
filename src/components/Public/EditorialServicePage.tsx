@@ -3,6 +3,7 @@ import type { ServiceContent } from "@/types/content";
 import type { OriginalServicePage, ServiceBlock, OriginalServiceSection } from "@/lib/originalServiceCopy";
 import { originalServiceCopy } from "@/lib/originalServiceCopy";
 import { services } from "@/lib/siteContent";
+import { media } from "@/lib/media";
 import ServiceSectionNav, { type SectionNavigationItem } from "./ServiceSectionNav";
 
 type ContentGroup =
@@ -184,7 +185,7 @@ export default function EditorialServicePage({ service, copy }: { service: Servi
             <div className="ca-service__contact-detail"><span>VISIT THE WORKSHOP</span><strong>7 Ashley Park Drive<br />Chelsea Heights, VIC 3196</strong></div>
           </div>
           <div className="ca-service__contact-photo">
-            <img src="https://caautobody.com.au/wp-content/uploads/2021/05/menu-img.jpg" alt="CA Chelsea Autobody workshop" loading="lazy" />
+            <img src={media.workshop.floor} alt="CA Chelsea Autobody workshop" loading="lazy" />
             <div className="ca-service__contact-card">
               <p>READY TO GET STARTED?</p>
               <h3>Speak with our repair team.</h3>

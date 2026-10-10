@@ -2,9 +2,10 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { media } from "@/lib/media";
 
 function AuthFrame({ title, children, detail }: { title: string; detail: string; children: React.ReactNode }) {
-  return <main className="admin-auth"><section className="admin-auth__panel" aria-labelledby="admin-auth-title"><img src="https://caautobody.com.au/wp-content/uploads/2021/05/logo.png" alt="CA Chelsea Autobody" /><div><p>CA Autobody administration</p><h1 id="admin-auth-title">{title}</h1><span>{detail}</span></div>{children}</section></main>;
+  return <main className="admin-auth"><section className="admin-auth__panel" aria-labelledby="admin-auth-title"><img src={media.logo} alt="CA Chelsea Autobody" /><div><p>CA Autobody administration</p><h1 id="admin-auth-title">{title}</h1><span>{detail}</span></div>{children}</section></main>;
 }
 
 export function AdminLogin() {
