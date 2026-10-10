@@ -668,3 +668,7 @@ body.home-v2 .hp-btn--hero-secondary:hover{border-color:#111;color:#fff!importan
 .hp-utility-socials{border:0!important;margin:0!important}.hp-utility-socials>a,.hp-utility-socials>button,.hp-utility-rail .hp-utility-socials>a:last-child,.hp-utility-rail .hp-utility-socials>button:last-child{border:0!important}.hp-utility-socials svg{fill:currentColor!important;stroke:none!important}.hp-utility-socials>button svg{fill:none!important;stroke:currentColor!important;stroke-width:1.9!important;stroke-linecap:round;stroke-linejoin:round}.hp-utility-socials>a:first-child{font-size:0!important}.hp-utility-socials>a:first-child svg{width:19px!important;height:19px!important}.hp-utility-socials>a:nth-child(2) svg{width:20px!important;height:20px!important}
 @media(min-width:1021px){.hp-utility-socials{right:58px!important;margin-right:0!important}}
 @media(max-width:1020px){.hp-utility-socials{bottom:100%!important}}
+.hp-home-priority{display:flex;flex-direction:column}
+.hp-home-priority .hp-why{order:1}
+.hp-home-priority .hp-accident-strip{order:2}
+.hp-home-priority .hp-services{order:3}

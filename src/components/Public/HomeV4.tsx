@@ -54,6 +54,7 @@ export default function HomeV4() {
         </div>
       </section>
 
+      <div className="hp-home-priority">
       <section className="hp-services hp-section hp-section--warm" id="services">
         <div className="hp-shell">
           <div className="hp-services__heading hp-reveal"><div><span className="hp-eyebrow">Our repair services</span><h2>Specialist care for the damage you can see — and the details you can’t.</h2></div><p>Choose a service to explore how CA Autobody can help. Each repair path is handled with the same focus on workmanship, communication and finish.</p></div>
@@ -77,6 +78,7 @@ export default function HomeV4() {
         <div className="hp-accident-strip__lead"><span className="hp-round-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.7 2.7 10 6l-2.1 2.1c1.1 2.3 2.9 4.1 5.2 5.2l2.1-2.1 3.3 3.3-1.7 2.5c-.5.8-1.5 1.2-2.4 1C8.6 17 4 12.4 3 6.6c-.2-.9.2-1.9 1-2.4l2.7-1.5Z" /></svg></span><div><strong>Need help after an accident?</strong><p>Call us now or request a free quote online — we’re here to help.</p></div></div>
         <div className="hp-accident-strip__actions"><Button href="tel:+61397727411" variant="gold" className="hp-btn--call">Call 03 9772 7411</Button><Button href="/contact" variant="outline" arrow>Get a Free Quote</Button></div>
       </section>
+      </div>
 
       <section className="hp-about hp-section">
         <div className="hp-shell hp-about__grid">
