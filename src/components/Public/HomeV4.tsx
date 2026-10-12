@@ -29,7 +29,7 @@ export default function HomeV4() {
             <div className="hp-brand-grid">
               {vehicleBrandLogos.map(([name, image]) => <div className="hp-brand-logo" key={name}><img src={image} alt={name} /><span>{name}</span></div>)}
             </div>
-            <div className="hp-brand-rule"><span /><strong>All makes &amp; models including Tesla &amp; Zeekr</strong><span /></div>
+            <div className="hp-brand-rule"><span /><strong>All makes &amp; models</strong><span /></div>
           </div>
         </div>
       </section>
@@ -45,7 +45,7 @@ export default function HomeV4() {
             <div className="hp-trust__copy"><strong className="hp-trust__number">1000+</strong><b>Vehicles repaired</b><p>Thousands of Melbourne drivers trust us every year.</p></div>
           </article>
           <article className="hp-trust__item hp-trust__item--ev">
-            <div className="hp-trust__copy"><strong>All makes &amp; models including Tesla &amp; Zeekr</strong><p>Specialist expertise in electric and luxury vehicles.</p><div className="hp-ev-logos" aria-label="Tesla and Zeekr"><span className="hp-tesla-mark" aria-label="Tesla"><svg viewBox="0 0 48 32" aria-hidden="true"><path d="M24 4c6.9 0 12.8.9 17.6 2.7l-1.8 3.2c-3.3-1.2-7.2-2-11.6-2.3l-1.2 2.1v16.2h-6V9.7l-1.2-2.1c-4.4.3-8.3 1.1-11.6 2.3L6.4 6.7C11.2 4.9 17.1 4 24 4Z" /></svg><span>TESLA</span></span><span className="hp-zeekr-mark" aria-label="Zeekr">ZEEKR</span></div></div>
+            <div className="hp-trust__copy"><strong>All makes &amp; models</strong><p>Specialist expertise in electric and luxury vehicles.</p><div className="hp-approved-marks" aria-label="Tesla and Zeekr repair expertise"><span><img src="/images/tesla_logo_PNG16.webp" alt="Tesla" /><b>Tesla</b></span><span><img src="/images/zeekr-1663156129.567872.webp" alt="Zeekr" /><b>Zeekr</b></span></div></div>
           </article>
           <article className="hp-trust__item">
             <span className="hp-trust__brand hp-trust__brand--location" aria-hidden="true"><svg viewBox="0 0 48 56"><path d="M24 52S8 37.7 8 22a16 16 0 1 1 32 0c0 15.7-16 30-16 30Z" /><circle cx="24" cy="22" r="5" /></svg></span>
@@ -65,12 +65,6 @@ export default function HomeV4() {
       <section className="hp-why hp-section hp-section--black dark-context-surface dark-context-surface--why" id="why-choose">
         <div className="hp-shell">
           <div className="hp-section-title hp-section-title--center hp-reveal"><div className="hp-title-rule"><span /><h2>Why choose CA Autobody?</h2><span /></div><p className="hp-values">Experience <i>/</i> Quality <i>/</i> Trust <i>/</i> Community</p><p className="hp-why__intro">With over 30 years of experience, VACC approval and a commitment to quality in every repair, we’re the smash repairer Melbourne drivers trust. From expert workmanship to clear customer care, we’re here to get you back on the road with confidence.</p></div>
-          <div className="hp-reasons hp-reveal">
-            <article><span>01</span><h3>30+ years of experience</h3><p>Repair knowledge built through decades of collision, body and paint work.</p></article>
-            <article><span>02</span><h3>VACC approved</h3><p>Professional standards and a repair process built around workmanship and safety.</p></article>
-            <article><span>03</span><h3>Advanced repair technology</h3><p>Modern tools, refinishing methods and EV-aware repair practices.</p></article>
-            <article><span>04</span><h3>Customer-first service</h3><p>Clear communication from assessment and insurance support through handover.</p></article>
-          </div>
         </div>
       </section>
 
@@ -78,7 +72,6 @@ export default function HomeV4() {
         <div className="hp-accident-strip__lead"><span className="hp-round-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.7 2.7 10 6l-2.1 2.1c1.1 2.3 2.9 4.1 5.2 5.2l2.1-2.1 3.3 3.3-1.7 2.5c-.5.8-1.5 1.2-2.4 1C8.6 17 4 12.4 3 6.6c-.2-.9.2-1.9 1-2.4l2.7-1.5Z" /></svg></span><div><strong>Need help after an accident?</strong><p>Call us now or request a free quote online — we’re here to help.</p></div></div>
         <div className="hp-accident-strip__actions"><Button href="tel:+61397727411" variant="gold" className="hp-btn--call">Call 03 9772 7411</Button><Button href="/contact" variant="outline" arrow>Get a Free Quote</Button></div>
       </section>
-      </div>
 
       <section className="hp-about hp-section">
         <div className="hp-shell hp-about__grid">
@@ -116,6 +109,7 @@ export default function HomeV4() {
           <div className="hp-location__map hp-reveal"><iframe title="Map showing CA Autobody in Chelsea Heights" loading="lazy" src="https://www.google.com/maps?q=7%20Ashley%20Park%20Drive%20Chelsea%20Heights%20VIC%203196&output=embed" /></div>
         </div>
       </section>
+      </div>
 
     </main>
   );

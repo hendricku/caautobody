@@ -11,6 +11,7 @@ export default function RevealObserver() {
 
     let observer: IntersectionObserver | null = null;
     let frame = 0;
+    let fallbackTimer = 0;
 
     const reveal = () => {
       const elements = [...document.querySelectorAll<HTMLElement>(".hp-reveal")];
@@ -37,6 +38,17 @@ export default function RevealObserver() {
         if (element.classList.contains("is-visible")) return;
         observer?.observe(element);
       });
+
+      // Animation must never be allowed to hide real page content. Some mobile
+      // browsers can defer IntersectionObserver callbacks during a long-page
+      // capture or a quick restored scroll position, so reveal anything left
+      // pending after the initial paint.
+      fallbackTimer = window.setTimeout(() => {
+        elements.forEach((element) => {
+          element.classList.add("is-visible");
+          observer?.unobserve(element);
+        });
+      }, 900);
     };
 
     // Next.js client navigation can replace the page while the shared chrome stays mounted.
@@ -45,6 +57,7 @@ export default function RevealObserver() {
 
     return () => {
       window.cancelAnimationFrame(frame);
+      window.clearTimeout(fallbackTimer);
       observer?.disconnect();
     };
   }, [pathname]);

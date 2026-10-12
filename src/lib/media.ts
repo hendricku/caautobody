@@ -87,7 +87,6 @@ export const vehicleBrandLogos = [
   ["Holden", "/images/lion-logo01.webp"],
   ["Skoda", "/images/skoda-logo01.webp"],
   ["Mercedes-Benz", "/images/mercedes-benz-logo01.webp"],
-  ["Tesla", "/images/tesla-logo.webp"],
   ["Subaru", "/images/brand-subaru.webp"],
   ["Honda", "/images/honda-logo01.webp"],
   ["Ford", "/images/ford-logos.webp"],

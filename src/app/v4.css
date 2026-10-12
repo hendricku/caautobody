@@ -64,7 +64,7 @@ body.home-v2 img{max-width:100%;display:block}
 .hp-trust{position:relative;z-index:4;margin-top:22px;display:grid;grid-template-columns:1.05fr 1fr 1.16fr 1fr;background:#fff;border-top:1px solid #ddd4c4;border-bottom:1px solid #ddd4c4}.hp-trust__item{min-height:150px;padding:30px 28px;display:flex;align-items:center;gap:18px;border-right:1px solid #ddd4c4}.hp-trust__item:last-child{border-right:0}.hp-trust__item strong,.hp-trust__item b{display:block;text-transform:uppercase;font-size:15px;line-height:1.35}.hp-trust__item p{font-size:11px;line-height:1.5;margin:7px 0 0;color:#46413b}.hp-trust__item small{font-size:10px;letter-spacing:.24em;display:block;margin-top:8px}.hp-google-g{font-size:64px;font-weight:800;letter-spacing:-.08em;color:#4285f4;text-shadow:16px 0 0 #34a853,8px 0 0 #fbbc05}.hp-stars{display:block;color:#e3a31a;letter-spacing:2px;margin-top:3px}.hp-trust__number{font-size:30px!important}.hp-trust__icon{font-size:50px;color:var(--hp-gold);line-height:1}.hp-trust__pin{width:34px;height:44px;border:3px solid var(--hp-gold);border-radius:50% 50% 50% 0;transform:rotate(-45deg);position:relative}.hp-trust__pin::after{content:"";position:absolute;width:8px;height:8px;border:2px solid var(--hp-gold);border-radius:50%;left:10px;top:10px}
 
 /* why */
-.hp-why{padding-top:72px;padding-bottom:84px}.hp-section-title--center{text-align:center}.hp-title-rule{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;max-width:850px;margin:auto}.hp-title-rule span{height:1px;background:var(--hp-gold)}.hp-title-rule h2{text-transform:uppercase;color:var(--hp-gold-2);font-size:24px;letter-spacing:.04em;margin:0}.hp-values{text-transform:uppercase;letter-spacing:.22em;font-size:12px;margin:18px 0;color:#fff}.hp-values i{font-style:normal;color:var(--hp-gold);padding:0 12px}.hp-why__intro{max-width:900px;margin:0 auto;color:#d8d8d8;line-height:1.7;font-size:14px}.hp-reasons{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid #2f2f2f;margin-top:48px}.hp-reasons article{padding:32px 30px 6px;border-right:1px solid #2f2f2f}.hp-reasons article:last-child{border-right:0}.hp-reasons span{color:var(--hp-gold);font-size:11px}.hp-reasons h3{font-size:17px;margin:12px 0 10px}.hp-reasons p{color:#aaa;font-size:12px;line-height:1.6}
+.hp-why{padding-top:72px;padding-bottom:76px}.hp-section-title--center{text-align:center}.hp-title-rule{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;max-width:850px;margin:auto}.hp-title-rule span{height:1px;background:var(--hp-gold)}.hp-title-rule h2{text-transform:uppercase;color:var(--hp-gold-2);font-size:24px;letter-spacing:.04em;margin:0}.hp-values{text-transform:uppercase;letter-spacing:.22em;font-size:12px;margin:18px 0;color:#fff}.hp-values i{font-style:normal;color:var(--hp-gold);padding:0 12px}.hp-why__intro{max-width:900px;margin:0 auto;color:#d8d8d8;line-height:1.7;font-size:14px}
 
 /* accident strip */
 .hp-accident-strip{margin-top:22px;margin-bottom:24px;min-height:88px;border:1px solid #d6c9b3;display:flex;align-items:center;justify-content:space-between;padding:12px 18px 12px 24px;background:#fff;gap:32px}.hp-accident-strip__lead,.hp-accident-strip__actions{display:flex;align-items:center;gap:22px}.hp-round-icon{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#050505;color:#fff}.hp-round-icon svg{width:23px;height:23px;fill:currentColor}.hp-accident-strip strong{font-size:16px}.hp-accident-strip p{font-size:12px;margin:4px 0 0}.hp-accident-strip__actions .hp-btn{min-width:220px}
@@ -132,9 +132,17 @@ img.is-missing{opacity:0}.hp-about__image:has(img.is-missing),.hp-approved__medi
   .hp-gallery__head{grid-template-columns:1fr;gap:15px}.hp-gallery__head h2{font-size:38px}.hp-gallery__main{min-height:420px}.hp-gallery__thumbs{grid-template-columns:1fr 1fr 1fr;gap:8px}.hp-gallery__thumbs button{display:block;border-bottom:0}.hp-gallery__thumbs img{width:100%;height:82px}.hp-gallery__thumbs span{display:block;margin-top:6px;font-size:10px}.hp-insurer-grid{grid-template-columns:1fr 1fr}.hp-location__map,.hp-location__map iframe{min-height:420px}.hp-final-cta{padding:78px 0}.hp-final-cta h2{font-size:42px}.hp-final-cta__actions{flex-direction:column;gap:15px}.hp-final-cta__actions span{width:60px;height:1px}.hp-footer__grid{grid-template-columns:1fr 1fr;gap:45px 30px}.hp-footer__brand{grid-column:1/-1}.hp-footer__grid>div:last-child{grid-column:auto}.hp-footer__bottom{flex-direction:column;gap:8px}.hp-utility-rail{right:10px;bottom:10px}
 }
 
+/* Nine repair paths still fit inside the editorial service selector without making the rail scroll. */
+.hp-service-nav button{min-height:72px}
+.hp-service-panel__actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:18px}.hp-service-panel__actions a{margin:0!important}.hp-service-panel__detail{display:inline-flex;border-bottom:1px solid #bbb;padding-bottom:7px;font-size:12px;font-weight:800}.hp-service-panel__book{display:flex!important;align-items:center;justify-content:space-between;gap:28px;width:fit-content;max-width:100%;min-width:260px;min-height:52px;padding:0 20px!important;border:1px solid var(--hp-gold)!important;background:var(--hp-gold);color:#fff;font-size:12px!important;font-weight:800;transition:background .2s,border-color .2s,transform .2s}
+.hp-service-panel__book:hover{background:#a97828;border-color:#a97828;transform:translateY(-2px)}
+@media(max-width:720px){.hp-service-panel__book{min-height:46px;gap:20px;margin:0!important;padding-inline:16px!important;font-size:11px!important}}
+@media(max-width:540px){.hp-service-panel__actions{align-items:stretch;gap:14px}.hp-service-panel__book{width:100%;min-width:0;margin:0!important}}
+
 @media(max-width:420px){
   .hp-mega__service-grid{grid-template-columns:1fr}.hp-service-nav{grid-template-columns:1fr}.hp-service-nav button{min-height:58px}.hp-service-experience{min-height:890px}.hp-brand-grid{grid-template-columns:repeat(3,1fr)}.hp-brands{margin-top:224px}.hp-hero{min-height:1160px}.hp-gallery__main{min-height:360px}.hp-gallery__thumbs span{display:none}.hp-footer__grid{grid-template-columns:1fr}.hp-footer__grid>div:last-child{grid-column:auto}
 }
+@media(max-width:420px){.hp-service-nav{grid-template-columns:repeat(2,minmax(0,1fr))}.hp-service-nav button{min-height:68px}.hp-service-panel__book{min-width:0;width:100%}}
 
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.hp-reveal,.hp-service-panel,.hp-gallery__main figure,.hp-mega,.hp-btn,.hp-nav,.hp-utility-rail *{transition:none!important}.hp-reveal{opacity:1;transform:none}}
 
@@ -262,10 +270,6 @@ body.home-v2 .hp-btn--arrow:hover>span{transform:translateX(6px)}
 .hp-trust__brand--google{width:54px;flex-basis:54px}
 .hp-trust__brand--car svg,.hp-trust__brand--location svg{fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
 .hp-trust__brand--location{width:46px;flex-basis:46px}
-.hp-ev-logos{display:flex;align-items:center;gap:20px;margin-top:13px;color:#111}
-.hp-tesla-mark{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:800;letter-spacing:.22em}
-.hp-tesla-mark svg{width:28px;height:21px;fill:#111}
-.hp-zeekr-mark{font-size:12px;font-weight:800;letter-spacing:.24em;line-height:1}
 
 /* CTA and conversion polish */
 .hp-accident-strip{margin-top:28px;margin-bottom:28px;min-height:98px;padding:14px 18px 14px 24px;box-shadow:0 10px 28px rgba(30,25,18,.025)}
@@ -324,7 +328,7 @@ body.home-v2 .hp-location__actions .hp-btn--black:hover{color:#111!important}
 
 @media(max-width:420px){
   .hp-hero{min-height:980px}.hp-hero h1{font-size:31px}.hp-hero__car{height:270px;top:275px}.hp-hero__car--left{left:-95px}.hp-hero__car--right{right:-102px}.hp-brands{margin-top:220px}.hp-brand-grid{grid-template-columns:repeat(3,1fr)}
-  .hp-ev-logos{gap:14px;flex-wrap:wrap}.hp-final-cta h2{font-size:36px}
+  .hp-final-cta h2{font-size:36px}
 }
 
 /* =========================================================
@@ -648,6 +652,21 @@ body.home-v2 .hp-btn--hero-secondary:hover{border-color:#111;color:#fff!importan
   .hp-header.is-compact{height:82px}
   .hp-nav{top:82px}
 }
+
+/* Approved vehicle makes are a centred logo collection, so new manufacturer
+   marks can be added without producing an awkward empty grid row. */
+.hp-brand-grid{display:flex;max-width:920px;flex-wrap:wrap;justify-content:center;gap:10px 24px}
+.hp-brand-logo{display:grid;flex:0 0 calc((100% - 120px) / 6);min-width:0}
+.hp-trust__item--ev{align-items:stretch}
+.hp-trust__item--ev .hp-trust__copy{width:100%;display:flex;flex-direction:column}
+.hp-approved-marks{display:flex;align-items:end;gap:24px;margin-top:auto;padding-top:13px;border-top:1px solid #e2ddd2}
+.hp-approved-marks>span{display:grid;justify-items:start;gap:6px;min-width:48px}
+.hp-approved-marks img{display:block;width:auto;height:18px;max-width:66px;object-fit:contain;filter:grayscale(1) contrast(1.22)}
+.hp-approved-marks>span:first-child img{height:22px;max-width:40px}
+.hp-approved-marks b{color:#24211c;font-size:8px;font-weight:800;letter-spacing:.14em;line-height:1;text-transform:uppercase}
+@media(max-width:1020px){.hp-brand-logo{flex-basis:calc((100% - 75px) / 6)}}
+@media(max-width:720px){.hp-brand-grid{gap:7px 10px}.hp-brand-logo{flex-basis:calc((100% - 30px) / 4)}.hp-approved-marks{gap:20px;padding-top:11px}.hp-approved-marks img{height:16px}.hp-approved-marks>span:first-child img{height:19px;max-width:34px}}
+@media(max-width:420px){.hp-brand-logo{flex-basis:calc((100% - 20px) / 3)}}
 @media(max-width:720px){
   .hp-header,.hp-header.is-compact{height:76px}
   .hp-nav{top:76px}
@@ -670,5 +689,24 @@ body.home-v2 .hp-btn--hero-secondary:hover{border-color:#111;color:#fff!importan
 @media(max-width:1020px){.hp-utility-socials{bottom:100%!important}}
 .hp-home-priority{display:flex;flex-direction:column}
 .hp-home-priority .hp-why{order:1}
-.hp-home-priority .hp-accident-strip{order:2}
+.hp-home-priority .hp-accident-strip{position:sticky;top:94px;z-index:30;align-self:center;order:2;scroll-margin-top:112px;box-shadow:0 14px 30px rgba(30,25,18,.1)}
 .hp-home-priority .hp-services{order:3}
+.hp-home-priority .hp-about{order:4}
+.hp-home-priority .hp-approved{order:5}
+.hp-home-priority .hp-studio{order:6}
+.hp-home-priority .hp-insurance{order:7}
+.hp-home-priority .hp-location{order:8}
+@media(max-width:1020px){
+  .hp-home-priority .hp-accident-strip{top:90px;flex-direction:column;align-items:stretch;gap:14px;padding:16px 18px}
+  .hp-home-priority .hp-accident-strip__actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .hp-home-priority .hp-accident-strip__actions .hp-btn{width:100%;min-width:0;justify-content:center}
+}
+@media(max-width:720px){
+  .hp-home-priority .hp-accident-strip{top:84px;gap:10px;margin-top:14px;margin-bottom:14px;padding:11px 12px}
+  .hp-home-priority .hp-accident-strip__lead{gap:12px}
+  .hp-home-priority .hp-round-icon{width:40px;height:40px;flex-basis:40px}
+  .hp-home-priority .hp-accident-strip__lead strong{font-size:13px;line-height:1.3}
+  .hp-home-priority .hp-accident-strip__lead p{position:absolute!important;width:1px!important;height:1px!important;margin:-1px!important;padding:0!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+  .hp-home-priority .hp-accident-strip__actions{gap:8px}
+  .hp-home-priority .hp-accident-strip__actions .hp-btn{min-height:46px;padding-inline:8px;font-size:11px;line-height:1.2}
+}

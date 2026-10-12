@@ -97,10 +97,12 @@ export default function SiteHeader() {
                 <p>Get to know the team, our repair approach and why Melbourne drivers continue to choose CA Autobody.</p>
                 <Link href="/about">About CA Autobody <span>→</span></Link>
               </div>
+              <Link className="hp-mobile-submenu-start" href="/about"><span>About CA Autobody</span><span aria-hidden="true">→</span></Link>
               <div className="hp-mega__links">
                 <Link href="/about#why"><strong>Why Choose CA</strong><span>Experience, quality and customer care.</span></Link>
                 <Link href="/about#insurance"><strong>Insurance</strong><span>Support through the repair and claim process.</span></Link>
                 <Link href="/gallery"><strong>Gallery</strong><span>See our workshop, repairs and facility.</span></Link>
+                <Link href="/areas-we-serve"><strong>Areas We Serve</strong><span>Local repair support across Melbourne’s bayside and nearby suburbs.</span></Link>
                 </div>
               </div>
             </div>
@@ -116,6 +118,7 @@ export default function SiteHeader() {
                 <p>One experienced repair team for body, paint, EV and accident support.</p>
                 <Link href="/services">View all services <span>→</span></Link>
               </div>
+              <Link className="hp-mobile-submenu-start" href="/services"><span>View all services</span><span aria-hidden="true">→</span></Link>
               <div className="hp-mega__service-grid">
                 <Link href="/services/tesla-approved-repair-centre"><span>01</span><strong>Tesla Repair</strong><small>Approved EV repair expertise</small></Link>
                 <Link href="/services/services-zeekr-approved-repairer-melbourne"><span>02</span><strong>Zeekr Repair</strong><small>Modern EV body repair</small></Link>
@@ -133,6 +136,12 @@ export default function SiteHeader() {
 
           <div {...groupProps("brands")}>
             <button className="hp-nav__link hp-nav__trigger" type="button" aria-expanded={openGroup === "brands"} onClick={() => toggleGroup("brands")}>Brands {chevron}</button>
+            <div className="hp-mobile-brand-links" aria-label="Brand repair services">
+              <Link href="/services/tesla-approved-repair-centre">Tesla Repair</Link>
+              <Link href="/services/services-zeekr-approved-repairer-melbourne">Zeekr Repair</Link>
+              <Link href="/services/byd-approved-repairer-melbourne">BYD Repair</Link>
+              <Link href="/services/lexus-approved-body-shop-melbourne">Lexus Repair</Link>
+            </div>
             <div className="hp-mega hp-mega--brands">
               <div className="hp-mega__tray">
                 <div className="hp-brand-features">

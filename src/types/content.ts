@@ -1,4 +1,5 @@
 export type ContentStatus = "published" | "draft";
+export type BlogCategory = "CA Knows" | "Client Stories";
 
 export interface ServiceContent {
   slug: string;
@@ -38,7 +39,7 @@ export interface BlogContent {
   slug: string;
   title: string;
   date: string;
-  category: "CA Knows";
+  category: BlogCategory;
   excerpt: string;
   image: string;
   status: ContentStatus;
