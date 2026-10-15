@@ -1,0 +1,72 @@
+[
+  {
+    "id": "byd-question-1",
+    "category": "BYD",
+    "question": "Are you officially approved by BYD?",
+    "answer": "Ask for proof that the approval is current and applies to the repair facility.",
+    "visible": false
+  },
+  {
+    "id": "byd-question-2",
+    "category": "BYD",
+    "question": "Do you use genuine OEM BYD parts?",
+    "answer": "Confirm the parts plan before authorising work and ask how any exceptions will be explained.",
+    "visible": false
+  },
+  {
+    "id": "byd-question-3",
+    "category": "BYD",
+    "question": "How will battery safety be managed?",
+    "answer": "The repairer should identify high voltage risks and establish safe procedures before work begins.",
+    "visible": false
+  },
+  {
+    "id": "byd-question-4",
+    "category": "BYD",
+    "question": "What happens to affected safety sensors?",
+    "answer": "Ask how diagnostics and calibration requirements will be assessed and recorded.",
+    "visible": false
+  },
+  {
+    "id": "byd-question-5",
+    "category": "BYD",
+    "question": "Can you manage the claim and mobility needs?",
+    "answer": "Confirm insurer communication, towing and loan car arrangements early.",
+    "visible": false
+  },
+  {
+    "id": "lexus-question-1",
+    "category": "Lexus",
+    "question": "Are you officially approved by Lexus?",
+    "answer": "Ask for proof that the approval is current and applies to the repair facility.",
+    "visible": false
+  },
+  {
+    "id": "lexus-question-2",
+    "category": "Lexus",
+    "question": "Will genuine OEM Lexus parts be used?",
+    "answer": "Confirm the parts approach before work is authorised and ask how any variation will be explained.",
+    "visible": false
+  },
+  {
+    "id": "lexus-question-3",
+    "category": "Lexus",
+    "question": "How will safety systems be checked?",
+    "answer": "Ask what diagnostics and calibration steps apply to the affected Lexus model.",
+    "visible": false
+  },
+  {
+    "id": "lexus-question-4",
+    "category": "Lexus",
+    "question": "How will colour and finish quality be controlled?",
+    "answer": "The repairer should explain preparation, colour matching, refinishing and final inspection.",
+    "visible": false
+  },
+  {
+    "id": "lexus-question-5",
+    "category": "Lexus",
+    "question": "What warranty and documents will I receive?",
+    "answer": "Request the written warranty and retain repair and calibration documentation.",
+    "visible": false
+  }
+]

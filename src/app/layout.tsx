@@ -11,6 +11,8 @@ import "./service-refresh.css";
 import "./page-hero-editorial.css";
 import AppChrome from "@/components/Layout/AppChrome";
 import GoogleTags from "@/components/Common/GoogleTags";
+import CmsLiveRefresh from "@/components/CmsLiveRefresh";
+import { getPublicSiteSettings } from "@/lib/cms/public-content";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://caautobody.com.au"),
@@ -24,7 +26,8 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const siteSettings = await getPublicSiteSettings();
   return (
     <html lang="en">
       <head>
@@ -34,7 +37,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       </head>
       <body className="home-v2">
         <GoogleTags />
-        <AppChrome>{children}</AppChrome>
+        <CmsLiveRefresh />
+        <AppChrome siteSettings={siteSettings}>{children}</AppChrome>
       </body>
     </html>
   );

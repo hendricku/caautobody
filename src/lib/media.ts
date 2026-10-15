@@ -5,7 +5,7 @@
  * static pages from silently depending on the legacy WordPress media host.
  */
 export const media = {
-  logo: "/images/logo.webp",
+  logo: "/images/Gold.webp",
   favicon: "/images/Fevicon-Icon.webp",
   hero: {
     home: "/images/homepage-Replacement-Vehicles.webp",
@@ -80,6 +80,10 @@ export function localBlogImageFor(slug: string) {
 }
 
 export const vehicleBrandLogos = [
+  ["Tesla", "/images/tesla_logo_PNG16.webp"],
+  ["Zeekr", "/images/zeekr-1663156129.567872.webp"],
+  ["BYD", "/images/BYD.webp"],
+  ["Lexus", "/images/lexus_PNG57.webp"],
   ["Porsche", "/images/porsche-logo01.webp"],
   ["BMW", "/images/bmw-logo01.webp"],
   ["Volkswagen", "/images/walks-logo01.webp"],

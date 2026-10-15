@@ -12,12 +12,20 @@ export function AdminLogin() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [busy, setBusy] = useState(false);
-  function submit(event: FormEvent) {
-    event.preventDefault();
-    setBusy(true);
-    window.setTimeout(() => router.push(`/caautobodyadmin/verify?email=${encodeURIComponent(email.trim().toLowerCase())}`), 450);
+  const [error, setError] = useState("");
+
+  async function submit(event: FormEvent) {
+    event.preventDefault(); setBusy(true); setError("");
+    try {
+      const response = await fetch("/api/admin/auth/start", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Unable to send code");
+      router.push(`/caautobodyadmin/verify?email=${encodeURIComponent(email.trim().toLowerCase())}`);
+    } catch (reason) { setError(reason instanceof Error ? reason.message : "Sign in unavailable"); }
+    finally { setBusy(false); }
   }
-  return <AuthFrame title="Admin sign in" detail="Demo-only passwordless entry. The email and code are not sent or verified yet."><form className="admin-auth__form" onSubmit={submit}><label>Email address<input type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} required disabled={busy} /></label><p className="admin-auth__notice">Mockup mode: continue to preview the one-time-code screen.</p><button className="admin-primary" type="submit" disabled={busy}>{busy ? "Preparing code…" : "Send one-time code"}</button></form></AuthFrame>;
+
+  return <AuthFrame title="Admin sign in" detail="Authorized staff can request a one-time email code."><form className="admin-auth__form" onSubmit={(event) => void submit(event)}><label>Email address<input type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} required disabled={busy} /></label>{error ? <p role="alert" className="admin-auth__notice">{error}</p> : null}<button className="admin-primary" type="submit" disabled={busy}>{busy ? "Sending…" : "Send one-time code"}</button></form></AuthFrame>;
 }
 
 export function AdminVerify() {
@@ -26,10 +34,18 @@ export function AdminVerify() {
   const email = useMemo(() => query.get("email") || "", [query]);
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
-  function submit(event: FormEvent) {
-    event.preventDefault();
-    setBusy(true);
-    window.setTimeout(() => router.replace("/caautobodyadmin/dashboard"), 500);
+  const [error, setError] = useState("");
+
+  async function submit(event: FormEvent) {
+    event.preventDefault(); setBusy(true); setError("");
+    try {
+      const response = await fetch("/api/admin/auth/verify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, code }) });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Code verification failed");
+      router.replace("/caautobodyadmin/dashboard"); router.refresh();
+    } catch (reason) { setError(reason instanceof Error ? reason.message : "Code verification unavailable"); }
+    finally { setBusy(false); }
   }
-  return <AuthFrame title="Enter your code" detail={email ? `A demo code would be sent to ${email}.` : "Return to sign in to enter an email address."}><form className="admin-auth__form" onSubmit={submit}><label>One-time code<input inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" minLength={6} maxLength={6} value={code} onChange={(event) => setCode(event.target.value.replace(/\D/g, "").slice(0, 6))} required disabled={busy || !email} /></label><p className="admin-auth__notice">Mockup mode: any six digits continue to the dashboard. No email or session is created.</p><button className="admin-primary" type="submit" disabled={busy || !email || code.length !== 6}>{busy ? "Verifying…" : "Verify and continue"}</button><button className="admin-auth__link" type="button" onClick={() => router.push("/caautobodyadmin/login")}>Use a different email</button></form></AuthFrame>;
+
+  return <AuthFrame title="Enter your code" detail={email ? `Check the inbox for the six-digit code sent to ${email}.` : "Return to sign in and enter an authorized email."}><form className="admin-auth__form" onSubmit={(event) => void submit(event)}><label>Six-digit one-time code<input inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" minLength={6} maxLength={6} value={code} onChange={(event) => setCode(event.target.value.replace(/\D/g, "").slice(0, 6))} required disabled={busy || !email} /></label>{error ? <p role="alert" className="admin-auth__notice">{error}</p> : null}<button className="admin-primary" type="submit" disabled={busy || !email || code.length !== 6}>{busy ? "Verifying…" : "Verify and continue"}</button><button className="admin-auth__link" type="button" onClick={() => router.push("/caautobodyadmin/login")}>Use a different email</button></form></AuthFrame>;
 }

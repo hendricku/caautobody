@@ -1,4 +1,6 @@
+import type { CSSProperties } from "react";
 import Button from "@/components/UI/Button";
+import Image from "next/image";
 import type { BrandRepairContent } from "@/lib/brandRepairContent";
 import BrandRepairMedia from "@/components/Public/BrandRepairMedia";
 import InsurerLogoGrid from "@/components/Public/InsurerLogoGrid";
@@ -8,10 +10,10 @@ import BrandAssessmentForm from "@/components/Public/BrandAssessmentForm";
 export default function BrandRepairPage({ content }: { content: BrandRepairContent }) {
   const copy = content.sections;
 
-  return <main className="brand-repair-page">
+  return <main className="brand-repair-page" data-brand={content.brand.toLowerCase()}>
     <section className="brand-hero"><img src={content.heroImage} alt={content.heroAlt} /><div className="brand-hero__shade" aria-hidden="true" /><div className="brand-hero__layout shell"><div className="brand-hero__copy"><p className="eyebrow light">{content.eyebrow}</p><h1>{content.title}</h1><p className="brand-hero__intro">{content.intro}</p><ul>{content.approvalPoints.map((point) => <li key={point}>{point}</li>)}</ul><a className="brand-hero__call" href="tel:+61397727411">Call 03 9772 7411</a></div><BrandAssessmentForm brand={content.brand} cta={content.assessmentCta} assessmentNote={copy.assessmentNote} /></div></section>
 
-    <section className="brand-approval section-pad"><div className="shell"><div className="brand-approval__intro">{content.logo ? <img src={content.logo} alt={`${content.brand} approved repairer`} /> : <span className="brand-approval__brand-mark">{content.brand}</span>}<div><p className="eyebrow">{copy.approvalEyebrow}</p><h2>{content.approvalTitle}</h2><p>{content.approvalCopy}</p></div></div><div className="brand-pillars">{content.pillars.map((item) => <article key={item.title}><span>{item.code}</span><h3>{item.title}</h3><p>{item.copy}</p></article>)}</div></div></section>
+    <section className="brand-approval section-pad"><div className="shell"><div className="brand-approval__intro">{content.logo ? <div className="brand-approval__logo"><Image src={content.logo} alt={`${content.brand} logo`} width={640} height={288} sizes="(max-width: 720px) 380px, (max-width: 1020px) 480px, 640px" /></div> : <span className="brand-approval__brand-mark">{content.brand}</span>}<div><p className="eyebrow">{copy.approvalEyebrow}</p><h2>{content.approvalTitle}</h2><p>{content.approvalCopy}</p></div></div><div className="brand-pillars">{content.pillars.map((item) => <article key={item.title}><span>{item.code}</span><h3>{item.title}</h3><p>{item.copy}</p></article>)}</div></div></section>
 
     <section className="brand-principles shell section-pad"><div className="brand-section-heading"><p className="eyebrow">{copy.principlesEyebrow}</p><h2>{copy.principlesTitle}</h2></div><ol>{content.principles.map((item) => <li key={item.title}><h3>{item.title}</h3><p>{item.copy}</p></li>)}</ol></section>
 
@@ -25,6 +27,6 @@ export default function BrandRepairPage({ content }: { content: BrandRepairConte
 
     <section className="brand-review shell section-pad"><p className="eyebrow">{copy.reviewEyebrow}</p><h2>{copy.reviewTitle}</h2><p className="brand-review__rating">{content.review.rating}</p><blockquote>{"\u201c"}{content.review.quote}{"\u201d"}<cite>{content.review.author}</cite></blockquote></section>
 
-    <section className="brand-final"><div className="shell"><p className="eyebrow light">{copy.finalEyebrow}</p><h2>{copy.finalTitle}</h2><p>{copy.finalCopy}</p><div><Button href="/contact" variant="gold" arrow>{content.assessmentCta}</Button><a href="tel:+61397727411">Call 03 9772 7411</a></div></div></section>
+    <section className="brand-final dark-context-surface dark-context-surface--brand" style={{ "--dark-context-image": `url("${content.heroImage}")` } as CSSProperties}><div className="shell"><p className="eyebrow light">{copy.finalEyebrow}</p><h2>{copy.finalTitle}</h2><p>{copy.finalCopy}</p><div><Button href="/contact" variant="gold" arrow>{content.assessmentCta}</Button><a href="tel:+61397727411">Call 03 9772 7411</a></div></div></section>
   </main>;
 }

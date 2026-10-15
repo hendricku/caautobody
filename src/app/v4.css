@@ -50,7 +50,7 @@ body.home-v2 img{max-width:100%;display:block}
 .hp-menu-toggle[aria-expanded="true"] span:nth-child(1){transform:translateY(6px) rotate(45deg)}.hp-menu-toggle[aria-expanded="true"] span:nth-child(2){opacity:0}.hp-menu-toggle[aria-expanded="true"] span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
 .hp-mega{position:absolute;left:0;right:0;top:100%;background:#0a0a0a;color:#fff;min-height:320px;padding:42px max(48px,calc((100vw - 1400px)/2 + 48px));display:grid;grid-template-columns:minmax(260px,420px) 1fr;gap:72px;border-top:1px solid #282828;box-shadow:0 35px 70px rgba(0,0,0,.32);opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .2s,transform .2s,visibility .2s}
 .hp-nav__group:hover>.hp-mega,.hp-nav__group:focus-within>.hp-mega,.hp-nav__group.is-open>.hp-mega{opacity:1;visibility:visible;transform:none}
-.hp-mega__intro{border-right:1px solid #292929;padding-right:46px}.hp-mega__intro h2{font-size:32px;line-height:1.12;margin:12px 0 14px;letter-spacing:-.03em}.hp-mega__intro p{color:#aaa;font-size:14px;line-height:1.7}.hp-mega__intro>a{display:inline-flex;gap:25px;border-bottom:1px solid #555;padding-bottom:8px;margin-top:14px;font-size:12px;font-weight:800}
+.hp-mega__intro{border-right:1px solid #292929;padding-right:46px}.hp-mega__intro h2{font-size:32px;line-height:1.12;margin:12px 0 14px;letter-spacing:-.03em}.hp-mega__intro p{color:#aaa;font-size:14px;line-height:1.7}.hp-mega__intro>a{display:inline-flex;align-items:center;gap:25px;border-bottom:1px solid #555;padding-bottom:8px;margin-top:14px;font-size:12px;font-weight:800;line-height:1}
 .hp-mega__links{display:grid;grid-template-columns:repeat(3,1fr);align-content:center}.hp-mega__links a{padding:28px;border-left:1px solid #292929;display:flex;flex-direction:column;gap:9px}.hp-mega__links strong{font-size:18px}.hp-mega__links span{font-size:12px;color:#999;line-height:1.55}.hp-mega__links a:hover strong{color:var(--hp-gold-2)}
 .hp-mega__service-grid{display:grid;grid-template-columns:repeat(4,1fr);align-content:center}.hp-mega__service-grid a{padding:20px 22px;border-left:1px solid #292929;border-bottom:1px solid #292929;display:grid;gap:6px}.hp-mega__service-grid span{color:var(--hp-gold);font-size:10px}.hp-mega__service-grid strong{font-size:15px}.hp-mega__service-grid small{color:#8d8d8d;font-size:11px}.hp-mega__service-grid a:hover{background:#111}.hp-mega__service-grid a:hover strong{color:var(--hp-gold-2)}
 .hp-mega--brands{grid-template-columns:1fr 1fr .8fr;gap:0}.hp-brand-feature,.hp-brand-list{padding:28px 38px;border-right:1px solid #292929}.hp-brand-feature{display:flex;flex-direction:column;justify-content:center;min-height:220px}.hp-brand-feature strong{font-size:46px;letter-spacing:.08em;margin:10px 0}.hp-brand-feature small,.hp-brand-list p{color:#aaa;line-height:1.65}.hp-brand-feature b{font-size:11px;margin-top:18px}.hp-brand-list{display:flex;flex-direction:column;justify-content:center}.hp-brand-list span{color:var(--hp-gold-2);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.14em}
@@ -134,7 +134,7 @@ img.is-missing{opacity:0}.hp-about__image:has(img.is-missing),.hp-approved__medi
 
 /* Nine repair paths still fit inside the editorial service selector without making the rail scroll. */
 .hp-service-nav button{min-height:72px}
-.hp-service-panel__actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:18px}.hp-service-panel__actions a{margin:0!important}.hp-service-panel__detail{display:inline-flex;border-bottom:1px solid #bbb;padding-bottom:7px;font-size:12px;font-weight:800}.hp-service-panel__book{display:flex!important;align-items:center;justify-content:space-between;gap:28px;width:fit-content;max-width:100%;min-width:260px;min-height:52px;padding:0 20px!important;border:1px solid var(--hp-gold)!important;background:var(--hp-gold);color:#fff;font-size:12px!important;font-weight:800;transition:background .2s,border-color .2s,transform .2s}
+.hp-service-panel__actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:18px}.hp-service-panel__actions a{margin:0!important}.hp-service-panel__detail{display:inline-flex;align-items:center;gap:8px;border-bottom:1px solid #bbb;padding-bottom:7px;font-size:12px;font-weight:800;line-height:1}.hp-service-panel__book{display:flex!important;align-items:center;justify-content:space-between;gap:28px;width:fit-content;max-width:100%;min-width:260px;min-height:52px;padding:0 20px!important;border:1px solid var(--hp-gold)!important;background:var(--hp-gold);color:#fff;font-size:12px!important;font-weight:800;transition:background .2s,border-color .2s,transform .2s}
 .hp-service-panel__book:hover{background:#a97828;border-color:#a97828;transform:translateY(-2px)}
 @media(max-width:720px){.hp-service-panel__book{min-height:46px;gap:20px;margin:0!important;padding-inline:16px!important;font-size:11px!important}}
 @media(max-width:540px){.hp-service-panel__actions{align-items:stretch;gap:14px}.hp-service-panel__book{width:100%;min-width:0;margin:0!important}}
@@ -268,7 +268,9 @@ body.home-v2 .hp-btn--arrow:hover>span{transform:translateX(6px)}
 .hp-trust__brand{flex:0 0 52px;width:52px;display:grid;place-items:center;color:var(--hp-gold)}
 .hp-trust__brand svg{width:100%;height:auto}
 .hp-trust__brand--google{width:54px;flex-basis:54px}
-.hp-trust__brand--car svg,.hp-trust__brand--location svg{fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+.hp-trust__brand--car svg{fill:currentColor;stroke:none}
+.hp-trust__brand--location svg{fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+.hp-trust__brand--all-makes img{display:block;width:48px;height:48px;object-fit:contain}
 .hp-trust__brand--location{width:46px;flex-basis:46px}
 
 /* CTA and conversion polish */
@@ -659,7 +661,7 @@ body.home-v2 .hp-btn--hero-secondary:hover{border-color:#111;color:#fff!importan
 .hp-brand-logo{display:grid;flex:0 0 calc((100% - 120px) / 6);min-width:0}
 .hp-trust__item--ev{align-items:stretch}
 .hp-trust__item--ev .hp-trust__copy{width:100%;display:flex;flex-direction:column}
-.hp-approved-marks{display:flex;align-items:end;gap:24px;margin-top:auto;padding-top:13px;border-top:1px solid #e2ddd2}
+.hp-approved-marks{display:flex;align-items:flex-end;gap:24px;margin-top:auto;padding-top:13px;border-top:1px solid #e2ddd2}
 .hp-approved-marks>span{display:grid;justify-items:start;gap:6px;min-width:48px}
 .hp-approved-marks img{display:block;width:auto;height:18px;max-width:66px;object-fit:contain;filter:grayscale(1) contrast(1.22)}
 .hp-approved-marks>span:first-child img{height:22px;max-width:40px}
@@ -691,8 +693,8 @@ body.home-v2 .hp-btn--hero-secondary:hover{border-color:#111;color:#fff!importan
 .hp-home-priority .hp-why{order:1}
 .hp-home-priority .hp-accident-strip{position:sticky;top:94px;z-index:30;align-self:center;order:2;scroll-margin-top:112px;box-shadow:0 14px 30px rgba(30,25,18,.1)}
 .hp-home-priority .hp-services{order:3}
-.hp-home-priority .hp-about{order:4}
-.hp-home-priority .hp-approved{order:5}
+.hp-home-priority .hp-approved{order:4}
+.hp-home-priority .hp-about{order:5}
 .hp-home-priority .hp-studio{order:6}
 .hp-home-priority .hp-insurance{order:7}
 .hp-home-priority .hp-location{order:8}
@@ -700,6 +702,37 @@ body.home-v2 .hp-btn--hero-secondary:hover{border-color:#111;color:#fff!importan
   .hp-home-priority .hp-accident-strip{top:90px;flex-direction:column;align-items:stretch;gap:14px;padding:16px 18px}
   .hp-home-priority .hp-accident-strip__actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
   .hp-home-priority .hp-accident-strip__actions .hp-btn{width:100%;min-width:0;justify-content:center}
+}
+
+/* Brand additions retain the established editorial system while giving every
+   manufacturer mark enough presence at touch and desktop sizes. */
+.hp-brand-list span i{font-style:normal;color:var(--hp-gold-2);padding:0 .3em}
+.hp-brand-grid{max-width:1080px;gap:14px 28px}
+.hp-brand-logo{min-height:62px;flex-basis:calc((100% - 140px) / 6)}
+.hp-brand-logo img{max-width:106px;max-height:48px;opacity:.9}
+.service-area-map--single .service-area-map__areas{margin-top:26px}
+.service-area-map--single .service-area-map__areas button{pointer-events:none}
+@media(max-width:1020px){.hp-brand-logo{flex-basis:calc((100% - 100px) / 6);min-height:56px}.hp-brand-logo img{max-width:92px;max-height:43px}}
+@media(max-width:720px){.hp-brand-grid{gap:12px 14px}.hp-brand-logo{flex-basis:calc((100% - 42px) / 4);min-height:52px}.hp-brand-logo img{max-width:82px;max-height:38px}.service-area-map--single .service-area-map__areas button{min-height:48px}}
+@media(max-width:420px){.hp-brand-logo{flex-basis:calc((100% - 24px) / 3);min-height:48px}.hp-brand-logo img{max-width:76px;max-height:34px}}
+
+/* Gold.webp is a square lock-up. Crop its empty canvas within the header so the mark reads at a confident, usable size. */
+@media(min-width:1021px){
+  .hp-header{height:104px}
+  .hp-header.is-compact{height:88px}
+  .hp-header__inner{grid-template-columns:164px minmax(0,1fr) auto}
+  .hp-logo{width:132px;height:96px}
+  .hp-logo img{width:132px;height:132px;max-width:none;transform:translateY(-18px)}
+  .hp-header.is-compact .hp-logo{width:116px;height:84px}
+  .hp-header.is-compact .hp-logo img{width:116px;height:116px;transform:translateY(-16px)}
+}
+@media(min-width:721px) and (max-width:1020px){
+  .hp-logo{width:112px;height:80px}
+  .hp-logo img{width:112px;height:112px;max-width:none;transform:translateY(-16px)}
+}
+@media(max-width:720px){
+  .hp-logo{width:108px;height:76px}
+  .hp-logo img{width:108px;height:108px;max-width:none;transform:translateY(-16px)}
 }
 @media(max-width:720px){
   .hp-home-priority .hp-accident-strip{top:84px;gap:10px;margin-top:14px;margin-bottom:14px;padding:11px 12px}

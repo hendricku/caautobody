@@ -1,10 +1,12 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { ServiceContent } from "@/types/content";
 import type { OriginalServicePage, ServiceBlock, OriginalServiceSection } from "@/lib/originalServiceCopy";
 import { originalServiceCopy } from "@/lib/originalServiceCopy";
 import { services } from "@/lib/siteContent";
 import { media } from "@/lib/media";
 import ServiceSectionNav, { type SectionNavigationItem } from "./ServiceSectionNav";
+import Icon from "@/components/UI/Icon";
 
 type ContentGroup =
   | { kind: "paragraph"; text: string }
@@ -128,8 +130,8 @@ export default function EditorialServicePage({ service, copy }: { service: Servi
               <p className="ca-service__hero-deck">{sourceText(heroLead(copy.introParagraphs[0] ?? ""))}</p>
             </div>
             <div className="ca-service__hero-actions">
-              <Link href="/contact" className="ca-service__button ca-service__button--gold">Enquire about a repair <span aria-hidden="true">↗</span></Link>
-              <a className="ca-service__hero-phone" href="tel:+61397727411">Call 03 9772 7411 <span aria-hidden="true">↗</span></a>
+              <Link href="/contact" className="ca-service__button ca-service__button--gold">Enquire about a repair <Icon name="arrow-outward" /></Link>
+              <a className="ca-service__hero-phone" href="tel:+61397727411">Call 03 9772 7411 <Icon name="arrow-outward" /></a>
             </div>
           </div>
         </div>
@@ -144,9 +146,7 @@ export default function EditorialServicePage({ service, copy }: { service: Servi
           </div>
           <div className="ca-service__introduction-body">
             {copy.introParagraphs.map((paragraph, index) => <p key={index}>{sourceText(paragraph)}</p>)}
-            {copy.brandMarks.length > 0 && <div className="ca-service__brand-mark" aria-label={copy.brandMarks.map(sourceText).join(" ")}>
-              {copy.brandMarks.map((mark, index) => <span key={mark} className={index === 0 ? "ca-service__brand-name" : "ca-service__brand-caption"}>{sourceText(mark)}</span>)}
-            </div>}
+            {isTesla && copy.brandMarks.length > 0 ? <div className="ca-service__brand-mark ca-service__brand-mark--image"><Image src="/images/Tesla Approved.webp" alt="Tesla Approved Body Shop" width={500} height={170} sizes="(max-width: 720px) 100vw, 500px" /></div> : copy.brandMarks.length > 0 ? <div className="ca-service__brand-mark" aria-label={copy.brandMarks.map(sourceText).join(" ")}>{copy.brandMarks.map((mark, index) => <span key={mark} className={index === 0 ? "ca-service__brand-name" : "ca-service__brand-caption"}>{sourceText(mark)}</span>)}</div> : null}
           </div>
         </div>
       </section>
@@ -171,7 +171,7 @@ export default function EditorialServicePage({ service, copy }: { service: Servi
       {copy.faqs.length > 0 && <section id="service-faqs" className="ca-service__faq-link">
         <div className="shell ca-service__faq-link-inner">
           <div><span className="ca-service__small-label">NEED MORE INFORMATION?</span><h2>Questions before your repair?</h2><p>Read the original {copy.category} questions and answers on our dedicated FAQ page.</p></div>
-          <Link className="ca-service__button ca-service__button--outline" href={faqHref}>View {copy.category} FAQs <span aria-hidden="true">↗</span></Link>
+          <Link className="ca-service__button ca-service__button--outline" href={faqHref}>View {copy.category} FAQs <Icon name="arrow-outward" /></Link>
         </div>
       </section>}
 
@@ -189,8 +189,8 @@ export default function EditorialServicePage({ service, copy }: { service: Servi
             <div className="ca-service__contact-card">
               <p>READY TO GET STARTED?</p>
               <h3>Speak with our repair team.</h3>
-              <Link className="ca-service__button ca-service__button--gold" href="/contact">Contact CA Autobody <span aria-hidden="true">↗</span></Link>
-              <a href="tel:+61397727411" className="ca-service__contact-phone">Or call 03 9772 7411 <span aria-hidden="true">↗</span></a>
+              <Link className="ca-service__button ca-service__button--gold" href="/contact">Contact CA Autobody <Icon name="arrow-outward" /></Link>
+              <a href="tel:+61397727411" className="ca-service__contact-phone">Or call 03 9772 7411 <Icon name="arrow-outward" /></a>
             </div>
           </div>
         </div>
@@ -198,12 +198,12 @@ export default function EditorialServicePage({ service, copy }: { service: Servi
 
       <section className="ca-service__related" aria-labelledby="related-services-heading">
         <div className="shell">
-          <div className="ca-service__related-header"><div><span className="ca-service__small-label">CONTINUE EXPLORING</span><h2 id="related-services-heading">More services.</h2></div><Link href="/services">View all services <span aria-hidden="true">↗</span></Link></div>
+          <div className="ca-service__related-header"><div><span className="ca-service__small-label">CONTINUE EXPLORING</span><h2 id="related-services-heading">More services.</h2></div><Link href="/services">View all services <Icon name="arrow-outward" /></Link></div>
           <div className="ca-service__related-grid">{related.map((item, index) => (
             <Link key={item.slug} href={`/services/${item.slug}`}>
               <span className="ca-service__related-index">0{index + 1}</span>
               <h3>{originalServiceCopy[item.slug].title}</h3>
-              <span className="ca-service__related-arrow" aria-hidden="true">↗</span>
+              <Icon name="arrow-outward" className="ca-service__related-arrow" />
             </Link>
           ))}</div>
         </div>

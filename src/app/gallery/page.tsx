@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/Common/PageHero";
 import GalleryGrid from "@/components/Public/GalleryGrid";
-import { gallery } from "@/lib/siteContent";
 import { media } from "@/lib/media";
+import { getPublishedGallery } from "@/lib/cms/public-content";
 
 export const metadata: Metadata = { title: "Gallery | CA Chelsea Autobody" };
 
-export default function GalleryPage(){
+export const revalidate = 60;
+
+export default async function GalleryPage(){
+  const gallery = await getPublishedGallery();
   return (
     <main>
       <PageHero eyebrow="Workshop & repairs" title="Gallery" image={media.hero.gallery} intro="A closer look at the Chelsea Heights facility, repair work and refinishing environment behind the finished result."/>

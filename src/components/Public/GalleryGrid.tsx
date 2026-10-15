@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { GalleryContent } from "@/types/content";
+import Icon from "@/components/UI/Icon";
 
 const BENTO_CLASSES = [
   "bento-wide-tall",
@@ -120,7 +121,7 @@ export default function GalleryGrid({ items }: { items: GalleryContent[] }) {
           </div>
 
           <button className="gallery-lightbox__close" type="button" onClick={close} aria-label="Close image viewer">
-            ×
+            <Icon name="close" />
           </button>
 
           {visible.length > 1 ? (
@@ -131,7 +132,7 @@ export default function GalleryGrid({ items }: { items: GalleryContent[] }) {
               onClick={previous}
               aria-label="Previous image"
             >
-              ←
+              <Icon name="arrow-back" />
             </button>
           ) : null}
 
@@ -159,7 +160,7 @@ export default function GalleryGrid({ items }: { items: GalleryContent[] }) {
               onClick={next}
               aria-label="Next image"
             >
-              →
+              <Icon name="arrow-forward" />
             </button>
           ) : null}
         </div>

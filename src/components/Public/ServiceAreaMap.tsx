@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Map as LeafletMap, Marker as LeafletMarker } from "leaflet";
 import type { LocationContent } from "@/types/content";
+import ActionIcon from "@/components/UI/ActionIcon";
 
 const WORKSHOP = {
   name: "CA Autobody",
@@ -13,9 +14,10 @@ const WORKSHOP = {
 
 interface ServiceAreaMapProps {
   locations: LocationContent[];
+  variant?: "directory" | "single-area";
 }
 
-export default function ServiceAreaMap({ locations }: ServiceAreaMapProps) {
+export default function ServiceAreaMap({ locations, variant = "directory" }: ServiceAreaMapProps) {
   const mapElementRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<LeafletMap | null>(null);
   const markersRef = useRef<Map<string, LeafletMarker>>(new Map());
@@ -124,13 +126,13 @@ export default function ServiceAreaMap({ locations }: ServiceAreaMapProps) {
 
   return (
     <section className="service-area-map-section" id="service-map" aria-labelledby="service-area-map-title">
-      <div className="hp-shell service-area-map">
+      <div className={`hp-shell service-area-map ${variant === "single-area" ? "service-area-map--single" : ""}`}>
         <div className="service-area-map__directory">
-          <p className="hp-eyebrow">Find your suburb</p>
-          <h2 id="service-area-map-title">Local support, centred on Chelsea Heights.</h2>
-          <p className="service-area-map__intro">Select an area to see where it sits in relation to our workshop, then visit its local service page for more detail.</p>
+          <p className="hp-eyebrow">{variant === "single-area" ? "Your local repair route" : "Find your suburb"}</p>
+          <h2 id="service-area-map-title">{variant === "single-area" ? `${locations[0]?.name ?? "Local"} support, centred on Chelsea Heights.` : "Local support, centred on Chelsea Heights."}</h2>
+          <p className="service-area-map__intro">{variant === "single-area" ? "See your area in relation to the CA Autobody workshop, then get directions when you are ready to visit." : "Select an area to see where it sits in relation to our workshop, then visit its local service page for more detail."}</p>
 
-          <button
+          {variant === "directory" ? <button
             className={`service-area-map__all ${selectedSlug === null ? "is-active" : ""}`}
             type="button"
             onClick={() => focusArea(null)}
@@ -138,7 +140,7 @@ export default function ServiceAreaMap({ locations }: ServiceAreaMapProps) {
             aria-pressed={selectedSlug === null}
           >
             <span>All service areas</span><b>{locations.length}</b>
-          </button>
+          </button> : null}
 
           <ul className="service-area-map__areas" aria-label="Areas we serve">
             {locations.map((location) => (
@@ -153,7 +155,7 @@ export default function ServiceAreaMap({ locations }: ServiceAreaMapProps) {
                   onBlur={() => setHoveredSlug(null)}
                   aria-pressed={selectedSlug === location.slug}
                 >
-                  <span>{location.name}</span><i aria-hidden="true">↗</i>
+                  <span>{location.name}</span><ActionIcon />
                 </button>
               </li>
             ))}
@@ -165,7 +167,7 @@ export default function ServiceAreaMap({ locations }: ServiceAreaMapProps) {
                 <span>Selected area</span>
                 <strong>{selectedArea.name}</strong>
                 <p>{selectedArea.mapDescription}</p>
-                <Link href={`/areas-we-serve/${selectedArea.slug}`}>View {selectedArea.name} repair support <b aria-hidden="true">→</b></Link>
+                <Link href={`/areas-we-serve/${selectedArea.slug}`}>View {selectedArea.name} repair support <ActionIcon /></Link>
               </>
             ) : (
               <>
@@ -186,10 +188,10 @@ export default function ServiceAreaMap({ locations }: ServiceAreaMapProps) {
           {mapState === "unavailable" ? (
             <div className="service-area-map__fallback">
               <p>The interactive map could not load.</p>
-              <a href="https://www.google.com/maps/search/?api=1&query=CA+Autobody+Chelsea+Heights" target="_blank" rel="noopener noreferrer">Open CA Autobody in Google Maps →</a>
+              <a href="https://www.google.com/maps/search/?api=1&query=CA+Autobody+Chelsea+Heights" target="_blank" rel="noopener noreferrer">Open CA Autobody in Google Maps <ActionIcon external /></a>
             </div>
           ) : null}
-          <a className="service-area-map__directions" href="https://www.google.com/maps/search/?api=1&query=7+Ashley+Park+Drive+Chelsea+Heights+VIC+3196" target="_blank" rel="noopener noreferrer">Get directions <span aria-hidden="true">↗</span></a>
+          <a className="service-area-map__directions" href="https://www.google.com/maps/search/?api=1&query=7+Ashley+Park+Drive+Chelsea+Heights+VIC+3196" target="_blank" rel="noopener noreferrer">Get directions <ActionIcon external /></a>
         </div>
       </div>
     </section>

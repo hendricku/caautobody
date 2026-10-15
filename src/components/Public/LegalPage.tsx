@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Icon from "@/components/UI/Icon";
 
 export type LegalSection = {
   id: string;
@@ -36,7 +37,7 @@ export default function LegalPage({ title, eyebrow, description, sections, count
               <summary>
                 <span className="ca-legal__section-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
                 <span className="ca-legal__section-title">{section.title}</span>
-                <span className="ca-legal__section-toggle" aria-hidden="true">+</span>
+                <span className="ca-legal__section-toggle" aria-hidden="true"><Icon name="add" /></span>
               </summary>
               <div className="ca-legal__section-content">
                 {section.paragraphs?.map((paragraph, paragraphIndex) => <p key={paragraphIndex}>{paragraph}</p>)}

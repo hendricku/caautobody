@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/Common/PageHero";
 import ServiceAreaMap from "@/components/Public/ServiceAreaMap";
-import { locations } from "@/lib/siteContent";
+import { getPublishedLocations } from "@/lib/cms/public-content";
 import { media } from "@/lib/media";
 
 export const metadata: Metadata = { title: "Areas We Serve | Car Damage Repair Services in Melbourne" };
 
-export default function AreasPage(){
+export default async function AreasPage(){
+  const locations = await getPublishedLocations();
   return (
     <main>
       <PageHero eyebrow="Local repair support" title="Areas We Serve" image={media.hero.areas} intro="CA Autobody supports drivers from Chelsea Heights and surrounding suburbs with collision repair, panel work, refinishing and accident assistance."/>

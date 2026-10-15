@@ -2,6 +2,7 @@ export type ContentStatus = "published" | "draft";
 export type BlogCategory = "CA Knows" | "Client Stories";
 
 export interface ServiceContent {
+  status?: "draft" | "published" | "retired";
   slug: string;
   title: string;
   seoTitle: string;
@@ -14,6 +15,7 @@ export interface ServiceContent {
 }
 
 export interface LocationContent {
+  status?: "draft" | "published" | "retired";
   slug: string;
   name: string;
   seoTitle: string;
@@ -25,6 +27,7 @@ export interface LocationContent {
 }
 
 export interface OfferContent {
+  status?: "draft" | "published" | "retired";
   slug: string;
   title: string;
   seoTitle: string;
@@ -53,6 +56,7 @@ export type BlogBlock =
   | { id: string; type: "image"; image: string; alt: string; caption?: string; placement?: "lead" | "full" };
 
 export interface FAQContent {
+  status?: "draft" | "published" | "retired";
   id: string;
   category: string;
   question: string;
@@ -61,6 +65,7 @@ export interface FAQContent {
 }
 
 export interface GalleryContent {
+  status?: "draft" | "published" | "retired";
   id: string;
   image: string;
   caption: string;

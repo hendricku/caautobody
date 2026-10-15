@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import Icon from "@/components/UI/Icon";
 
 type ButtonVariant = "gold" | "black" | "outline" | "ghost-light" | "hero-secondary";
 
@@ -33,7 +34,7 @@ export default function Button({
   const classes = ["hp-btn", variantClass[variant], arrow ? "hp-btn--arrow" : "", className]
     .filter(Boolean)
     .join(" ");
-  const content = <>{children}{arrow ? <span aria-hidden="true">→</span> : null}</>;
+  const content = <>{children}{arrow ? <Icon name="arrow-forward" /> : null}</>;
 
   if (href.startsWith("/") || href.startsWith("#")) {
     return <Link className={classes} href={href}>{content}</Link>;

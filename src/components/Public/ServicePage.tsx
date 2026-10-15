@@ -1,7 +1,7 @@
 import Button from "@/components/UI/Button";
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import type { ServiceContent } from "@/types/content";
+import type { CmsServiceContent } from "@/lib/cms/public-content";
 import PageHero from "@/components/Common/PageHero";
 import { services } from "@/lib/siteContent";
 import BrandRepairPage from "@/components/Public/BrandRepairPage";
@@ -17,10 +17,10 @@ const repairSteps = [
   ["Quality check", "Final inspection before vehicle handover."],
 ];
 
-export default function ServicePage({ service }: { service: ServiceContent }) {
-  const exactCopy = originalServiceCopy[service.slug];
+export default function ServicePage({ service }: { service: CmsServiceContent }) {
+  const exactCopy = service.presentation?.variant === "editorial" ? service.presentation.data : service.presentation ? undefined : originalServiceCopy[service.slug];
   if (exactCopy) return <EditorialServicePage service={service} copy={exactCopy} />;
-  const brandContent = brandRepairContent[service.slug];
+  const brandContent = service.presentation?.variant === "brand" ? service.presentation.data : service.presentation ? undefined : brandRepairContent[service.slug];
   if (brandContent) return <BrandRepairPage content={brandContent} />;
   if (!service.contentPending) return <SourceServicePage service={service} />;
 

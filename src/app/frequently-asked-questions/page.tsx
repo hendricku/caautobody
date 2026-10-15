@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/Common/PageHero";
 import FAQList from "@/components/Public/FAQList";
-import { faqs } from "@/lib/siteContent";
 import { media } from "@/lib/media";
+import { getPublishedFaqs } from "@/lib/cms/public-content";
 
 export const metadata: Metadata = { title: "Frequently Asked Questions - CA Chelsea Autobody" };
 
-export default function FAQPage(){
+export const revalidate = 60;
+
+export default async function FAQPage(){
+  const faqs = await getPublishedFaqs();
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",

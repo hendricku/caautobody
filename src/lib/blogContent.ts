@@ -14,5 +14,5 @@ export function defaultBlogBlocks(post: BlogContent): BlogBlock[] {
 }
 
 export function getBlogBlocks(post: BlogContent): BlogBlock[] {
-  return post.blocks?.length ? post.blocks : defaultBlogBlocks(post);
+  return post.blocks?.length ? post.blocks : [{ id: "summary", type: "text", content: post.excerpt }];
 }

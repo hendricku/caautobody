@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { originalServiceCopy } from "@/lib/originalServiceCopy";
-import { services } from "@/lib/siteContent";
+import { getPublishedServices } from "@/lib/cms/public-content";
 import { media } from "@/lib/media";
 
 export const metadata: Metadata = { title: "Auto Accident Repair Services Melbourne | CA Autobody" };
 
-const originalServices = services.filter((service) => Boolean(originalServiceCopy[service.slug]));
-const otherServices = services.filter((service) => !originalServiceCopy[service.slug]);
-
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const services = await getPublishedServices();
+  const originalServices = services.filter((service) => Boolean(originalServiceCopy[service.slug]));
+  const otherServices = services.filter((service) => !originalServiceCopy[service.slug]);
   return <main className="ca-services-landing">
     <section className="ca-services-landing__hero" aria-labelledby="services-title">
       <img src={media.hero.services} alt="" aria-hidden="true" fetchPriority="high" />

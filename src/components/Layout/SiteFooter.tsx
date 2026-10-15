@@ -1,16 +1,18 @@
 import Link from "next/link";
 import { media } from "@/lib/media";
+import Icon from "@/components/UI/Icon";
 
 const areas = ["Aspendale", "Braeside", "Carrum", "Chelsea", "Cheltenham", "Edithvale", "Mentone", "Mordialloc", "Parkdale", "Sandhurst"];
 
-export default function SiteFooter() {
+import type { getPublicSiteSettings } from "@/lib/cms/public-content";
+export default function SiteFooter({siteSettings}: {siteSettings: Awaited<ReturnType<typeof getPublicSiteSettings>>}) {
   return (
     <footer className="hp-footer">
       <div className="hp-shell hp-footer__grid">
         <div className="hp-footer__brand">
           <img src={media.logo} alt="CA Chelsea Autobody" />
           <p>Trusted smash repairs, body work and refinishing from Chelsea Heights, Melbourne.</p>
-          <a className="hp-footer__phone" href="tel:+61397727411">03 9772 7411</a>
+          <a className="hp-footer__phone" href={`tel:${siteSettings.phoneHref}`}>{siteSettings.phone}</a>
         </div>
 
         <nav className="hp-footer__nav" aria-label="Footer information">
@@ -42,14 +44,14 @@ export default function SiteFooter() {
         <div className="hp-footer__contact">
           <h3>Visit &amp; contact</h3>
           <a className="hp-footer__address" href="https://maps.app.goo.gl/uUBDdnUREwuRvdBG8" target="_blank" rel="noopener noreferrer">7 Ashley Park Drive<br />Chelsea Heights, VIC 3196</a>
-          <a href="tel:+61397727411">03 9772 7411</a>
-          <a className="hp-footer__email" href="mailto:info@caautobody.com.au">info@caautobody.com.au</a>
+          <a href={`tel:${siteSettings.phoneHref}`}>{siteSettings.phone}</a>
+          <a className="hp-footer__email" href={`mailto:${siteSettings.email}`}>{siteSettings.email}</a>
           <p className="hp-footer__hours-label">Opening hours</p>
           <p className="hp-footer__hours">Monday – Friday · 8am – 5pm<br />Saturday · Closed<br />Sunday · Closed</p>
           <div className="hp-footer__socials" aria-label="Social media">
-            <a href="https://www.facebook.com/CA-Chelsea-AutoBody-105411534900916/" target="_blank" rel="noopener noreferrer" aria-label="CA Autobody on Facebook">f</a>
+            <a href="https://www.facebook.com/CA-Chelsea-AutoBody-105411534900916/" target="_blank" rel="noopener noreferrer" aria-label="CA Autobody on Facebook"><Icon name="facebook" /></a>
             <a href="https://www.instagram.com/chelseaautobody/" target="_blank" rel="noopener noreferrer" aria-label="CA Autobody on Instagram">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" strokeWidth="1.8" /><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" strokeWidth="1.8" /><circle cx="17.4" cy="6.8" r="1.1" fill="currentColor" /></svg>
+              <Icon name="instagram" />
             </a>
           </div>
         </div>

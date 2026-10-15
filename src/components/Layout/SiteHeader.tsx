@@ -4,12 +4,25 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { media } from "@/lib/media";
+import CloseRounded from "@mui/icons-material/CloseRounded";
+import ExpandMoreRounded from "@mui/icons-material/ExpandMoreRounded";
+import MenuRounded from "@mui/icons-material/MenuRounded";
+import PhoneRounded from "@mui/icons-material/PhoneRounded";
+import ActionIcon from "@/components/UI/ActionIcon";
 
 const chevron = (
-  <svg className="hp-chevron" viewBox="0 0 12 8" aria-hidden="true" focusable="false"><path d="M1 1.5 6 6.5 11 1.5" /></svg>
+  <ExpandMoreRounded className="hp-chevron" aria-hidden="true" focusable="false" />
 );
 
-export default function SiteHeader() {
+type SiteSettings = {
+  name: string;
+  phone: string;
+  phoneHref: string;
+  email: string;
+  address: string;
+};
+
+export default function SiteHeader({ siteSettings }: { siteSettings: SiteSettings }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
@@ -67,8 +80,8 @@ export default function SiteHeader() {
   return (
     <header className={`hp-header ${scrollY > 18 ? "is-scrolled" : ""} ${scrollY > 88 ? "is-compact" : ""}`}>
       <div className="hp-header__inner">
-        <Link className="hp-logo" href="/" aria-label="CA Chelsea Autobody home">
-          <img src={media.logo} alt="CA Chelsea Autobody" />
+        <Link className="hp-logo" href="/" aria-label={`${siteSettings.name} home`}>
+          <img src={media.logo} alt={siteSettings.name} />
         </Link>
 
         <button
@@ -79,7 +92,7 @@ export default function SiteHeader() {
           aria-controls="hp-navigation"
           onClick={() => setMenuOpen((value) => !value)}
         >
-          <span /><span /><span />
+          {menuOpen ? <CloseRounded aria-hidden="true" /> : <MenuRounded aria-hidden="true" />}
         </button>
 
         <nav className={`hp-nav ${menuOpen ? "is-open" : ""}`} id="hp-navigation" aria-label="Primary navigation" onClick={(event) => {
@@ -95,9 +108,9 @@ export default function SiteHeader() {
                 <span className="hp-kicker">CA Autobody</span>
                 <h2>Repair experience built on trust.</h2>
                 <p>Get to know the team, our repair approach and why Melbourne drivers continue to choose CA Autobody.</p>
-                <Link href="/about">About CA Autobody <span>→</span></Link>
+                <Link href="/about">About CA Autobody <ActionIcon /></Link>
               </div>
-              <Link className="hp-mobile-submenu-start" href="/about"><span>About CA Autobody</span><span aria-hidden="true">→</span></Link>
+              <Link className="hp-mobile-submenu-start" href="/about"><span>About CA Autobody</span><ActionIcon /></Link>
               <div className="hp-mega__links">
                 <Link href="/about#why"><strong>Why Choose CA</strong><span>Experience, quality and customer care.</span></Link>
                 <Link href="/about#insurance"><strong>Insurance</strong><span>Support through the repair and claim process.</span></Link>
@@ -116,9 +129,9 @@ export default function SiteHeader() {
                 <span className="hp-kicker">Repair Services</span>
                 <h2>From accident damage to precision refinishing.</h2>
                 <p>One experienced repair team for body, paint, EV and accident support.</p>
-                <Link href="/services">View all services <span>→</span></Link>
+                <Link href="/services">View all services <ActionIcon /></Link>
               </div>
-              <Link className="hp-mobile-submenu-start" href="/services"><span>View all services</span><span aria-hidden="true">→</span></Link>
+              <Link className="hp-mobile-submenu-start" href="/services"><span>View all services</span><ActionIcon /></Link>
               <div className="hp-mega__service-grid">
                 <Link href="/services/tesla-approved-repair-centre"><span>01</span><strong>Tesla Repair</strong><small>Approved EV repair expertise</small></Link>
                 <Link href="/services/services-zeekr-approved-repairer-melbourne"><span>02</span><strong>Zeekr Repair</strong><small>Modern EV body repair</small></Link>
@@ -146,19 +159,19 @@ export default function SiteHeader() {
               <div className="hp-mega__tray">
                 <div className="hp-brand-features">
                   <Link className="hp-brand-feature" href="/services/tesla-approved-repair-centre">
-                <span className="hp-kicker">Approved Expertise</span><strong>Tesla</strong><small>Specialist collision repair for Tesla vehicles.</small><b>Explore Tesla repair →</b>
+                <span className="hp-kicker">Approved Expertise</span><strong>Tesla</strong><small>Specialist collision repair for Tesla vehicles.</small><b>Explore Tesla repair <ActionIcon /></b>
               </Link>
               <Link className="hp-brand-feature" href="/services/services-zeekr-approved-repairer-melbourne">
-                <span className="hp-kicker">Approved Repairer</span><strong>Zeekr</strong><small>Repair support for modern electric vehicle construction.</small><b>Explore Zeekr repair →</b>
+                <span className="hp-kicker">Approved Repairer</span><strong>Zeekr</strong><small>Repair support for modern electric vehicle construction.</small><b>Explore Zeekr repair <ActionIcon /></b>
               </Link>
               <Link className="hp-brand-feature" href="/services/byd-approved-repairer-melbourne">
-                <span className="hp-kicker">Approved Repairer</span><strong>BYD</strong><small>Approved collision repair support for BYD vehicles.</small><b>Explore BYD repair →</b>
+                <span className="hp-kicker">Approved Repairer</span><strong>BYD</strong><small>Approved collision repair support for BYD vehicles.</small><b>Explore BYD repair <ActionIcon /></b>
               </Link>
               <Link className="hp-brand-feature" href="/services/lexus-approved-body-shop-melbourne">
-                <span className="hp-kicker">Approved Repairer</span><strong>Lexus</strong><small>Approved collision repair support for Lexus vehicles.</small><b>Explore Lexus repair →</b>
+                <span className="hp-kicker">Approved Repairer</span><strong>Lexus</strong><small>Approved collision repair support for Lexus vehicles.</small><b>Explore Lexus repair <ActionIcon /></b>
               </Link>
                 </div>
-                <div className="hp-brand-list"><span>All makes &amp; models</span><p>Porsche · BMW · Volkswagen · Audi · Mercedes-Benz · Subaru · Honda · Ford · Mazda · Hyundai · Kia and more.</p></div>
+                <div className="hp-brand-list"><span>All makes &amp; models <i aria-hidden="true">·</i> Prestige brands</span><p>Porsche · BMW · Volkswagen · Audi · Mercedes-Benz · Subaru · Honda · Ford · Mazda · Hyundai · Kia and more.</p></div>
               </div>
             </div>
           </div>
@@ -166,16 +179,16 @@ export default function SiteHeader() {
           <Link className={`hp-nav__link ${active("/frequently-asked-questions") ? "is-active" : ""}`} href="/frequently-asked-questions">FAQs</Link>
           <Link className={`hp-nav__link ${active("/contact") ? "is-active" : ""}`} href="/contact">Contact Us</Link>
           <div className="hp-nav__mobile-utility" aria-label="More links">
-            <a href="tel:+61397727411">Call 03 9772 7411</a>
+            <a href={`tel:${siteSettings.phoneHref}`}>Call {siteSettings.phone}</a>
             <Link href="/sitemap">Sitemap</Link>
             <Link href="/privacy-policy">Privacy</Link>
             <Link href="/terms-and-conditions">Terms</Link>
           </div>
         </nav>
 
-        <a className="hp-header__call" href="tel:+61397727411" aria-label="Call CA Autobody on 03 9772 7411">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.7 2.7 10 6l-2.1 2.1c1.1 2.3 2.9 4.1 5.2 5.2l2.1-2.1 3.3 3.3-1.7 2.5c-.5.8-1.5 1.2-2.4 1C8.6 17 4 12.4 3 6.6c-.2-.9.2-1.9 1-2.4l2.7-1.5Z" /></svg>
-          <span>Call 03 9772 7411</span>
+        <a className="hp-header__call" href={`tel:${siteSettings.phoneHref}`} aria-label={`Call ${siteSettings.name} on ${siteSettings.phone}`}>
+          <PhoneRounded aria-hidden="true" />
+          <span>Call {siteSettings.phone}</span>
         </a>
       </div>
     </header>
