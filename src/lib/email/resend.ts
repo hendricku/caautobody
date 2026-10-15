@@ -58,12 +58,11 @@ function textBody(input: EnquiryEmail) {
     `Email: ${input.email || "Not provided"}`,
     `Suburb: ${input.suburb || "Not provided"}`,
     `Service: ${input.service}`,
-    `Vehicle: ${input.vehicle || "Not provided"}`,
-    `Claim status: ${input.claimStatus || "Not provided"}`,
-    "",
-    "Message:",
-    input.message || "No additional message supplied.",
   ];
+  if (input.enquiryType === "brand-assessment") {
+    lines.push(`Vehicle: ${input.vehicle || "Not provided"}`, `Claim status: ${input.claimStatus || "Not provided"}`);
+  }
+  lines.push("", "Message:", input.message || "No additional message supplied.");
   if (input.attachments.length) lines.push("", `Attached damage photos: ${input.attachments.map((file) => file.filename).join(", ")}`);
   return lines.join("\n");
 }
@@ -71,7 +70,10 @@ function textBody(input: EnquiryEmail) {
 function htmlBody(input: EnquiryEmail) {
   const type = input.enquiryType === "brand-assessment" ? `${input.brand} repair assessment` : "Contact enquiry";
   const attachmentNote = input.attachments.length ? `<p style="margin:22px 0 0;color:#665f55;font-size:13px;line-height:1.6">${input.attachments.length} damage photo${input.attachments.length === 1 ? "" : "s"} attached.</p>` : "";
-  return `<!doctype html><html lang="en"><body style="margin:0;background:#f4f1eb;font-family:Arial,sans-serif;color:#1a1917"><main style="max-width:640px;margin:0 auto;padding:28px 16px"><section style="overflow:hidden;background:#fff;border:1px solid #ddd5c9"><header style="padding:28px 30px;background:#151513;color:#fff"><p style="margin:0 0 10px;color:#d4a957;font-size:11px;font-weight:700;letter-spacing:1.4px">CA AUTOBODY</p><h1 style="margin:0;font-size:25px;line-height:1.2">New website enquiry</h1></header><section style="padding:30px"><p style="margin:0 0 24px;color:#665f55;font-size:14px;line-height:1.65">A customer has submitted a ${escapeHtml(type.toLowerCase())}.</p><table role="presentation" style="width:100%;border-collapse:collapse">${field("Name", input.name)}${field("Phone", input.phone)}${field("Email", input.email || "Not provided")}${field("Suburb", input.suburb || "Not provided")}${field("Service", input.service)}${field("Vehicle", input.vehicle || "Not provided")}${field("Claim status", input.claimStatus || "Not provided")}</table><div style="margin-top:14px;padding-top:20px;border-top:1px solid #ddd5c9"><p style="margin:0 0 8px;color:#665f55;font-size:12px;font-weight:700">MESSAGE</p><p style="margin:0;color:#1a1917;font-size:14px;line-height:1.65;white-space:pre-wrap">${escapeHtml(input.message || "No additional message supplied.")}</p></div>${attachmentNote}</section><footer style="padding:17px 30px;border-top:1px solid #ddd5c9;color:#776f64;font-size:11px;line-height:1.5">This notification was sent from the CA Autobody website.</footer></section></main></body></html>`;
+  const assessmentFields = input.enquiryType === "brand-assessment"
+    ? `${field("Vehicle", input.vehicle || "Not provided")}${field("Claim status", input.claimStatus || "Not provided")}`
+    : "";
+  return `<!doctype html><html lang="en"><body style="margin:0;background:#f4f1eb;font-family:Arial,sans-serif;color:#1a1917"><main style="max-width:640px;margin:0 auto;padding:28px 16px"><section style="overflow:hidden;background:#fff;border:1px solid #ddd5c9"><header style="padding:28px 30px;background:#151513;color:#fff"><p style="margin:0 0 10px;color:#d4a957;font-size:11px;font-weight:700;letter-spacing:1.4px">CA AUTOBODY</p><h1 style="margin:0;font-size:25px;line-height:1.2">New website enquiry</h1></header><section style="padding:30px"><p style="margin:0 0 24px;color:#665f55;font-size:14px;line-height:1.65">A customer has submitted a ${escapeHtml(type.toLowerCase())}.</p><table role="presentation" style="width:100%;border-collapse:collapse">${field("Name", input.name)}${field("Phone", input.phone)}${field("Email", input.email || "Not provided")}${field("Suburb", input.suburb || "Not provided")}${field("Service", input.service)}${assessmentFields}</table><div style="margin-top:14px;padding-top:20px;border-top:1px solid #ddd5c9"><p style="margin:0 0 8px;color:#665f55;font-size:12px;font-weight:700">MESSAGE</p><p style="margin:0;color:#1a1917;font-size:14px;line-height:1.65;white-space:pre-wrap">${escapeHtml(input.message || "No additional message supplied.")}</p></div>${attachmentNote}</section><footer style="padding:17px 30px;border-top:1px solid #ddd5c9;color:#776f64;font-size:11px;line-height:1.5">This notification was sent from the CA Autobody website.</footer></section></main></body></html>`;
 }
 
 export function assertEmailConfiguration() {
