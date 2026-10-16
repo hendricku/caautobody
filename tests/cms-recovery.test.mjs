@@ -18,6 +18,12 @@ test("server protects CMS writes and retires instead of hard deleting", () => {
   assert.match(sql, /enable row level security/);
   assert.match(sql, /cms_staff_role/);
 });
+test("only publishers and admins can access customer enquiries directly", () => {
+  const sql = read("supabase/migrations/20261016113000_restrict_enquiry_access_to_publishers.sql");
+  assert.match(sql, /cms publishers read enquiries/);
+  assert.match(sql, /cms_staff_role\(\) in \('admin', 'publisher'\)/);
+  assert.doesNotMatch(sql, /'editor'/);
+});
 test("public FAQ has no browser-local overrides", () => {
   assert.doesNotMatch(read("src/components/Public/FAQList.tsx"), /useLocalCollection/);
 });
