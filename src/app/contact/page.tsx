@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/Common/PageHero";
 import ContactForm from "@/components/Public/ContactForm";
+import { getPublishedLocations } from "@/lib/cms/public-content";
 import { site } from "@/lib/siteContent";
 import { media } from "@/lib/media";
 
@@ -9,13 +10,16 @@ export const metadata: Metadata = {
   description: "Contact CA Autobody at 7 Ashley Park Drive, Chelsea Heights, VIC 3196 or call 03 9772 7411.",
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const locations = await getPublishedLocations();
+  const suburbs = [...new Set(locations.map(({ name }) => name.trim()).filter(Boolean))];
+
   return <main className="contact-page">
     <PageHero eyebrow="Contact" title="Contact CA Autobody for Expert Auto Repair Services" image={media.hero.contact} intro="Ready to book a service Chelsea Heights locals rely on?" />
     <section className="contact-booking shell section-pad">
       <div className="contact-booking__intro hp-reveal"><h2>Get in touch.</h2><p>Contact us today and our dedicated CA Autobody team will take it from there. Whether it&apos;s minor touch-ups or major restoration work, we&apos;ll get your vehicle sorted quickly and properly.</p></div>
       <div className="contact-booking__layout hp-reveal">
-        <div className="contact-booking__form"><p className="contact-booking__label">Get in touch</p><h2>Tell us about your vehicle.</h2><ContactForm /></div>
+        <div className="contact-booking__form"><p className="contact-booking__label">Get in touch</p><h2>Tell us about your vehicle.</h2><ContactForm suburbs={suburbs} /></div>
         <aside className="contact-booking__details" aria-labelledby="contact-details-title">
           <p className="contact-booking__label">Visit &amp; contact</p><h2 id="contact-details-title">CA Autobody</h2>
           <dl>

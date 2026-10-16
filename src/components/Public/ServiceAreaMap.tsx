@@ -18,6 +18,7 @@ interface ServiceAreaMapProps {
 }
 
 export default function ServiceAreaMap({ locations, variant = "directory" }: ServiceAreaMapProps) {
+  const isSingleArea = variant === "single-area";
   const mapElementRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<LeafletMap | null>(null);
   const markersRef = useRef<Map<string, LeafletMarker>>(new Map());
@@ -26,7 +27,7 @@ export default function ServiceAreaMap({ locations, variant = "directory" }: Ser
   const [mapState, setMapState] = useState<"loading" | "ready" | "unavailable">("loading");
 
   const allCoordinates = useMemo(() => [...locations.map(({ coordinates }) => coordinates), WORKSHOP.coordinates], [locations]);
-  const selectedArea = locations.find(({ slug }) => slug === selectedSlug) ?? null;
+  const selectedArea = isSingleArea ? null : locations.find(({ slug }) => slug === selectedSlug) ?? null;
 
   useEffect(() => {
     let active = true;
@@ -67,7 +68,7 @@ export default function ServiceAreaMap({ locations, variant = "directory" }: Ser
             .addTo(map)
             .bindTooltip(location.name, { direction: "top", offset: [0, -10] })
             .on("click", () => {
-              setSelectedSlug(location.slug);
+              if (!isSingleArea) setSelectedSlug(location.slug);
               const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
               map.flyTo(location.coordinates, 13, { animate: !reducedMotion, duration: reducedMotion ? 0 : 0.55 });
             });
@@ -96,7 +97,7 @@ export default function ServiceAreaMap({ locations, variant = "directory" }: Ser
       mapRef.current?.remove();
       mapRef.current = null;
     };
-  }, [allCoordinates, locations]);
+  }, [allCoordinates, isSingleArea, locations]);
 
   useEffect(() => {
     markersRef.current.forEach((marker, slug) => {
@@ -125,14 +126,14 @@ export default function ServiceAreaMap({ locations, variant = "directory" }: Ser
   }, [allCoordinates, locations]);
 
   return (
-    <section className="service-area-map-section" id="service-map" aria-labelledby="service-area-map-title">
-      <div className={`hp-shell service-area-map ${variant === "single-area" ? "service-area-map--single" : ""}`}>
+    <section className="service-area-map-section" id="service-map" aria-labelledby={isSingleArea ? undefined : "service-area-map-title"} aria-label={isSingleArea ? "Your local repair route" : undefined}>
+      <div className={`hp-shell service-area-map ${isSingleArea ? "service-area-map--single" : ""}`}>
         <div className="service-area-map__directory">
-          <p className="hp-eyebrow">{variant === "single-area" ? "Your local repair route" : "Find your suburb"}</p>
-          <h2 id="service-area-map-title">{variant === "single-area" ? `${locations[0]?.name ?? "Local"} support, centred on Chelsea Heights.` : "Local support, centred on Chelsea Heights."}</h2>
-          <p className="service-area-map__intro">{variant === "single-area" ? "See your area in relation to the CA Autobody workshop, then get directions when you are ready to visit." : "Select an area to see where it sits in relation to our workshop, then visit its local service page for more detail."}</p>
-
-          {variant === "directory" ? <button
+          {!isSingleArea ? <>
+            <p className="hp-eyebrow">Find your suburb</p>
+            <h2 id="service-area-map-title">Local support, centred on Chelsea Heights.</h2>
+            <p className="service-area-map__intro">Select an area to see where it sits in relation to our workshop, then visit its local service page for more detail.</p>
+            <button
             className={`service-area-map__all ${selectedSlug === null ? "is-active" : ""}`}
             type="button"
             onClick={() => focusArea(null)}
@@ -140,26 +141,27 @@ export default function ServiceAreaMap({ locations, variant = "directory" }: Ser
             aria-pressed={selectedSlug === null}
           >
             <span>All service areas</span><b>{locations.length}</b>
-          </button> : null}
+            </button>
 
-          <ul className="service-area-map__areas" aria-label="Areas we serve">
-            {locations.map((location) => (
-              <li key={location.slug}>
-                <button
-                  className={selectedSlug === location.slug ? "is-active" : ""}
-                  type="button"
-                  onClick={() => focusArea(location.slug)}
-                  onMouseEnter={() => setHoveredSlug(location.slug)}
-                  onMouseLeave={() => setHoveredSlug(null)}
-                  onFocus={() => setHoveredSlug(location.slug)}
-                  onBlur={() => setHoveredSlug(null)}
-                  aria-pressed={selectedSlug === location.slug}
-                >
-                  <span>{location.name}</span><ActionIcon />
-                </button>
-              </li>
-            ))}
-          </ul>
+            <ul className="service-area-map__areas" aria-label="Areas we serve">
+              {locations.map((location) => (
+                <li key={location.slug}>
+                  <button
+                    className={selectedSlug === location.slug ? "is-active" : ""}
+                    type="button"
+                    onClick={() => focusArea(location.slug)}
+                    onMouseEnter={() => setHoveredSlug(location.slug)}
+                    onMouseLeave={() => setHoveredSlug(null)}
+                    onFocus={() => setHoveredSlug(location.slug)}
+                    onBlur={() => setHoveredSlug(null)}
+                    aria-pressed={selectedSlug === location.slug}
+                  >
+                    <span>{location.name}</span><ActionIcon />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </> : null}
 
           <div className="service-area-map__selection" aria-live="polite">
             {selectedArea ? (
@@ -171,7 +173,7 @@ export default function ServiceAreaMap({ locations, variant = "directory" }: Ser
               </>
             ) : (
               <>
-                <span>Our workshop</span>
+                <span>Your local repair route</span>
                 <strong>CA Autobody</strong>
                 <p>{WORKSHOP.description}</p>
               </>

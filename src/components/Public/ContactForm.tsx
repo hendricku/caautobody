@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 import Icon from "@/components/UI/Icon";
 
-export default function ContactForm() {
+export default function ContactForm({ suburbs }: { suburbs: string[] }) {
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -27,7 +27,7 @@ export default function ContactForm() {
   return (
     <form className="contact-form" onSubmit={(event) => void submit(event)}>
       <div className="form-row"><label>Full name<input required name="name" /></label><label>Phone<input required name="phone" /></label></div>
-      <div className="form-row"><label>Email<input required type="email" name="email" /></label><label>Suburb<input name="suburb" /></label></div>
+      <div className="form-row"><label>Email<input required type="email" name="email" /></label><label>Suburb<select name="suburb" autoComplete="address-level2" defaultValue=""><option value="">Select your suburb (optional)</option>{suburbs.map((suburb) => <option key={suburb} value={suburb}>{suburb}</option>)}<option value="Other / outside listed area">Other / outside listed area</option></select></label></div>
       <label>How can we help?<select name="service"><option>Accident Assistance</option><option>Panel Beating</option><option>Paintless Dent Removal</option><option>Spray Painting</option><option>Tesla Repair</option><option>Zeekr Repair</option><option>Other</option></select></label>
       <label>Message<textarea required name="message" rows={6} /></label>
       <input name="company" autoComplete="off" tabIndex={-1} aria-hidden="true" className="form-honeypot" />
