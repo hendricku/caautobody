@@ -24,6 +24,11 @@ test("only publishers and admins can access customer enquiries directly", () => 
   assert.match(sql, /cms_staff_role\(\) in \('admin', 'publisher'\)/);
   assert.doesNotMatch(sql, /'editor'/);
 });
+test("single-area maps use a compact full-width route layout", () => {
+  const css = read("src/app/site-enhancements.css");
+  assert.match(css, /\.service-area-map--single\{grid-template-columns:1fr;min-height:0\}/);
+  assert.match(css, /\.service-area-map--single \.service-area-map__selection\{grid-template-columns:1fr;gap:7px\}/);
+});
 test("public FAQ has no browser-local overrides", () => {
   assert.doesNotMatch(read("src/components/Public/FAQList.tsx"), /useLocalCollection/);
 });
