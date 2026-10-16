@@ -26,7 +26,7 @@ export default async function ServicesPage() {
         <span className="ca-services-landing__label">WHAT WE DO / MELBOURNE</span>
         <h2 id="services-intro-title">The right expertise, all in one place.</h2>
       </div>
-      <p>One experienced workshop for accident damage, body repairs, refinishing, replacement transport and modern EV repair support. Choose the service that best matches your needs.</p>
+      <p>CA Autobody provides expert collision repair services for prestige vehicles across all makes and models. Explore our specialised services tailored to your vehicle’s needs.</p>
     </section>
 
     <section className="ca-services-landing__catalogue" aria-labelledby="services-catalogue-title">

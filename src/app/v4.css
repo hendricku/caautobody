@@ -743,3 +743,28 @@ body.home-v2 .hp-btn--hero-secondary:hover{border-color:#111;color:#fff!importan
   .hp-home-priority .hp-accident-strip__actions{gap:8px}
   .hp-home-priority .hp-accident-strip__actions .hp-btn{min-height:46px;padding-inline:8px;font-size:11px;line-height:1.2}
 }
+
+/* Mobile service navigation keeps all action controls visible without competing for the image or booking CTA. */
+@media(max-width:720px){
+  .hp-header__inner{grid-template-columns:1fr auto auto}
+  .hp-header__call{display:flex;width:46px;min-width:46px;height:46px;padding:0;justify-content:center}
+  .hp-header__call span{display:none}
+  .hp-service-nav button{grid-template-columns:28px minmax(0,1fr) 24px;column-gap:8px}
+  .hp-service-nav__icon{display:block!important;justify-self:end;width:22px;height:22px;grid-column:3;grid-row:1;color:var(--hp-gold)}
+  .hp-service-controls{inset:0;display:block;background:transparent;padding:0;pointer-events:none}
+  .hp-service-controls button{position:absolute;top:50%;z-index:2;width:44px;height:44px;transform:translateY(-50%);background:rgba(7,7,7,.72);pointer-events:auto}
+  .hp-service-controls button:first-child{left:12px}
+  .hp-service-controls button:last-child{right:12px}
+  .hp-service-controls strong{position:absolute;right:18px;bottom:16px;z-index:2;font-size:10px;pointer-events:none}
+  .hp-service-progress{position:absolute;left:18px;right:82px;bottom:21px;z-index:2;pointer-events:none}
+}
+@media(max-width:420px){
+  .hp-header__call{width:44px;min-width:44px;height:44px}
+  .hp-service-nav button{grid-template-columns:24px minmax(0,1fr) 22px;gap:7px;padding-inline:11px}
+  .hp-service-nav__icon{width:20px;height:20px}
+  .hp-service-controls button:first-child{left:9px}
+  .hp-service-controls button:last-child{right:9px}
+}
+@media(prefers-reduced-motion:reduce){
+  .hp-service-controls button{transition:none}
+}
