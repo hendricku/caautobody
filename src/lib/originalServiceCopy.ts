@@ -4,7 +4,7 @@
  */
 export type ServiceBlock = { type: "paragraph" | "subheading" | "bullet"; text: string };
 export type OriginalServiceSection = { heading: string; blocks: ServiceBlock[] };
-export type OriginalServicePage = { slug: string; category: string; url: string; title: string; introParagraphs: string[]; brandMarks: string[]; sections: OriginalServiceSection[]; faqHeading: string | null; faqIntro: string[]; faqs: { question: string; answer: string }[] };
+export type OriginalServicePage = { slug: string; category: string; url: string; title: string; introParagraphs: string[]; brandMarks: string[]; sections: OriginalServiceSection[]; faqHeading: string | null; faqIntro: string[]; faqs: { question: string; answer: string }[]; seoDescription?: string; heroDescription?: string; contactHeading?: string; contactCopy?: string; disclaimer?: string; approvedBrandLayout?: boolean };
 export const originalServiceCopy: Record<string, OriginalServicePage> = {
   "tesla-approved-repair-centre": {
     "slug": "tesla-approved-repair-centre",
@@ -895,3 +895,67 @@ export const originalServiceCopy: Record<string, OriginalServicePage> = {
     ]
   }
 };
+
+// Approved-brand pages use Tesla's established editorial service composition.
+// Their copy remains brand-specific, but the public experience is intentionally one system.
+export const approvedBrandServiceCopy: Record<string, OriginalServicePage> = {
+  "byd-approved-repairer-melbourne": {
+    slug: "byd-approved-repairer-melbourne", category: "BYD", url: "https://caautobody.com.au/services/byd-approved-repairer-melbourne/", title: "BYD Approved Repairer Melbourne",
+    seoDescription: "CA Autobody is an approved BYD repairer in Chelsea Heights, Melbourne. Genuine OEM parts, EV battery-safe repairs and insurance claim help. Call us today.",
+    heroDescription: "BYD vehicles combine high voltage battery systems, advanced driver assistance technology and model-specific body structures. CA Autobody delivers approved BYD repairs using genuine OEM BYD parts and manufacturer-approved procedures.",
+    contactHeading: "Let’s talk about your BYD.", contactCopy: "Talk directly with our team about an assessment, repair options and your insurance claim.", disclaimer: "Manufacturer warranty, insurance coverage, parts approval, towing and loan vehicle availability depend on the repair and your individual circumstances. We’ll explain what applies to your vehicle before any work starts.", approvedBrandLayout: true,
+    introParagraphs: ["BYD’s electric vehicles bring advanced battery and safety technology, and repairs need to match. As an approved BYD repairer in Chelsea Heights, CA Autobody follows manufacturer-approved procedures and uses genuine OEM parts, so your BYD is repaired properly, not just cosmetically."], brandMarks: [],
+    sections: [
+      { heading: "Approved BYD Repairs", blocks: [{ type: "paragraph", text: "Every repair follows manufacturer-approved procedures, from the first assessment through to final checks." }] },
+      { heading: "EV Battery-Safe Procedures", blocks: [{ type: "paragraph", text: "Even damage that looks cosmetic can affect the high voltage system. We plan isolation and battery protection around your vehicle and the repair area." }] },
+      { heading: "Advanced Diagnostics and Calibration", blocks: [{ type: "paragraph", text: "We scan for system faults and check affected cameras, radar and driver assistance systems. Any calibration needed is addressed before handover." }] },
+      { heading: "Insurance Coordination", blocks: [{ type: "paragraph", text: "We prepare the estimate and repair information for your insurer and help with claim communication, so the process stays simple." }] },
+      { heading: "Genuine OEM BYD Parts", blocks: [{ type: "paragraph", text: "We use genuine OEM BYD parts within the approved repair plan, supporting fit, system compatibility and safety." }] },
+      { heading: "Clear, Caring Customer Experience", blocks: [{ type: "paragraph", text: "You get a clear estimate, direct progress updates and final quality checks. Towing and loan vehicle options are available, subject to availability and eligibility." }] },
+      { heading: "Wide Range Of Services", blocks: [{ type: "paragraph", text: "CA Autobody offers complete collision repair for BYD owners, including:" }, { type: "bullet", text: "Structural and Body Repairs: Model-specific measuring, joining and panel work to the approved scope." }, { type: "bullet", text: "Paint and Refinishing: Precise colour matching for a seamless finish." }, { type: "bullet", text: "Diagnostics and ADAS Calibration: System scans and calibration checks before the vehicle goes home." }, { type: "bullet", text: "Genuine Parts: Genuine OEM BYD parts within the approved repair scope." }] },
+      { heading: "Why Choose CA Autobody?", blocks: [{ type: "paragraph", text: "BYD owners need a repairer who treats the vehicle as more than a cosmetic job. CA Autobody combines approved repair methods, genuine OEM parts and clear communication, so you know what’s happening at every step. Whether it’s a minor repair or major structural work, we’re your local approved BYD repairer in Chelsea Heights." }] },
+    ], faqHeading: null, faqIntro: [], faqs: [],
+  },
+  "lexus-approved-body-shop-melbourne": {
+    slug: "lexus-approved-body-shop-melbourne", category: "Lexus", url: "https://caautobody.com.au/services/lexus-approved-body-shop-melbourne/", title: "Lexus Approved Body Shop Melbourne",
+    seoDescription: "CA Autobody is an approved Lexus body shop in Chelsea Heights, Melbourne. Genuine OEM parts, precision paint, ADAS support and claim help. Call us today.",
+    heroDescription: "A Lexus repair must restore safety, body accuracy, finish quality and the quiet refinement expected from the vehicle. CA Autobody provides manufacturer-approved Lexus repairs using genuine OEM Lexus parts and approved repair procedures.",
+    contactHeading: "Let’s talk about your Lexus.", contactCopy: "Talk directly with our team about an assessment, repair options and your insurance claim.", disclaimer: "Manufacturer warranty, insurance coverage, parts approval, towing and loan vehicle availability depend on the repair and your individual circumstances. We’ll explain what applies to your vehicle before any work starts.", approvedBrandLayout: true,
+    introParagraphs: ["A Lexus is built for comfort and precision, and a repair should preserve both. As an approved Lexus repairer in Chelsea Heights, CA Autobody combines genuine OEM parts, approved procedures and precision refinishing, so your vehicle looks and drives the way it should."], brandMarks: [],
+    sections: [
+      { heading: "Approved Lexus Repairs", blocks: [{ type: "paragraph", text: "Repairs follow manufacturer-approved procedures. Every vehicle is assessed beyond the visible damage, so nothing is missed." }] },
+      { heading: "Genuine OEM Lexus Parts", blocks: [{ type: "paragraph", text: "Genuine components support fit, material compatibility and the approved repair method, subject to parts availability and approval." }] },
+      { heading: "Safety System Accuracy", blocks: [{ type: "paragraph", text: "Affected cameras, sensors and related systems are inspected, and any calibration needed is built into the repair plan." }] },
+      { heading: "Precision Colour and Finish", blocks: [{ type: "paragraph", text: "Controlled preparation, colour matching and low bake refinishing help restore a consistent premium finish." }] },
+      { heading: "Insurance Coordination", blocks: [{ type: "paragraph", text: "We prepare the estimate and repair information for your insurer and communicate with them directly where authorised." }] },
+      { heading: "Clear, Caring Customer Experience", blocks: [{ type: "paragraph", text: "You get regular progress updates and final checks of panel alignment, function and finish. Towing and loan car options are available, subject to availability and eligibility." }] },
+      { heading: "Wide Range Of Services", blocks: [{ type: "paragraph", text: "CA Autobody offers complete collision repair for Lexus owners, including:" }, { type: "bullet", text: "Structural and Body Repairs: Accurate measuring, panel repair and fit within the approved scope." }, { type: "bullet", text: "Premium Paint Refinishing: Colour matching focused on consistency, gloss and finish." }, { type: "bullet", text: "ADAS Calibration Support: Diagnostic and calibration needs addressed for affected safety technology." }, { type: "bullet", text: "Genuine Parts: Genuine OEM Lexus parts within the approved repair plan." }] },
+      { heading: "Why Choose CA Autobody?", blocks: [{ type: "paragraph", text: "Lexus owners expect a repair that restores more than the visible damage. CA Autobody pairs approved repair methods and genuine parts with clear communication, so you know what’s happening at every step. Whether it’s a minor repair or major structural work, we’re your local approved Lexus repairer in Chelsea Heights." }] },
+    ], faqHeading: null, faqIntro: [], faqs: [],
+  },
+  "services-zeekr-approved-repairer-melbourne": {
+    slug: "services-zeekr-approved-repairer-melbourne", category: "Zeekr", url: "https://caautobody.com.au/services/services-zeekr-approved-repairer-melbourne/", title: "Zeekr Approved Repairer Melbourne",
+    seoDescription: "CA Autobody is a Zeekr approved repairer in Chelsea Heights, Melbourne. Panel, paint and insurance claim support for Zeekr X, 7X and 009. Call us today.",
+    heroDescription: "When your Zeekr is damaged in an accident, the right repairer matters. Modern electric vehicles have advanced materials, safety systems, sensors and cameras that need correct repair methods and careful workmanship.",
+    contactHeading: "Let’s talk about your Zeekr.", contactCopy: "Talk directly with our team about an assessment, repair options and your insurance claim.", disclaimer: "Insurance coverage, parts approval and replacement vehicle availability depend on the repair and your individual circumstances. We’ll explain what applies to your vehicle before any work starts.", approvedBrandLayout: true,
+    introParagraphs: ["CA Autobody provides Zeekr approved accident repairs from our Chelsea Heights workshop. We combine correct repair procedures, quality parts and accurate colour matching, so your Zeekr is restored safely, professionally and with minimal stress."], brandMarks: [],
+    sections: [
+      { heading: "Approved Zeekr Repairs", blocks: [{ type: "paragraph", text: "Repairs follow manufacturer-aligned standards and correct procedures, from the first assessment through to final handover." }] },
+      { heading: "EV-Aware Repair Process", blocks: [{ type: "paragraph", text: "Zeekr vehicles carry advanced safety systems, sensors and electrical components. We take extra care with electrical safety and battery-related precautions throughout the repair." }] },
+      { heading: "Panel and Body Repair", blocks: [{ type: "paragraph", text: "We restore, reshape or replace damaged panels so gaps, fit and finish return to a consistent standard." }] },
+      { heading: "Spray Painting and Colour Matching", blocks: [{ type: "paragraph", text: "Repaired areas are carefully blended with the surrounding panels for a smooth, consistent finish." }] },
+      { heading: "Insurance Coordination", blocks: [{ type: "paragraph", text: "We handle inspection, repair quoting and documentation, and communicate with your insurer where required. We’ll explain what happens next so you’re not left guessing." }] },
+      { heading: "Clear, Caring Customer Experience", blocks: [{ type: "paragraph", text: "You get clear updates and final quality checks before handover. Replacement vehicle options help keep you moving while your Zeekr is repaired." }] },
+      { heading: "Wide Range Of Services", blocks: [{ type: "paragraph", text: "CA Autobody offers complete accident repair for Zeekr owners, including:" }, { type: "bullet", text: "Panel beating" }, { type: "bullet", text: "Bumper repairs" }, { type: "bullet", text: "Paint repairs" }, { type: "bullet", text: "Dent removal" }, { type: "bullet", text: "Paintless dent removal where suitable" }, { type: "bullet", text: "Panel replacement" }, { type: "bullet", text: "Structural repair assessment" }, { type: "bullet", text: "Spray painting and colour matching" }, { type: "bullet", text: "Insurance repair quoting" }, { type: "bullet", text: "Accident assistance" }, { type: "bullet", text: "Replacement vehicle options" }, { type: "bullet", text: "Final quality checks before handover" }, { type: "paragraph", text: "Every repair is different, so we assess the damage properly before recommending the best repair pathway. We assist with the Zeekr X, 7X and 009, and repair requirements vary by model, so we recommend an assessment before any work begins." }] },
+      { heading: "Why Choose CA Autobody?", blocks: [{ type: "paragraph", text: "With more than 30 years of industry experience and a lifetime warranty on repairs, CA Autobody brings accuracy and care to modern EV repairs. Our Chelsea Heights workshop serves Zeekr owners across Bayside, Kingston, Frankston, the south east and the Mornington Peninsula, with insurance support and replacement vehicle options along the way." }] },
+    ], faqHeading: "FAQ Section", faqIntro: [], faqs: [{ question: "Do I need a Zeekr approved repairer after an accident?", answer: "For modern electric vehicles like Zeekr, it is important to choose a repairer that understands manufacturer repair standards, EV safety requirements, correct parts processes and advanced vehicle technology." }],
+  },
+};
+
+export function getEditorialServiceCopy(slug: string): OriginalServicePage | undefined {
+  return approvedBrandServiceCopy[slug] ?? originalServiceCopy[slug];
+}
+
+export function getApprovedBrandServiceCopy(slug: string): OriginalServicePage | undefined {
+  return approvedBrandServiceCopy[slug];
+}

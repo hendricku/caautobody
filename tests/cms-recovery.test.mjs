@@ -29,6 +29,34 @@ test("single-area maps use a compact full-width route layout", () => {
   assert.match(css, /\.service-area-map--single\{grid-template-columns:1fr;min-height:0\}/);
   assert.match(css, /\.service-area-map--single \.service-area-map__selection\{grid-template-columns:1fr;gap:7px\}/);
 });
+test("services directory keeps approved brands in the primary continuous flow", () => {
+  const page = read("src/app/services/page.tsx");
+  const styles = read("src/app/service-refresh.css");
+  assert.match(page, /const directoryServices = await getPublishedServices\(\);/);
+  assert.doesNotMatch(page, /More approved repair options/);
+  assert.match(page, /originalServiceCopy\[service\.slug\] \|\| \{ title: service\.title/);
+  assert.match(styles, /\.ca-services-landing__card-action \.ui-action-icon/);
+});
+test("approved brand copy and contact enquiry contract stay source-controlled", () => {
+  const editorialCopy = read("src/lib/originalServiceCopy.ts");
+  const servicePage = read("src/components/Public/ServicePage.tsx");
+  const brandCopy = read("src/lib/brandRepairContent.ts");
+  const siteContent = read("src/lib/siteContent.ts");
+  const contact = read("src/components/Public/ContactForm.tsx");
+  const route = read("src/app/api/enquiries/route.ts");
+  assert.match(siteContent, /BYD Approved Repairer Melbourne \| CA Autobody/);
+  assert.match(siteContent, /Lexus Approved Body Shop Melbourne \| CA Autobody/);
+  assert.match(brandCopy, /serviceGuide: \["BYD repair standards"/);
+  assert.match(contact, /data\.set\("enquiryType", "contact"\)/);
+  assert.match(route, /enquiryType: z\.enum\(\["contact", "brand-assessment"\]\)/);
+  assert.match(route, /sendEnquiryEmail/);
+  assert.ok(existsSync(new URL("../supabase/migrations/20261016140000_refresh_approved_brand_page_copy.sql", import.meta.url)));
+  assert.match(editorialCopy, /approvedBrandServiceCopy/);
+  assert.match(editorialCopy, /Zeekr Approved Repairer Melbourne/);
+  assert.match(editorialCopy, /Zeekr X, 7X and 009/);
+  assert.match(servicePage, /getApprovedBrandServiceCopy\(service\.slug\)/);
+  assert.match(servicePage, /if \(exactCopy\) return <EditorialServicePage/);
+});
 test("public FAQ has no browser-local overrides", () => {
   assert.doesNotMatch(read("src/components/Public/FAQList.tsx"), /useLocalCollection/);
 });

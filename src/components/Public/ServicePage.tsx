@@ -8,7 +8,7 @@ import BrandRepairPage from "@/components/Public/BrandRepairPage";
 import { brandRepairContent } from "@/lib/brandRepairContent";
 import SourceServicePage from "@/components/Public/SourceServicePage";
 import EditorialServicePage from "@/components/Public/EditorialServicePage";
-import { originalServiceCopy } from "@/lib/originalServiceCopy";
+import { getApprovedBrandServiceCopy, getEditorialServiceCopy } from "@/lib/originalServiceCopy";
 
 const repairSteps = [
   ["Assessment", "Inspect damage and identify the repair pathway."],
@@ -18,7 +18,8 @@ const repairSteps = [
 ];
 
 export default function ServicePage({ service }: { service: CmsServiceContent }) {
-  const exactCopy = service.presentation?.variant === "editorial" ? service.presentation.data : service.presentation ? undefined : originalServiceCopy[service.slug];
+  const exactCopy = getApprovedBrandServiceCopy(service.slug)
+    ?? (service.presentation?.variant === "editorial" ? service.presentation.data : getEditorialServiceCopy(service.slug));
   if (exactCopy) return <EditorialServicePage service={service} copy={exactCopy} />;
   const brandContent = service.presentation?.variant === "brand" ? service.presentation.data : service.presentation ? undefined : brandRepairContent[service.slug];
   if (brandContent) return <BrandRepairPage content={brandContent} />;

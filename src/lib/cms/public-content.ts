@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { cache } from "react";
 import { brandRepairContent, type BrandRepairContent } from "@/lib/brandRepairContent";
-import { originalServiceCopy, type OriginalServicePage } from "@/lib/originalServiceCopy";
+import { getEditorialServiceCopy, type OriginalServicePage } from "@/lib/originalServiceCopy";
 import { blogs, faqs, gallery, locations, offers, services } from "@/lib/siteContent";
 import type { BlogContent, FAQContent, GalleryContent, LocationContent, OfferContent, ServiceContent } from "@/types/content";
 
@@ -54,7 +54,7 @@ function record(value: unknown): CmsRow | null {
 }
 
 function staticPresentation(slug: string): ServicePresentation {
-  const editorial = originalServiceCopy[slug];
+  const editorial = getEditorialServiceCopy(slug);
   if (editorial) return { variant: "editorial", data: editorial };
   const brand = brandRepairContent[slug];
   if (brand) return { variant: "brand", data: brand };

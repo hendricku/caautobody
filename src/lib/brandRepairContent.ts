@@ -10,6 +10,8 @@ export type BrandRepairContent = {
   heroAlt: string;
   logo: string;
   assessmentCta: string;
+  contactCta: string;
+  serviceGuide: string[];
   approvalPoints: string[];
   approvalTitle: string;
   approvalCopy: string;
@@ -84,7 +86,9 @@ export const brandRepairContent: Record<string, BrandRepairContent> = {
     heroImage: media.brandRepair.bydHero,
     heroAlt: "Close-up of electric car charging",
     logo: "/images/BYD.webp",
-    assessmentCta: "Start My BYD Repair Assessment",
+    assessmentCta: "Enquire about a repair",
+    contactCta: "Contact CA Autobody",
+    serviceGuide: ["BYD repair standards", "Wide range of services", "Why choose CA Autobody?"],
     approvalPoints: ["Approved BYD Repairer", "EV battery safe repair procedures", "Genuine OEM BYD parts within the approved plan", "Claim assistance, towing and loan vehicle options"],
     approvalTitle: "BYD approved repairer: our capabilities",
     approvalCopy: "BYD's electric vehicles bring advanced battery and safety technology, and repairs need to match. As an approved BYD repairer in Chelsea Heights, CA Autobody follows manufacturer-approved procedures and uses genuine OEM parts, so your BYD is repaired properly, not just cosmetically.",
@@ -95,10 +99,10 @@ export const brandRepairContent: Record<string, BrandRepairContent> = {
       { code: "OEM", title: "Genuine parts", copy: "Genuine OEM BYD parts support fit, system compatibility and the manufacturer approved repair method." },
     ],
     principles: [
-      { title: "Assess beyond visible damage", copy: "Impact energy can affect structure, mounting points, restraints and electronics beyond the damaged panel." },
-      { title: "Use model appropriate information", copy: "Repair limits, joining methods, parts and checks must match the affected model and repair area." },
-      { title: "Document the repair pathway", copy: "Clear estimates, approvals, progress updates and final checks help customers understand what was completed." },
-      { title: "Confirm warranty implications", copy: "Ask how the repair method aligns with manufacturer requirements and check the vehicle warranty and compliance position." },
+      { title: "Structural and body repairs", copy: "Model-specific measuring, joining and panel work to the approved scope." },
+      { title: "Paint and refinishing", copy: "Precise colour matching for a seamless finish." },
+      { title: "Diagnostics and ADAS calibration", copy: "System scans and calibration checks before the vehicle goes home." },
+      { title: "Genuine parts", copy: "Genuine OEM BYD parts within the approved repair scope." },
     ],
     capabilities: [
       { title: "Approved BYD repairs", copy: "Every repair follows manufacturer-approved procedures, from the first assessment through to final checks." },
@@ -117,10 +121,10 @@ export const brandRepairContent: Record<string, BrandRepairContent> = {
       { title: "Complete approved repairs", copy: "Technicians follow the applicable BYD repair methods and quality controls." },
       { title: "Final checks and return", copy: "Fit, finish, diagnostics and any calibration requirements are checked before handover." },
     ],
-    supportTitle: "Protect the repair pathway from the beginning",
-    supportCopy: "Speak with CA Autobody before accepting a repair booking elsewhere. We will explain what to ask and what information is needed.",
-    supportPoints: ["Genuine OEM BYD parts within the approved repair scope", "Direct repair progress updates", "Insurance claim assistance", "Accident towing where required", "Loan vehicle options, subject to terms"],
-    disclaimer: "Manufacturer warranty, insurance coverage, parts approval, towing, loan vehicle and claim outcomes depend on the repair, applicable terms and individual circumstances. We explain what applies to your vehicle and claim before any work starts.",
+    supportTitle: "Why Choose CA Autobody?",
+    supportCopy: "BYD owners need a repairer who treats the vehicle as more than a cosmetic job. CA Autobody combines approved repair methods, genuine OEM parts and clear communication, so you know what’s happening at every step. Whether it’s a minor repair or major structural work, we’re your local approved BYD repairer in Chelsea Heights.",
+    supportPoints: [],
+    disclaimer: "Manufacturer warranty, insurance coverage, parts approval, towing and loan vehicle availability depend on the repair and your individual circumstances. We’ll explain what applies to your vehicle before any work starts.",
     faqs: [
       { question: "Is CA Autobody an Approved BYD Repairer?", answer: "Yes. CA Autobody is an Approved BYD Repairer in Melbourne. Current BYD approved repairer, confirmed for your model." },
       { question: "Will repairs follow BYD procedures?", answer: "Yes. The repair is planned around manufacturer approved procedures, genuine parts and model specific requirements. The final scope depends on the assessed damage." },
@@ -134,7 +138,7 @@ export const brandRepairContent: Record<string, BrandRepairContent> = {
       { image: media.brandRepair.bydPanel, alt: "Car mechanic working to remove dent in workshop", label: "Panel repair" },
       { image: media.brandRepair.diagnostics, alt: "Automotive mechanic inspecting a vehicle with diagnostic software", label: "Diagnostic checks" },
     ],
-    sections: { ...sharedSections, supportEyebrow: "Accident and claims support" },
+    sections: { ...sharedSections, principlesEyebrow: "Wide range of services", principlesTitle: "Complete collision repair for BYD owners.", capabilityEyebrow: "BYD approved repairer", capabilityTitle: "Our capabilities", capabilityIntro: "Every repair follows the approved process, from assessment through to final checks.", supportEyebrow: "Why choose CA Autobody?", finalEyebrow: "CA Autobody", finalTitle: "Let’s talk about your BYD.", finalCopy: "Talk directly with our team about an assessment, repair options and your insurance claim." },
   },
   "lexus-approved-body-shop-melbourne": {
     brand: "Lexus",
@@ -145,7 +149,9 @@ export const brandRepairContent: Record<string, BrandRepairContent> = {
     heroImage: media.brandRepair.lexusHero,
     heroAlt: "A panel beater inspecting vehicle damage in the workshop",
     logo: "/images/lexus_PNG57.webp",
-    assessmentCta: "Start My Lexus Repair Assessment",
+    assessmentCta: "Enquire about a repair",
+    contactCta: "Contact CA Autobody",
+    serviceGuide: ["Lexus repair standards", "Wide range of services", "Why choose CA Autobody?"],
     approvalPoints: ["Approved Lexus Repairer", "Genuine OEM Lexus parts within the approved plan", "ADAS, structural and precision refinishing capability", "Claim assistance, towing and loan vehicle options"],
     approvalTitle: "Lexus approved repairer: our capabilities",
     approvalCopy: "A Lexus is built for comfort and precision, and a repair should preserve both. As an approved Lexus repairer in Chelsea Heights, CA Autobody combines genuine OEM parts, approved procedures and precision refinishing, so your vehicle looks and drives the way it should.",
@@ -156,10 +162,10 @@ export const brandRepairContent: Record<string, BrandRepairContent> = {
       { code: "QC", title: "Detailed quality control", copy: "Panel alignment, function, finish and repair documentation are checked before handover." },
     ],
     principles: [
-      { title: "Assess beyond visible damage", copy: "Impact energy can affect structure, mounting points, restraints and electronics beyond the damaged panel." },
-      { title: "Use model appropriate information", copy: "Repair limits, joining methods, parts and checks must match the affected model and repair area." },
-      { title: "Document the repair pathway", copy: "Clear estimates, approvals, progress updates and final checks help customers understand what was completed." },
-      { title: "Confirm warranty implications", copy: "Ask how the repair method aligns with manufacturer requirements and check the vehicle warranty and documentation." },
+      { title: "Structural and body repairs", copy: "Accurate measuring, panel repair and fit within the approved scope." },
+      { title: "Premium paint refinishing", copy: "Colour matching focused on consistency, gloss and finish." },
+      { title: "ADAS calibration support", copy: "Diagnostic and calibration needs addressed for affected safety technology." },
+      { title: "Genuine parts", copy: "Genuine OEM Lexus parts within the approved repair plan." },
     ],
     capabilities: [
       { title: "Approved Lexus repairs", copy: "Repairs follow manufacturer-approved procedures. Every vehicle is assessed beyond the visible damage, so nothing is missed." },
@@ -178,10 +184,10 @@ export const brandRepairContent: Record<string, BrandRepairContent> = {
       { title: "Complete Lexus approved repairs", copy: "The team carries out the approved body, structural, paint and system related work." },
       { title: "Final quality and handover", copy: "Fit, finish, function and any diagnostic or calibration requirements are checked before return." },
     ],
-    supportTitle: "A premium repair experience without unnecessary confusion",
-    supportCopy: "CA Autobody coordinates the practical steps, keeps you updated and explains the repair pathway in clear language.",
-    supportPoints: ["Genuine OEM Lexus parts within the approved scope", "Direct insurer communication where authorised", "Accident towing assistance", "Repair progress updates", "Loan car options, subject to availability and eligibility"],
-    disclaimer: "Manufacturer warranty, insurance coverage, parts approval, towing, loan vehicle and claim outcomes depend on the repair, applicable terms and individual circumstances. We explain what applies to your vehicle and claim before any work starts.",
+    supportTitle: "Why Choose CA Autobody?",
+    supportCopy: "Lexus owners expect a repair that restores more than the visible damage. CA Autobody pairs approved repair methods and genuine parts with clear communication, so you know what’s happening at every step. Whether it’s a minor repair or major structural work, we’re your local approved Lexus repairer in Chelsea Heights.",
+    supportPoints: [],
+    disclaimer: "Manufacturer warranty, insurance coverage, parts approval, towing and loan vehicle availability depend on the repair and your individual circumstances. We’ll explain what applies to your vehicle before any work starts.",
     faqs: [
       { question: "Is CA Autobody a Lexus Approved Repairer?", answer: "Yes. CA Autobody is a Lexus Approved Repairer in Melbourne. Current Lexus approved repairer, confirmed for your model." },
       { question: "Do you use genuine Lexus parts?", answer: "Genuine OEM Lexus parts are specified within the approved repair plan, subject to the repair scope, availability and claim approval." },
@@ -195,6 +201,6 @@ export const brandRepairContent: Record<string, BrandRepairContent> = {
       { image: media.brandRepair.lexusFinish, alt: "Specialist preparing a vehicle finish", label: "Finish preparation" },
       { image: media.brandRepair.diagnostics, alt: "Automotive mechanic inspecting a vehicle with diagnostic software", label: "Diagnostic checks" },
     ],
-    sections: { ...sharedSections, supportEyebrow: "Accident and claim support" },
+    sections: { ...sharedSections, principlesEyebrow: "Wide range of services", principlesTitle: "Complete collision repair for Lexus owners.", capabilityEyebrow: "Lexus approved repairer", capabilityTitle: "Our capabilities", capabilityIntro: "Every repair follows the approved process, from assessment through to final checks.", supportEyebrow: "Why choose CA Autobody?", finalEyebrow: "CA Autobody", finalTitle: "Let’s talk about your Lexus.", finalCopy: "Talk directly with our team about an assessment, repair options and your insurance claim." },
   },
 };

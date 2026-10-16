@@ -15,11 +15,7 @@ export default function AppChrome({ children, siteSettings }: { children: React.
   const admin = pathname.startsWith("/caautobodyadmin");
   if (admin) return <>{children}</>;
 
-  const brandClosingCtaRoutes = new Set([
-    "/services/byd-approved-repairer-melbourne",
-    "/services/lexus-approved-body-shop-melbourne",
-  ]);
-  const showClosingCTA = pathname !== "/thank-you" && !brandClosingCtaRoutes.has(pathname);
+  const showClosingCTA = pathname !== "/thank-you";
 
   return (
     <>

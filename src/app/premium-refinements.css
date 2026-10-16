@@ -11,6 +11,7 @@
 .ca-service .ca-service__contact-copy h2{color:#151411;font-size:clamp(46px,4.6vw,72px);font-weight:740;letter-spacing:-.06em;margin:21px 0 0;max-width:710px;line-height:1.05}
 .ca-service .ca-service__contact-copy .ca-service__chapter-rule{width:67px;margin:30px 0 22px}
 .ca-service .ca-service__contact-copy>p{font-size:16px;color:#4d473f;max-width:505px;line-height:1.8}
+.ca-service .ca-service__contact-copy>.ca-service__disclaimer{max-width:560px;margin:28px 0 0;padding-top:17px;border-top:1px solid #c7bdad;color:#655d53;font-size:12px;line-height:1.72}.ca-service .ca-service__contact-copy>.ca-service__disclaimer strong{color:#2a2722}
 .ca-service .ca-service__contact-detail{display:grid;gap:9px;margin-top:50px;padding-top:20px;border-top:1px solid #c7bdad;width:100%}
 .ca-service .ca-service__contact-detail span{font-size:10px;color:#956b35;font-weight:800;letter-spacing:.16em}
 .ca-service .ca-service__contact-detail strong{color:#36322d;font-size:13px;font-weight:650;line-height:1.8}

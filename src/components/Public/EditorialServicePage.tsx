@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { ServiceContent } from "@/types/content";
 import type { OriginalServicePage, ServiceBlock, OriginalServiceSection } from "@/lib/originalServiceCopy";
-import { originalServiceCopy } from "@/lib/originalServiceCopy";
+import { getEditorialServiceCopy } from "@/lib/originalServiceCopy";
 import { services } from "@/lib/siteContent";
 import { media } from "@/lib/media";
 import ServiceSectionNav, { type SectionNavigationItem } from "./ServiceSectionNav";
@@ -106,13 +106,14 @@ function EditorialSection({ section, index, total, isZeekr }: { section: Origina
 export default function EditorialServicePage({ service, copy }: { service: ServiceContent; copy: OriginalServicePage }) {
   const isTesla = service.slug === "tesla-approved-repair-centre";
   const isZeekr = service.slug === "services-zeekr-approved-repairer-melbourne";
-  const featureSections = isTesla ? copy.sections.slice(0, 6) : [];
-  const chapters = isTesla ? copy.sections.slice(6) : copy.sections;
-  const related = services.filter((other) => other.slug !== service.slug && originalServiceCopy[other.slug]).slice(0, 3);
+  const usesApprovedBrandLayout = isTesla || copy.approvedBrandLayout === true;
+  const featureSections = usesApprovedBrandLayout ? copy.sections.slice(0, 6) : [];
+  const chapters = usesApprovedBrandLayout ? copy.sections.slice(6) : copy.sections;
+  const related = services.filter((other) => other.slug !== service.slug && getEditorialServiceCopy(other.slug)).slice(0, 3);
   const faqHref = `/frequently-asked-questions?category=${encodeURIComponent(copy.category)}`;
   const navigation: SectionNavigationItem[] = [
-    ...(isTesla ? [{ id: "repair-standard", label: "Tesla repair standards", number: "01" }] : []),
-    ...chapters.map((section, index) => ({ id: sourceSectionId(index), label: sourceText(section.heading), number: String(index + 1 + (isTesla ? 1 : 0)).padStart(2, "0") })),
+    ...(usesApprovedBrandLayout ? [{ id: "repair-standard", label: `${sourceText(copy.category)} repair standards`, number: "01" }] : []),
+    ...chapters.map((section, index) => ({ id: sourceSectionId(index), label: sourceText(section.heading), number: String(index + 1 + (usesApprovedBrandLayout ? 1 : 0)).padStart(2, "0") })),
     ...(copy.faqs.length ? [{ id: "service-faqs", label: "Questions & answers", number: "FAQ" }] : []),
   ];
 
@@ -127,7 +128,7 @@ export default function EditorialServicePage({ service, copy }: { service: Servi
             <div className="ca-service__crumbs"><Link href="/services">Services</Link><span aria-hidden="true">/</span><span>{sourceText(copy.category)}</span></div>
             <div className="ca-service__hero-title-group">
               <h1 id="service-heading">{sourceText(copy.title)}</h1>
-              <p className="ca-service__hero-deck">{sourceText(heroLead(copy.introParagraphs[0] ?? ""))}</p>
+              <p className="ca-service__hero-deck">{sourceText(heroLead(copy.heroDescription ?? copy.introParagraphs[0] ?? ""))}</p>
             </div>
             <div className="ca-service__hero-actions">
               <Link href="/contact" className="ca-service__button ca-service__button--gold">Enquire about a repair <Icon name="arrow-outward" /></Link>
@@ -151,7 +152,7 @@ export default function EditorialServicePage({ service, copy }: { service: Servi
         </div>
       </section>
 
-      {featureSections.length > 0 && <section id="repair-standard" className="ca-service__features" aria-label="Tesla repair standards">
+      {featureSections.length > 0 && <section id="repair-standard" className="ca-service__features" aria-label={`${sourceText(copy.category)} repair standards`}>
         <div className="shell">
           <div className="ca-service__features-top"><span className="ca-service__small-label">OUR CAPABILITIES</span><span>01 — 06</span></div>
           <div className="ca-service__features-grid">{featureSections.map((section, index) => (
@@ -179,9 +180,10 @@ export default function EditorialServicePage({ service, copy }: { service: Servi
         <div className="shell ca-service__contact-band-inner">
           <div className="ca-service__contact-copy">
             <span className="ca-service__small-label">YOUR NEXT STEP / CA AUTOBODY</span>
-            <h2>Let’s talk about your vehicle.</h2>
+            <h2>{sourceText(copy.contactHeading ?? "Let’s talk about your vehicle.")}</h2>
             <span className="ca-service__chapter-rule" aria-hidden="true" />
-            <p>Talk directly with our team about an assessment, repair options and getting back on the road.</p>
+            <p>{sourceText(copy.contactCopy ?? "Talk directly with our team about an assessment, repair options and getting back on the road.")}</p>
+            {copy.disclaimer ? <p className="ca-service__disclaimer"><strong>Small print:</strong> {sourceText(copy.disclaimer)}</p> : null}
             <div className="ca-service__contact-detail"><span>VISIT THE WORKSHOP</span><strong>7 Ashley Park Drive<br />Chelsea Heights, VIC 3196</strong></div>
           </div>
           <div className="ca-service__contact-photo">
@@ -202,7 +204,7 @@ export default function EditorialServicePage({ service, copy }: { service: Servi
           <div className="ca-service__related-grid">{related.map((item, index) => (
             <Link key={item.slug} href={`/services/${item.slug}`}>
               <span className="ca-service__related-index">0{index + 1}</span>
-              <h3>{originalServiceCopy[item.slug].title}</h3>
+              <h3>{getEditorialServiceCopy(item.slug)?.title}</h3>
               <Icon name="arrow-outward" className="ca-service__related-arrow" />
             </Link>
           ))}</div>

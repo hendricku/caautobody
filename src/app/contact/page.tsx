@@ -19,7 +19,7 @@ export default async function ContactPage() {
     <section className="contact-booking shell section-pad">
       <div className="contact-booking__intro hp-reveal"><h2>Get in touch.</h2><p>Contact us today and our dedicated CA Autobody team will take it from there. Whether it&apos;s minor touch-ups or major restoration work, we&apos;ll get your vehicle sorted quickly and properly.</p></div>
       <div className="contact-booking__layout hp-reveal">
-        <div className="contact-booking__form"><p className="contact-booking__label">Get in touch</p><h2>Tell us about your vehicle.</h2><ContactForm suburbs={suburbs} /></div>
+        <div className="contact-booking__form contact-booking__form--docket"><p className="contact-booking__label">Get in touch</p><h2>Tell us about your vehicle.</h2><ContactForm suburbs={suburbs} /></div>
         <aside className="contact-booking__details" aria-labelledby="contact-details-title">
           <p className="contact-booking__label">Visit &amp; contact</p><h2 id="contact-details-title">CA Autobody</h2>
           <dl>
