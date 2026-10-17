@@ -11,8 +11,10 @@ const tables = new Set([
   "cms_page_sections",
   "cms_site_settings",
   "cms_enquiries",
+  "cms_admin_members",
+  "analytics_exports",
 ]);
-const operations = new Set(["INSERT", "UPDATE"]);
+const operations = new Set(["INSERT", "UPDATE", "DELETE", "DEACTIVATE", "REACTIVATE", "EXPORT", "LEGACY"]);
 
 export async function GET(request: NextRequest) {
   const admin = await getAdmin();

@@ -8,7 +8,7 @@ type AuditEvent = {
   actor_email: string | null;
   table_name: string;
   record_id: string | null;
-  operation: "INSERT" | "UPDATE" | "LEGACY";
+  operation: "INSERT" | "UPDATE" | "DELETE" | "DEACTIVATE" | "REACTIVATE" | "EXPORT" | "LEGACY";
   old_status: string | null;
   new_status: string | null;
   created_at: string;
@@ -24,6 +24,12 @@ const tableLabels: Record<string, string> = {
   cms_page_sections: "Page content",
   cms_site_settings: "Settings",
   cms_enquiries: "Enquiries",
+  cms_admin_members: "Team & access",
+  analytics_exports: "Analytics exports",
+};
+
+const operationLabels: Record<AuditEvent["operation"], string> = {
+  INSERT: "Created", UPDATE: "Updated", DELETE: "Removed", DEACTIVATE: "Deactivated", REACTIVATE: "Reactivated", EXPORT: "Exported", LEGACY: "Imported legacy event",
 };
 
 export default function AuditPage() {
@@ -63,13 +69,13 @@ export default function AuditPage() {
         <div className="panel-head"><div><h2>Recent activity</h2></div><small>Latest 100 events</small></div>
         <div className="admin-toolbar" aria-label="Audit log filters">
           <label>Module<select value={table} onChange={(event) => setTable(event.target.value)}><option value="">All modules</option>{Object.entries(tableLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
-          <label>Action<select value={operation} onChange={(event) => setOperation(event.target.value)}><option value="">All actions</option><option value="INSERT">Created</option><option value="UPDATE">Updated</option></select></label>
+          <label>Action<select value={operation} onChange={(event) => setOperation(event.target.value)}><option value="">All actions</option>{Object.entries(operationLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
         </div>
         {error ? <p className="admin-note" role="alert">{error}</p> : null}
         {loading ? <p className="admin-loading">Loading audit history...</p> : null}
         {!loading && !error ? <div className="admin-audit-list">{items.length ? items.map((event) => {
           const changedStatus = event.old_status !== event.new_status && (event.old_status || event.new_status);
-          return <article key={event.id}><div><b>{event.actor_email || "Legacy CMS event"}</b><span>{event.operation === "INSERT" ? "Created" : event.operation === "UPDATE" ? "Updated" : "Imported legacy event"} {tableLabels[event.table_name] || event.table_name}</span><small>Record: {event.record_id || "not recorded"}{changedStatus ? ` | Status: ${event.old_status || "none"} to ${event.new_status || "none"}` : ""}</small></div><time dateTime={event.created_at}>{new Intl.DateTimeFormat("en-AU", { dateStyle: "medium", timeStyle: "short" }).format(new Date(event.created_at))}</time></article>;
+          return <article key={event.id}><div><b>{event.actor_email || "Legacy CMS event"}</b><span>{operationLabels[event.operation] || event.operation} {tableLabels[event.table_name] || event.table_name}</span><small>Record: {event.record_id || "not recorded"}{changedStatus ? ` | ${event.old_status || "none"} to ${event.new_status || "none"}` : ""}</small></div><time dateTime={event.created_at}>{new Intl.DateTimeFormat("en-AU", { dateStyle: "medium", timeStyle: "short" }).format(new Date(event.created_at))}</time></article>;
         }) : <p className="admin-note">No matching CMS activity has been recorded yet.</p>}</div> : null}
       </section>
     </>

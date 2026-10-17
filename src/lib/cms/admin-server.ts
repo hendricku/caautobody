@@ -55,10 +55,9 @@ export async function getAdmin() {
   const { data, error } = await client.auth.getClaims();
   const claims = data?.claims;
   if (error || !claims?.sub) return null;
-  const { data: membership, error: roleError } = await client.from("cms_admin_members")
-    .select("role,active").eq("user_id", claims.sub).eq("active", true).maybeSingle();
-  if (roleError || !membership) return null;
-  return { client, user: { id: claims.sub, email: typeof claims.email === "string" ? claims.email : undefined }, role: membership.role as AdminRole };
+  const { data: role, error: roleError } = await client.rpc("cms_staff_role");
+  if (roleError || !["admin", "editor", "publisher"].includes(role)) return null;
+  return { client, user: { id: claims.sub, email: typeof claims.email === "string" ? claims.email : undefined }, role: role as AdminRole };
 }
 
 export function sameOrigin(request: Request) {

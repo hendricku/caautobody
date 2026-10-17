@@ -37,9 +37,18 @@ node --env-file=.env.local scripts/upload-cms-media.mjs
 - Public enquiries are inserted only by the server, then delivered through the configured SMTP transport. CMS staff can view and update them through the protected dashboard.
 - Never put `SUPABASE_SERVICE_ROLE_KEY` in a `NEXT_PUBLIC_*` variable or client component.
 
-## Resend and six-digit admin OTP
+## Team administration and six-digit admin OTP
+
+Apply `migrations/20261017025958_secure_team_management.sql` in the same database as the website before deploying this feature. It depends on the audit-table repair migrations from 15 October. This migration adds protected team RPCs and an access cutoff for sessions; existing active staff sessions are preserved.
+
+Only an active administrator can use **Team & access** to add another administrator by email, deactivate/reactivate access, or remove a member. A new member requests a six-digit code from `/caautobodyadmin/login`. Adding the member does not send an unsolicited sign-in code. Deactivation and removal take effect on subsequent protected requests. Reactivation requires a new OTP login, so an old session cannot silently regain access.
+
+Removing a member deletes their CMS membership. Their Auth identity, authored content and audit history are retained. Every membership change and its audit entry are committed together. Administrators cannot deactivate or remove themselves, and concurrent team changes are serialized.
 
 - Public website enquiries use Resend's HTTP API. Keep `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `CONTACT_RECIPIENT_EMAIL`, and `CAAUTOBODY_RATE_LIMIT_SALT` server-only in `.env.local` and Vercel. Do not commit their values.
-- Configure Resend SMTP separately in Supabase Auth for passwordless login, recovery, invitation, and other Auth emails. The website's Resend API key does not configure Supabase Auth delivery.
-- Configure Supabase Auth's email template to include `{{ .Token }}` so its passwordless login email contains the six-digit code accepted by this website. The application cannot force the hosted Supabase template setting from source code.
+- Admin login now generates the one-time code through Supabase Auth's server-only `generateLink` API and delivers the actual six-digit code through Resend. This uses the existing `RESEND_API_KEY` and `RESEND_FROM_EMAIL`; no extra secret is needed. The hosted Supabase SMTP/template does not control this app's admin OTP email.
+- Supabase Auth must use six-digit email OTPs. Code verification, expiry, replay prevention and rotating HttpOnly session cookies remain managed by Supabase. The public login endpoint never returns the code or reveals team membership.
+- Recovery/invitation emails initiated directly from Supabase still use its own configured email transport.
 - Rotate any Supabase service-role, SMTP, or Resend key that was previously committed or displayed. Put replacements only in `.env.local`, Vercel, and the appropriate provider dashboard.
+
+Run `node --test tests/team-access.test.mjs` for local PostgreSQL access-control and API tests. Run `node --env-file=.env.local scripts/verify-admin-otp.mjs` to create/remove a temporary unprivileged Auth identity and verify six-digit OTP sign-in and replay rejection. The live check sends no email and prints no codes or credentials.
