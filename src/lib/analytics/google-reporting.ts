@@ -1,5 +1,6 @@
 import "server-only";
 import { createSign } from "node:crypto";
+import type { AnalyticsRange } from "@/lib/analytics/range";
 
 type GoogleConfiguration = {
   propertyId: string;
@@ -8,23 +9,22 @@ type GoogleConfiguration = {
   privateKey: string;
 };
 
-type MetricRow = { name: string; value: number };
+export type MetricRow = { name: string; value: number };
+export type SearchRow = { name: string; clicks: number; impressions: number; ctr: number; position: number };
+export type SearchConsoleStatus = "connected" | "not_configured" | "permission_required" | "unavailable";
 
 export type GoogleAnalyticsReport = {
   period: { start: string; end: string };
-  overview: { sessions: number; users: number; pageViews: number };
+  overview: { sessions: number; users: number; pageViews: number; engagementRate: number };
+  daily: Array<{ date: string; sessions: number; users: number; pageViews: number }>;
+  trafficSources: MetricRow[];
+  devices: MetricRow[];
   topPages: MetricRow[];
-  topQueries: MetricRow[];
-  searchConsoleConnected: boolean;
+  search: { status: SearchConsoleStatus; overview: { clicks: number; impressions: number; ctr: number; position: number }; topQueries: SearchRow[]; topPages: SearchRow[] };
 };
 
-function dateRange() {
-  const end = new Date();
-  end.setUTCDate(end.getUTCDate() - 1);
-  const start = new Date(end);
-  start.setUTCDate(start.getUTCDate() - 27);
-  const isoDate = (date: Date) => date.toISOString().slice(0, 10);
-  return { start: isoDate(start), end: isoDate(end) };
+class GoogleRequestError extends Error {
+  constructor(public status?: number) { super("Google reporting request failed"); }
 }
 
 function configuration(): GoogleConfiguration | null {
@@ -42,7 +42,7 @@ function configuration(): GoogleConfiguration | null {
 export function analyticsConfiguration() {
   const reporting = configuration();
   return {
-    trackingConfigured: Boolean(process.env.NEXT_PUBLIC_GA4_ID?.trim() || process.env.NEXT_PUBLIC_GTM_ID?.trim()),
+    trackingConfigured: /^G-[A-Z0-9]+$/.test(process.env.NEXT_PUBLIC_GA4_ID?.trim() || ""),
     reportingConfigured: Boolean(reporting),
     searchConsoleConfigured: Boolean(reporting?.searchConsoleSiteUrl),
   };
@@ -50,6 +50,15 @@ export function analyticsConfiguration() {
 
 function encode(value: unknown) {
   return Buffer.from(JSON.stringify(value)).toString("base64url");
+}
+
+async function requestJson(url: string, init: RequestInit) {
+  let response: Response;
+  try { response = await fetch(url, { ...init, signal: AbortSignal.timeout(15_000), cache: "no-store" }); }
+  catch { throw new GoogleRequestError(); }
+  const payload = await response.json().catch(() => null);
+  if (!response.ok || !payload) throw new GoogleRequestError(response.status);
+  return payload as Record<string, unknown>;
 }
 
 async function accessToken(config: GoogleConfiguration) {
@@ -67,29 +76,34 @@ async function accessToken(config: GoogleConfiguration) {
   signer.update(unsignedToken);
   signer.end();
   const assertion = `${unsignedToken}.${signer.sign(config.privateKey, "base64url")}`;
-  const response = await fetch("https://oauth2.googleapis.com/token", {
+  const payload = await requestJson("https://oauth2.googleapis.com/token", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({ grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer", assertion }),
-    cache: "no-store",
   });
-  const payload = await response.json().catch(() => null) as { access_token?: unknown } | null;
-  if (!response.ok || !payload || typeof payload.access_token !== "string") throw new Error("Google authorization failed");
+  if (typeof payload.access_token !== "string") throw new GoogleRequestError();
   return payload.access_token;
 }
 
 type DataApiRow = { dimensionValues?: Array<{ value?: string }>; metricValues?: Array<{ value?: string }> };
+type DataApiReport = { rows?: DataApiRow[] };
+type SearchConsoleApiRow = { keys?: string[]; clicks?: number; impressions?: number; ctr?: number; position?: number };
 
-async function dataApi(token: string, propertyId: string, body: Record<string, unknown>) {
-  const response = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`, {
+async function gaBatch(token: string, propertyId: string, range: AnalyticsRange) {
+  const dateRanges = [{ startDate: range.start, endDate: range.end }];
+  const requests = [
+    { dateRanges, metrics: [{ name: "sessions" }, { name: "totalUsers" }, { name: "screenPageViews" }, { name: "engagementRate" }] },
+    { dateRanges, dimensions: [{ name: "date" }], metrics: [{ name: "sessions" }, { name: "totalUsers" }, { name: "screenPageViews" }], orderBys: [{ dimension: { dimensionName: "date" } }], limit: 366 },
+    { dateRanges, dimensions: [{ name: "pagePath" }], metrics: [{ name: "screenPageViews" }], orderBys: [{ metric: { metricName: "screenPageViews" }, desc: true }], limit: 10 },
+    { dateRanges, dimensions: [{ name: "sessionDefaultChannelGroup" }], metrics: [{ name: "sessions" }], orderBys: [{ metric: { metricName: "sessions" }, desc: true }], limit: 10 },
+    { dateRanges, dimensions: [{ name: "deviceCategory" }], metrics: [{ name: "sessions" }], orderBys: [{ metric: { metricName: "sessions" }, desc: true }], limit: 10 },
+  ];
+  const payload = await requestJson(`https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:batchRunReports`, {
     method: "POST",
     headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-    cache: "no-store",
+    body: JSON.stringify({ requests }),
   });
-  const payload = await response.json().catch(() => null) as { rows?: DataApiRow[] } | null;
-  if (!response.ok || !payload) throw new Error("Google Analytics reporting failed");
-  return payload.rows || [];
+  return Array.isArray(payload.reports) ? payload.reports as DataApiReport[] : [];
 }
 
 function metric(value?: string) {
@@ -97,44 +111,50 @@ function metric(value?: string) {
   return Number.isFinite(number) ? number : 0;
 }
 
-async function searchConsole(token: string, siteUrl: string, range: { start: string; end: string }) {
-  const response = await fetch(`https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(siteUrl)}/searchAnalytics/query`, {
+function percentage(value?: string | number) { return Math.round(metric(typeof value === "number" ? String(value) : value) * 10_000) / 100; }
+function dateLabel(value = "") { return /^\d{8}$/.test(value) ? `${value.slice(0, 4)}-${value.slice(4, 6)}-${value.slice(6)}` : value; }
+function metricRows(rows: DataApiRow[]) { return rows.map((row) => ({ name: row.dimensionValues?.[0]?.value || "Unknown", value: metric(row.metricValues?.[0]?.value) })); }
+function searchRows(rows: SearchConsoleApiRow[]) { return rows.map((row) => ({ name: row.keys?.[0] || "Unknown", clicks: metric(String(row.clicks || 0)), impressions: metric(String(row.impressions || 0)), ctr: percentage(row.ctr), position: Math.round(metric(String(row.position || 0)) * 10) / 10 })); }
+
+async function searchConsole(token: string, siteUrl: string, range: AnalyticsRange, dimensions: string[]) {
+  const payload = await requestJson(`https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(siteUrl)}/searchAnalytics/query`, {
     method: "POST",
     headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ startDate: range.start, endDate: range.end, dimensions: ["query"], rowLimit: 6 }),
-    cache: "no-store",
+    body: JSON.stringify({ startDate: range.start, endDate: range.end, dimensions, rowLimit: 10, dataState: "final" }),
   });
-  const payload = await response.json().catch(() => null) as { rows?: Array<{ keys?: string[]; clicks?: number }> } | null;
-  if (!response.ok || !payload) throw new Error("Search Console reporting failed");
-  return (payload.rows || []).map((row) => ({ name: row.keys?.[0] || "Unknown query", value: metric(String(row.clicks || 0)) }));
+  return Array.isArray(payload.rows) ? payload.rows as SearchConsoleApiRow[] : [];
 }
 
-export async function getGoogleAnalyticsReport(): Promise<GoogleAnalyticsReport | null> {
+export async function getGoogleAnalyticsReport(range: AnalyticsRange): Promise<GoogleAnalyticsReport | null> {
   const config = configuration();
   if (!config) return null;
-
-  const range = dateRange();
   const token = await accessToken(config);
-  const [overviewRows, pageRows] = await Promise.all([
-    dataApi(token, config.propertyId, { dateRanges: [{ startDate: range.start, endDate: range.end }], metrics: [{ name: "sessions" }, { name: "totalUsers" }, { name: "screenPageViews" }] }),
-    dataApi(token, config.propertyId, { dateRanges: [{ startDate: range.start, endDate: range.end }], dimensions: [{ name: "pagePath" }], metrics: [{ name: "screenPageViews" }], orderBys: [{ metric: { metricName: "screenPageViews" }, desc: true }], limit: 6 }),
-  ]);
-  const overview = overviewRows[0]?.metricValues || [];
-  let topQueries: MetricRow[] = [];
-  let searchConsoleConnected = false;
+  const reports = await gaBatch(token, config.propertyId, range);
+  const overview = reports[0]?.rows?.[0]?.metricValues || [];
+  const search = { status: "not_configured" as SearchConsoleStatus, overview: { clicks: 0, impressions: 0, ctr: 0, position: 0 }, topQueries: [] as SearchRow[], topPages: [] as SearchRow[] };
   if (config.searchConsoleSiteUrl) {
     try {
-      topQueries = await searchConsole(token, config.searchConsoleSiteUrl, range);
-      searchConsoleConnected = true;
-    } catch {
-      searchConsoleConnected = false;
+      const [overviewRows, queryRows, pageRows] = await Promise.all([
+        searchConsole(token, config.searchConsoleSiteUrl, range, []),
+        searchConsole(token, config.searchConsoleSiteUrl, range, ["query"]),
+        searchConsole(token, config.searchConsoleSiteUrl, range, ["page"]),
+      ]);
+      const row = overviewRows[0];
+      search.status = "connected";
+      search.overview = { clicks: metric(String(row?.clicks || 0)), impressions: metric(String(row?.impressions || 0)), ctr: percentage(row?.ctr), position: Math.round(metric(String(row?.position || 0)) * 10) / 10 };
+      search.topQueries = searchRows(queryRows);
+      search.topPages = searchRows(pageRows);
+    } catch (error) {
+      search.status = error instanceof GoogleRequestError && [401, 403].includes(error.status || 0) ? "permission_required" : "unavailable";
     }
   }
   return {
     period: range,
-    overview: { sessions: metric(overview[0]?.value), users: metric(overview[1]?.value), pageViews: metric(overview[2]?.value) },
-    topPages: pageRows.map((row) => ({ name: row.dimensionValues?.[0]?.value || "/", value: metric(row.metricValues?.[0]?.value) })),
-    topQueries,
-    searchConsoleConnected,
+    overview: { sessions: metric(overview[0]?.value), users: metric(overview[1]?.value), pageViews: metric(overview[2]?.value), engagementRate: percentage(overview[3]?.value) },
+    daily: (reports[1]?.rows || []).map((row) => ({ date: dateLabel(row.dimensionValues?.[0]?.value), sessions: metric(row.metricValues?.[0]?.value), users: metric(row.metricValues?.[1]?.value), pageViews: metric(row.metricValues?.[2]?.value) })),
+    topPages: metricRows(reports[2]?.rows || []),
+    trafficSources: metricRows(reports[3]?.rows || []),
+    devices: metricRows(reports[4]?.rows || []),
+    search,
   };
 }

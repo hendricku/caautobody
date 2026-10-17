@@ -60,6 +60,25 @@ test("approved brand copy and contact enquiry contract stay source-controlled", 
 test("public FAQ has no browser-local overrides", () => {
   assert.doesNotMatch(read("src/components/Public/FAQList.tsx"), /useLocalCollection/);
 });
+test("analytics reports stay admin-only, range-validated, and export-audited", () => {
+  const reportRoute = read("src/app/api/admin/analytics/route.ts");
+  const exportRoute = read("src/app/api/admin/analytics/export/route.ts");
+  const reporting = read("src/lib/analytics/google-reporting.ts");
+  const range = read("src/lib/analytics/range.ts");
+  const gitignore = read(".gitignore");
+  assert.match(reportRoute, /getAdmin\(\)/);
+  assert.match(reportRoute, /admin\.role !== "admin"/);
+  assert.match(reportRoute, /consumePublicRateLimit/);
+  assert.match(reportRoute, /resolveAnalyticsRange/);
+  assert.match(exportRoute, /sameOrigin\(request\)/);
+  assert.match(exportRoute, /cms_record_analytics_export/);
+  assert.match(exportRoute, /Content-Disposition/);
+  assert.match(reporting, /analytics\.readonly/);
+  assert.match(reporting, /webmasters\.readonly/);
+  assert.match(reporting, /batchRunReports/);
+  assert.match(range, /span >= 1 && span <= 366/);
+  assert.match(gitignore, /caautobody-analytics-reader-\*\.json/);
+});
 test("assets and CMS seed are present", () => {
   assert.ok(existsSync(new URL("../public/images/logo.webp", import.meta.url)));
   assert.match(read("supabase/seed/legacy-content.sql"), /cms_media_assets/);

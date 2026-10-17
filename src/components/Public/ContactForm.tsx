@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import Icon from "@/components/UI/Icon";
+import { trackAnalyticsEvent } from "@/lib/analytics/client";
 
 export default function ContactForm({ suburbs }: { suburbs: string[] }) {
   const [sent, setSent] = useState(false);
@@ -17,6 +18,7 @@ export default function ContactForm({ suburbs }: { suburbs: string[] }) {
       const response = await fetch("/api/enquiries", { method: "POST", body: data });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.error || "Unable to send your enquiry");
+      trackAnalyticsEvent("generate_lead", { form_name: "contact_enquiry" });
       setSent(true); setSubmissionId(crypto.randomUUID()); event.currentTarget.reset();
     } catch (reason) { setError(reason instanceof Error ? reason.message : "Unable to send your enquiry"); }
     finally { setBusy(false); }

@@ -2,7 +2,12 @@ node_modules
 .next
 .env
 .env.local
+.env.*.local
 .vercel
 .DS_Store
 *.log
 *.zip
+
+# Google Cloud service account credentials must remain local.
+caautobody-analytics-reader-7e85b29dbaef.json
+caautobody-analytics-reader-*.json

@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { trackAnalyticsEvent } from "@/lib/analytics/client";
 
 type BrandAssessmentFormProps = {
   brand: "BYD" | "Lexus";
@@ -40,6 +41,7 @@ export default function BrandAssessmentForm({ brand, cta, assessmentNote }: Bran
       const response = await fetch("/api/enquiries", { method: "POST", body: data });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.error || "Unable to send your assessment request");
+      trackAnalyticsEvent("generate_lead", { form_name: "brand_assessment", vehicle_brand: brand });
       setSent(true); setSubmissionId(crypto.randomUUID()); event.currentTarget.reset();
     } catch (reason) { setError(reason instanceof Error ? reason.message : "Unable to send your assessment request"); }
     finally { setBusy(false); }

@@ -27,7 +27,7 @@ const sections: LegalSection[] = [
   },
   {
     id: "website", title: "Cookies and website analytics",
-    paragraphs: ["Our website may use essential browser storage and, when configured, analytics or similar tools. These technologies can help the site function and provide information about website performance. Browser settings may allow you to restrict certain cookies or stored data, although some site functions may be affected.", "Third-party websites linked from this site are subject to their own privacy information."],
+    paragraphs: ["With your permission, we use Google Analytics to understand aggregate website use, such as pages viewed, device category and traffic source. We do not send enquiry names, email addresses, phone numbers, messages, vehicle details or uploaded files to Google Analytics.", "You can accept, decline or change your analytics preference using Privacy choices in the website footer. Essential browser storage continues to support the website. Third-party websites linked from this site are subject to their own privacy information."],
   },
   {
     id: "security", title: "Storage, security and retention",

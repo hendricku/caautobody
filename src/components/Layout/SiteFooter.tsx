@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { media } from "@/lib/media";
 import Icon from "@/components/UI/Icon";
+import AnalyticsPreferenceButton from "@/components/Common/AnalyticsPreferenceButton";
 
 const areas = ["Aspendale", "Braeside", "Carrum", "Chelsea", "Cheltenham", "Edithvale", "Mentone", "Mordialloc", "Parkdale", "Sandhurst"];
 
@@ -61,6 +62,7 @@ export default function SiteFooter({siteSettings}: {siteSettings: Awaited<Return
         <nav className="hp-footer__legal" aria-label="Legal and site information">
           <Link href="/sitemap">Sitemap</Link>
           <Link href="/privacy-policy">Privacy Policy</Link>
+          <AnalyticsPreferenceButton />
           <Link href="/terms-and-conditions">Terms &amp; Conditions</Link>
         </nav>
       </div>
