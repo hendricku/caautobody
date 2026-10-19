@@ -6,6 +6,7 @@ import { getEditorialServiceCopy } from "@/lib/originalServiceCopy";
 import { services } from "@/lib/siteContent";
 import { media } from "@/lib/media";
 import ServiceSectionNav, { type SectionNavigationItem } from "./ServiceSectionNav";
+import ServiceBreadcrumbs from "./ServiceBreadcrumbs";
 import Icon from "@/components/UI/Icon";
 import FeatureGrid from "./FeatureGrid";
 
@@ -142,6 +143,24 @@ function zeekrOfferingsContent(section: OriginalServiceSection) {
   };
 }
 
+function approvedBrandOfferingsContent(section: OriginalServiceSection, brand: string) {
+  const paragraphs = section.blocks
+    .filter((block) => block.type === "paragraph")
+    .map((block) => sourceText(block.text));
+  const items = section.blocks
+    .filter((block) => block.type === "bullet")
+    .map((block) => sourceText(block.text));
+
+  return (
+    <div className="ca-service__approved-brand-offerings">
+      {paragraphs.map((paragraph, paragraphIndex) => <p key={paragraphIndex}>{paragraph}</p>)}
+      <ul className="ca-service__approved-brand-offerings-directory" aria-label={`${brand} repair services`}>
+        {items.map((item, itemIndex) => <li key={itemIndex}>{item}</li>)}
+      </ul>
+    </div>
+  );
+}
+
 function EditorialSection({ section, index, isZeekr, serviceSlug }: { section: OriginalServiceSection; index: number; isZeekr: boolean; serviceSlug: string }) {
   const variant = sectionVariant(section);
   const reverse = isZeekr && index % 3 === 2;
@@ -149,11 +168,13 @@ function EditorialSection({ section, index, isZeekr, serviceSlug }: { section: O
   const isPanelBeatingWhyChoose = serviceSlug === "panel-beating" && /^Why Choose Us$/i.test(section.heading);
   const sideLead = isPanelBeatingWhyChoose && section.blocks[0]?.type === "paragraph" ? sourceText(section.blocks[0].text) : null;
   const isZeekrOfferings = isZeekr && variant === "offerings" && /^Wide Range Of Services$/i.test(section.heading);
+  const isApprovedBrandOfferings = (serviceSlug === "byd-approved-repairer-melbourne" || serviceSlug === "lexus-approved-body-shop-melbourne") && variant === "offerings" && /^Wide Range Of Services$/i.test(section.heading);
   const zeekrOfferings = isZeekrOfferings ? zeekrOfferingsContent(section) : null;
+  const approvedBrandOfferings = isApprovedBrandOfferings ? approvedBrandOfferingsContent(section, serviceSlug === "byd-approved-repairer-melbourne" ? "BYD" : "Lexus") : null;
   return (
     <section
       id={sourceSectionId(index)}
-      className={`ca-service__chapter ca-service__chapter--${variant}${reverse ? " ca-service__chapter--ink" : ""}${isPanelBeatingContact ? " ca-service__chapter--panel-beating-contact" : ""}${isPanelBeatingWhyChoose ? " ca-service__chapter--panel-beating-why" : ""}${isZeekrOfferings ? " ca-service__chapter--zeekr-offerings" : ""}`}
+      className={`ca-service__chapter ca-service__chapter--${variant}${reverse ? " ca-service__chapter--ink" : ""}${isPanelBeatingContact ? " ca-service__chapter--panel-beating-contact" : ""}${isPanelBeatingWhyChoose ? " ca-service__chapter--panel-beating-why" : ""}${isZeekrOfferings ? " ca-service__chapter--zeekr-offerings" : ""}${isApprovedBrandOfferings ? " ca-service__chapter--approved-brand-offerings" : ""}`}
       aria-labelledby={`service-section-heading-${index}`}
     >
       <div className="shell ca-service__chapter-inner">
@@ -163,7 +184,7 @@ function EditorialSection({ section, index, isZeekr, serviceSlug }: { section: O
           {sideLead ? <p className="ca-service__chapter-side-copy">{sideLead}</p> : null}
           {zeekrOfferings?.copy}
         </div>
-        {zeekrOfferings?.directory ?? <SectionContent section={section} variant={variant} dark={reverse} omitLeadingParagraph={Boolean(sideLead)} />}
+        {zeekrOfferings?.directory ?? approvedBrandOfferings ?? <SectionContent section={section} variant={variant} dark={reverse} omitLeadingParagraph={Boolean(sideLead)} />}
       </div>
     </section>
   );
@@ -189,7 +210,7 @@ export default function EditorialServicePage({ service, copy }: { service: Servi
         <div className="ca-service__hero-background" aria-hidden="true"><img src={service.image} alt="" /></div>
         <div className="shell ca-service__hero-grid">
           <div className="ca-service__hero-info">
-            <div className="ca-service__crumbs"><Link href="/services">Services</Link><span aria-hidden="true">/</span><span>{sourceText(copy.category)}</span></div>
+            <ServiceBreadcrumbs current={sourceText(copy.category)} className="ca-service__crumbs" />
             <div className="ca-service__hero-title-group">
               <h1 id="service-heading">{sourceText(copy.title)}</h1>
               <p className="ca-service__hero-deck">{sourceText(heroLead(copy.heroDescription ?? copy.introParagraphs[0] ?? ""))}</p>

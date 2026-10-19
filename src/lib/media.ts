@@ -25,7 +25,7 @@ export const media = {
     paintlessDent: "/images/paintless.webp",
     replacementVehicles: "/images/replacement.webp",
     sprayPainting: "/images/spraypainting.webp",
-    tesla: "/images/teslamodel.webp",
+    tesla: "/images/IMG-20260726-WA0010.webp",
     byd: "/images/bydmodel.webp",
     lexus: "/images/lexusmodel.webp",
     zeekr: "/images/Zeekr Covered Plates.webp",

@@ -47,6 +47,39 @@
 .ca-service .ca-service__hero-photo-label {left: auto; right: var(--pad); bottom: 29px; padding: 0; background: none; font-size: 9px; opacity: .9}
 .ca-service .ca-service__hero-explore {display: none!important}
 
+/* One readable service trail across editorial and dedicated brand pages. */
+.ca-service .ca-service__crumbs,
+.brand-repair-page .brand-hero__crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(8px, .75vw, 12px);
+  margin: 0 0 clamp(22px, 3vw, 38px);
+  color: #ebe4d7;
+  font-size: clamp(12px, .82vw, 15px);
+  font-weight: 700;
+  letter-spacing: .035em;
+  line-height: 1.45;
+}
+.ca-service .ca-service__crumbs a,
+.brand-repair-page .brand-hero__crumbs a {
+  color: #fff;
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.ca-service .ca-service__crumbs > span[aria-hidden="true"],
+.brand-repair-page .brand-hero__crumbs > span[aria-hidden="true"] {color: #e1b16d; font-weight: 800}
+.brand-repair-page .brand-hero__crumbs {color: #d1d5d3}
+
+@media (max-width: 650px) {
+  .ca-service .ca-service__crumbs,
+  .brand-repair-page .brand-hero__crumbs {
+    gap: 8px;
+    margin-bottom: 22px;
+    font-size: clamp(12px, 3.4vw, 13px);
+  }
+}
+
 /* SIDE NAV — every anchor targets a DOM section on the same service page. */
 .ca-service .ca-service__introduction {padding-block: clamp(72px, 7vw, 110px)}
 .ca-service .ca-service__introduction-grid {grid-template-columns: minmax(215px, .33fr) minmax(0, 1fr); gap: clamp(32px, 4vw, 68px)}
@@ -82,6 +115,29 @@
 .ca-service .ca-service__bullet-list li:nth-child(odd) {border-right: 1px solid #d8d2c7}
 .ca-service .ca-service__chapter--ink .ca-service__bullet-list {border-color: #514a40}
 .ca-service .ca-service__chapter--ink .ca-service__bullet-list li:nth-child(odd) {border-right-color: #514a40}
+
+/* BYD and Lexus share Zeekr's compact directory treatment instead of oversized
+   feature cells. The repair scope is quick to scan while the explanatory lead remains above it. */
+.ca-service .ca-service__approved-brand-offerings {max-width: 800px}
+.ca-service .ca-service__approved-brand-offerings > p {max-width: none; margin: 0 0 20px; color: #514d46; font-size: clamp(15px, 1.15vw, 17px); line-height: 1.75}
+.ca-service .ca-service__approved-brand-offerings-directory {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; list-style: none;
+  margin: 0; padding: 0 clamp(18px, 2vw, 28px); border: 1px solid #d8d2c7; background: #fbfaf7;
+}
+.ca-service .ca-service__approved-brand-offerings-directory li {
+  position: relative; min-width: 0; margin: 0; padding: clamp(18px, 1.8vw, 24px) 18px clamp(18px, 1.8vw, 24px) 30px;
+  border-bottom: 1px solid #ddd7cd; color: #302d29; font-size: clamp(15px, 1.1vw, 17px); font-weight: 700; line-height: 1.42;
+}
+.ca-service .ca-service__approved-brand-offerings-directory li:nth-child(odd) {border-right: 1px solid #ddd7cd}
+.ca-service .ca-service__approved-brand-offerings-directory li::before {content: ""; position: absolute; top: calc(clamp(18px, 1.8vw, 24px) + .5em); left: 12px; width: 5px; height: 5px; background: #a97836}
+.ca-service .ca-service__approved-brand-offerings-directory li:nth-last-child(-n + 2) {border-bottom: 0}
+
+@media (max-width: 690px) {
+  .ca-service .ca-service__approved-brand-offerings-directory {grid-template-columns: minmax(0, 1fr); padding-inline: 22px}
+  .ca-service .ca-service__approved-brand-offerings-directory li:nth-child(odd) {border-right: 0}
+  .ca-service .ca-service__approved-brand-offerings-directory li:nth-last-child(-n + 2) {border-bottom: 1px solid #ddd7cd}
+  .ca-service .ca-service__approved-brand-offerings-directory li:last-child {border-bottom: 0}
+}
 
 @media (min-width: 921px) {
   .ca-service .ca-service__chapter-inner {
@@ -224,8 +280,6 @@
 }
 .ca-service .ca-service__crumbs {
   margin-bottom: clamp(22px, 3vw, 38px);
-  font-size: 10px;
-  letter-spacing: .04em;
 }
 .ca-service .ca-service__hero h1 {
   max-width: 750px;
@@ -524,10 +578,14 @@
   .brand-repair-page .brand-hero__layout,
   .brand-repair-page .brand-assessment-intake__layout { grid-template-columns: 1fr; }
   .ca-service .ca-service__hero-grid,
-  .brand-repair-page .brand-hero__layout { gap: 0; padding-top: 0; }
+  .brand-repair-page .brand-hero__layout {
+    gap: 0;
+    padding-top: clamp(50px, 12vw, 68px);
+  }
   .ca-service .ca-service__hero-media,
   .brand-repair-page .brand-hero__media {
-    order: -1;
+    order: 0;
+    width: calc(100% + (var(--pad) * 2));
     min-height: 0;
     height: clamp(280px, 72vw, 440px);
     margin-inline: calc(-1 * var(--pad));

@@ -270,8 +270,19 @@ test("service chapters use a consistent desktop title rail and contact FAQ actio
   const panelContact = [...panel.querySelectorAll(".ca-service__chapter")].find((chapter) => chapter.querySelector("h2")?.textContent === "Contact Us For Expert Panel Beating Services!");
   assert.ok(panelContact.classList.contains("ca-service__chapter--panel-beating-contact"));
 
+  for (const slug of ["byd-approved-repairer-melbourne", "lexus-approved-body-shop-melbourne"]) {
+    const brandService = services.find((service) => service.slug === slug);
+    const brandCopy = getEditorialServiceCopy(brandService.slug);
+    const brand = render(EditorialServicePage, { service: brandService, copy: brandCopy });
+    const offerings = [...brand.querySelectorAll(".ca-service__chapter")].find((chapter) => chapter.querySelector("h2")?.textContent === "Wide Range Of Services");
+    assert.ok(offerings.classList.contains("ca-service__chapter--approved-brand-offerings"));
+    assert.equal(offerings.querySelectorAll(".ca-service__approved-brand-offerings-directory li").length, 4);
+  }
+
   const serviceRefresh = readFileSync(path.resolve(project, "src/app/service-refresh.css"), "utf8");
   assert.match(serviceRefresh, /\.ca-service \.ca-service__introduction-body > p:first-child \{font-size: clamp\(16px, 1\.28vw, 19px\)\}/);
+  assert.match(serviceRefresh, /\.ca-service \.ca-service__approved-brand-offerings-directory \{[\s\S]*display: grid; grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);[\s\S]*border: 1px solid #d8d2c7; background: #fbfaf7;/);
+  assert.match(serviceRefresh, /\.ca-service \.ca-service__approved-brand-offerings-directory li::before \{[\s\S]*left: 12px;/);
   assert.doesNotMatch(serviceRefresh, /ca-service--opening-lead/);
 
   for (const service of services) {
@@ -315,6 +326,24 @@ test("homepage services include Tesla and Zeekr while the main services director
   assert.match(servicesPage, /brandOnlyServiceSlugs/);
 });
 
+test("Prestige Brands copy, Tesla hero photo and service breadcrumbs use the approved shared treatment", () => {
+  const media = readFileSync(path.resolve(project, "src/lib/media.ts"), "utf8");
+  const carousel = readFileSync(path.resolve(project, "src/components/Public/V4/ServiceExperience.tsx"), "utf8");
+  const css = readFileSync(path.resolve(project, "src/app/service-refresh.css"), "utf8");
+  assert.match(media, /tesla: "\/images\/IMG-20260726-WA0010\.webp"/);
+  assert.match(carousel, /copy: "Explore the services we offer for all prestige brands in all makes and models"/);
+  assert.match(css, /\.ca-service \.ca-service__crumbs,[\s\S]*\.brand-repair-page \.brand-hero__crumbs \{[\s\S]*font-size: clamp\(12px, \.82vw, 15px\);/);
+  assert.match(css, /@media \(max-width: 650px\) \{[\s\S]*font-size: clamp\(12px, 3\.4vw, 13px\);/);
+
+  const tesla = render(EditorialServicePage, { service: services.find((service) => service.slug === "tesla-approved-repair-centre"), copy: getEditorialServiceCopy("tesla-approved-repair-centre") });
+  assert.equal(tesla.querySelector('.ca-service__crumbs[aria-label="Breadcrumb"]')?.textContent.replace(/\s+/g, "").trim(), "Services/Tesla");
+
+  for (const content of Object.values(brandRepairContent)) {
+    const brand = render(BrandRepairPage, { content });
+    assert.equal(brand.querySelector('.brand-hero__crumbs[aria-label="Breadcrumb"]')?.textContent.replace(/\s+/g, "").trim(), `Services/${content.brand}`);
+  }
+});
+
 test("map controls remain in their own stacking context below the page header", () => {
   const css = readFileSync(path.resolve(project, "src/app/site-enhancements.css"), "utf8");
   assert.match(css, /\.service-area-map__map-panel\{isolation:isolate;z-index:0\}/);
@@ -347,9 +376,12 @@ for (const service of services) {
     chapters.forEach((section, index) => {
       const chapter = document.querySelector(`#service-section-${index + 1}`);
       assert.equal(chapter.querySelectorAll(".feature-title, .ca-service__detail h3").length, section.blocks.filter((block) => block.type === "subheading").length);
+      const isCompactBrandDirectory = ["byd-approved-repairer-melbourne", "lexus-approved-body-shop-melbourne"].includes(service.slug) && /^Wide Range Of Services$/i.test(section.heading);
       const bulletSelector = service.slug === "services-zeekr-approved-repairer-melbourne" && /^Wide Range Of Services$/i.test(section.heading)
         ? ".ca-service__zeekr-offerings-directory li"
-        : ".ca-service__bullet-list li";
+        : isCompactBrandDirectory
+          ? ".ca-service__approved-brand-offerings-directory li"
+          : ".ca-service__bullet-list li";
       assert.equal(chapter.querySelectorAll(bulletSelector).length, section.blocks.filter((block) => block.type === "bullet").length);
       if (/process/i.test(section.heading)) assert.equal(chapter.querySelector(".feature-grid"), null);
     });
@@ -424,7 +456,7 @@ test("service and brand heroes keep copy separate from their supplied right-hand
   const servicePage = readFileSync(path.resolve(project, "src/components/Public/EditorialServicePage.tsx"), "utf8");
   const brandPage = readFileSync(path.resolve(project, "src/components/Public/BrandRepairPage.tsx"), "utf8");
   const css = readFileSync(path.resolve(project, "src/app/service-refresh.css"), "utf8");
-  assert.match(media, /heroPanels:\s*\{[\s\S]*accident: "\/images\/accident\.webp"[\s\S]*tesla: "\/images\/teslamodel\.webp"[\s\S]*lexus: "\/images\/lexusmodel\.webp"[\s\S]*zeekr: "\/images\/Zeekr Covered Plates\.webp"/);
+  assert.match(media, /heroPanels:\s*\{[\s\S]*accident: "\/images\/accident\.webp"[\s\S]*tesla: "\/images\/IMG-20260726-WA0010\.webp"[\s\S]*lexus: "\/images\/lexusmodel\.webp"[\s\S]*zeekr: "\/images\/Zeekr Covered Plates\.webp"/);
   assert.match(servicePage, /const heroPanelByService: Record<string, string>/);
   assert.match(servicePage, /className="ca-service__hero-background"/);
   assert.match(servicePage, /<img src=\{heroPanelFor\(service\)\} alt="" fetchPriority="high" \/>/);
@@ -440,7 +472,7 @@ test("service and brand heroes keep copy separate from their supplied right-hand
   assert.match(css, /\.ca-service \.ca-service__hero-media \{[\s\S]*border: 1px solid rgba\(226, 211, 180, \.46\);[\s\S]*box-shadow: inset 0 1px 0 rgba\(255,255,255,\.20\), 0 22px 46px rgba\(0,0,0,\.34\);/);
   assert.match(css, /\.brand-repair-page \.brand-hero__media \{[\s\S]*border: 1px solid rgba\(226, 211, 180, \.46\);[\s\S]*box-shadow: inset 0 1px 0 rgba\(255,255,255,\.20\), 0 22px 46px rgba\(0,0,0,\.34\);/);
   assert.match(css, /\.ca-service \.ca-service__hero-background,[\s\S]*\.brand-repair-page \.brand-hero__background \{/);
-  assert.match(css, /@media \(max-width: 700px\) \{[\s\S]*\.ca-service \.ca-service__hero-media,[\s\S]*order: -1;[\s\S]*border: 0;[\s\S]*box-shadow: none;/);
+  assert.match(css, /@media \(max-width: 700px\) \{[\s\S]*\.ca-service \.ca-service__hero-grid,[\s\S]*padding-top: clamp\(50px, 12vw, 68px\);[\s\S]*\.ca-service \.ca-service__hero-media,[\s\S]*order: 0;[\s\S]*width: calc\(100% \+ \(var\(--pad\) \* 2\)\);[\s\S]*border: 0;[\s\S]*box-shadow: none;/);
 });
 
 test("shared CSS parses and includes container-based tablet/mobile layouts without fixed heights or motion", () => {
