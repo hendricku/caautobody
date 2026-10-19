@@ -606,16 +606,17 @@ body.home-v2 .hp-btn--hero-secondary:hover{border-color:#111;color:#fff!importan
 @media(max-width:720px){
   .hp-header{height:76px}
   .hp-header.is-scrolled{background:rgba(5,5,5,.98)}
-  .hp-hero{min-height:815px}
+  .hp-hero{min-height:0}
   .hp-hero__media{background-position:44% center}
   .hp-hero__media::after{background:linear-gradient(180deg,rgba(255,255,255,.78) 8%,rgba(255,255,255,.92) 44%,rgba(250,249,246,.88) 75%,rgba(250,249,246,.98) 100%)}
   .hp-hero__top-fade{height:125px}
   .hp-hero__content{padding-top:118px}
   .hp-hero h1{font-size:36px}
   .hp-hero__content>p{font-size:13px;max-width:520px}
-  .hp-hero__actions{flex-direction:column;gap:10px}
+  .hp-hero__actions{position:relative;z-index:5;flex-direction:column;gap:10px}
   .hp-hero__actions .hp-btn{width:min(310px,100%)}
-  .hp-brands-wrap{padding:14px 0 16px}
+  .hp-hero__actions .hp-btn--phone{display:inline-flex!important;min-height:52px;visibility:visible;opacity:1}
+  .hp-brands-wrap{position:relative;bottom:auto;margin-top:32px;padding:14px 0 16px}
   .hp-brand-grid{grid-template-columns:repeat(4,1fr);gap:7px 10px}
   .hp-brand-logo{min-height:34px}
   .hp-brand-logo img{max-width:60px;max-height:26px}

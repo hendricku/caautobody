@@ -180,3 +180,30 @@ test("hover remains disabled for touch-only wide screens and resize resets discl
   await act(async () => window.dispatchEvent(new window.Event("resize")));
   assert.equal(isOpen("Brands"), false);
 });
+
+test("a physical desktop pointer opens the menu even if an embedded browser reports no hover capability", async () => {
+  await render();
+  hoverCapable = false;
+  await pointer(trigger("About Us"), "pointerover", document.body, "mouse");
+  assert.equal(isOpen("About Us"), true);
+  assert.equal(panel("About Us").getAttribute("aria-hidden"), "false");
+});
+
+test("the five-service desktop directory balances into three cells then two equal cells", () => {
+  const css = readFileSync(new URL("../src/app/service-refresh.css", import.meta.url), "utf8");
+  assert.match(css, /\.hp-header \.hp-mega--services \.hp-mega__service-grid \{ grid-template-columns: repeat\(6, minmax\(0, 1fr\)\); \}/);
+  assert.match(css, /\.hp-header \.hp-mega--services \.hp-mega__service-grid > a:nth-child\(4\),\s*\.hp-header \.hp-mega--services \.hp-mega__service-grid > a:nth-child\(5\) \{ grid-column: span 3; border-bottom: 0; \}/);
+});
+
+test("the About menu uses a balanced two-by-two navigation directory beside its lead column", () => {
+  assert.match(source, /className="hp-mega__about-directory"/);
+  const css = readFileSync(new URL("../src/app/site-enhancements.css", import.meta.url), "utf8");
+  assert.match(css, /\.hp-mega--about \.hp-mega__tray\{grid-template-columns:minmax\(330px,\.93fr\) minmax\(0,1\.42fr\);align-items:stretch\}/);
+  assert.match(css, /\.hp-mega--about \.hp-mega__about-directory\{display:grid;grid-template-rows:auto 1fr;align-content:center;gap:15px/);
+  assert.match(css, /\.hp-mega--about \.hp-mega__links\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\);grid-template-rows:repeat\(2,minmax\(0,1fr\)\);padding-left:0/);
+  assert.match(css, /\.hp-mega--about \.hp-mega__links a:nth-child\(odd\)\{border-left:0\}/);
+  assert.match(css, /\.hp-mega--about \.hp-mega__links a:nth-child\(n\+3\)\{border-bottom:0\}/);
+  const finalCss = readFileSync(new URL("../src/app/service-refresh.css", import.meta.url), "utf8");
+  assert.match(finalCss, /\.hp-header \.hp-nav__group\.is-open > \.hp-mega \{\s*display: block;\s*visibility: visible;\s*pointer-events: auto;\s*opacity: 1;/);
+  assert.match(finalCss, /\.hp-header \.hp-mega--about \.hp-mega__links \{\s*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/);
+});

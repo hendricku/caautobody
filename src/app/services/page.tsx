@@ -8,7 +8,8 @@ import { media } from "@/lib/media";
 export const metadata: Metadata = { title: "Auto Accident Repair Services Melbourne | CA Autobody" };
 
 export default async function ServicesPage() {
-  const directoryServices = await getPublishedServices();
+  const brandOnlyServiceSlugs = new Set(["tesla-approved-repair-centre", "services-zeekr-approved-repairer-melbourne"]);
+  const directoryServices = (await getPublishedServices()).filter((service) => !brandOnlyServiceSlugs.has(service.slug));
   return <main className="ca-services-landing">
     <section className="ca-services-landing__hero" aria-labelledby="services-title">
       <img src={media.hero.services} alt="" aria-hidden="true" fetchPriority="high" />

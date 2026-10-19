@@ -29,10 +29,11 @@ test("single-area maps use a compact full-width route layout", () => {
   assert.match(css, /\.service-area-map--single\{grid-template-columns:1fr;min-height:0\}/);
   assert.match(css, /\.service-area-map--single \.service-area-map__selection\{grid-template-columns:1fr;gap:7px\}/);
 });
-test("services directory keeps approved brands in the primary continuous flow", () => {
+test("services directory keeps Tesla and Zeekr in Brands rather than duplicating them", () => {
   const page = read("src/app/services/page.tsx");
   const styles = read("src/app/service-refresh.css");
-  assert.match(page, /const directoryServices = await getPublishedServices\(\);/);
+  assert.match(page, /brandOnlyServiceSlugs/);
+  assert.match(page, /\.filter\(\(service\) => !brandOnlyServiceSlugs\.has\(service\.slug\)\)/);
   assert.doesNotMatch(page, /More approved repair options/);
   assert.match(page, /originalServiceCopy\[service\.slug\] \|\| \{ title: service\.title/);
   assert.match(styles, /\.ca-services-landing__card-action \.ui-action-icon/);

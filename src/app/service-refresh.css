@@ -51,12 +51,12 @@
 .ca-service .ca-service__introduction {padding-block: clamp(72px, 7vw, 110px)}
 .ca-service .ca-service__introduction-grid {grid-template-columns: minmax(215px, .33fr) minmax(0, 1fr); gap: clamp(42px, 7vw, 115px)}
 .ca-service .ca-service__introduction-aside {top: 110px; max-height: calc(100vh - 130px); overflow-y: auto; scrollbar-width: thin}
-.ca-service .ca-service__introduction-aside > p {font-size: 21px; letter-spacing: -.035em; line-height: 1.22; margin: 11px 0 22px}
-.ca-service .ca-service__index-links {border-top: 1px solid #d4cec3; padding-top: 14px}
-.ca-service .ca-service__index-links > span {font-size: 10px; color: #8b7965; margin-bottom: 12px; letter-spacing: .15em}
+.ca-service .ca-service__introduction-aside > p {font-size: clamp(20px, 1.45vw, 24px); letter-spacing: -.035em; line-height: 1.22; margin: 11px 0 22px}
+.ca-service .ca-service__index-links {border-top: 1px solid #d4cec3; padding-top: 16px}
+.ca-service .ca-service__index-links > span {font-size: 10px; color: #8b7965; margin-bottom: 13px; letter-spacing: .15em}
 .ca-service .ca-service__index-links a {
   display: grid; grid-template-columns: 25px minmax(0,1fr); gap: 10px;
-  font-size: 12px; line-height: 1.5; padding: 10px 7px 10px 0;
+  font-size: clamp(14px, .9vw, 15px); line-height: 1.48; padding: 12px 7px 12px 0;
   border-bottom: 1px solid #e6e2dc; color: #47433d; transition: color .2s, padding-left .2s;
 }
 .ca-service .ca-service__index-links a > span:first-child {color: #ae8248; font-size: 10px; padding-top: 2px}
@@ -64,16 +64,17 @@
 .ca-service .ca-service__index-links a:hover, .ca-service .ca-service__index-links a.is-current {color: #8a5d26; padding-left: 5px}
 .ca-service .ca-service__index-links a.is-current {font-weight: 700}
 .ca-service .ca-service__introduction-body > p {font-size: clamp(16px, 1.28vw, 19px); line-height: 1.85}
-.ca-service .ca-service__introduction-body > p:first-child {font-size: clamp(17px, 1.4vw, 21px)}
+.ca-service .ca-service__introduction-body > p:first-child {font-size: inherit}
 .ca-service .ca-service__chapter, .ca-service .ca-service__features, .ca-service .ca-service__faq-link {scroll-margin-top: 105px}
 .ca-service .ca-service__features {scroll-margin-top: 105px}
-.ca-service .ca-service__chapter-side h2 {font-size: clamp(29px, 2.7vw, 44px); line-height: 1.16}
+.ca-service .ca-service__chapter-side h2 {font-size: clamp(29px, 2.7vw, 44px); line-height: 1.16; margin-top: 0}
 .ca-service .ca-service__chapter {padding-block: clamp(66px, 7vw, 105px)}
 .ca-service .ca-service__paragraph, .ca-service .ca-service__detail p {font-size: clamp(15px, 1.15vw, 17px); line-height: 1.86}
 .ca-service .ca-service__faq-link {padding-block: clamp(48px, 5vw, 76px); background: #eee8dd}
 .ca-service .ca-service__faq-link h2 {font-size: clamp(26px, 2.6vw, 40px)}
 
-/* CHAPTER FLOW — keep the supplied introduction, details and conclusion together beneath each title. */
+/* CHAPTER FLOW — narrow screens read top-to-bottom; desktop returns the chapter title
+   to its own left rail so every service page shares the same reading structure. */
 .ca-service .ca-service__chapter-inner {display: block}
 .ca-service .ca-service__chapter-side {position: static; max-width: 760px}
 .ca-service .ca-service__section-content {max-width: 1080px; margin-top: clamp(34px, 4vw, 56px)}
@@ -83,6 +84,16 @@
 .ca-service .ca-service__bullet-list li:nth-child(odd) {border-right: 1px solid #d8d2c7}
 .ca-service .ca-service__chapter--ink .ca-service__bullet-list {border-color: #514a40}
 .ca-service .ca-service__chapter--ink .ca-service__bullet-list li:nth-child(odd) {border-right-color: #514a40}
+
+@media (min-width: 921px) {
+  .ca-service .ca-service__chapter-inner {
+    display: grid; grid-template-columns: minmax(210px, .43fr) minmax(0, 1fr); gap: clamp(50px, 9vw, 135px); align-items: start;
+  }
+  .ca-service .ca-service__chapter-side { max-width: 470px; }
+  .ca-service .ca-service__section-content { max-width: 800px; margin-top: 0; }
+  .ca-service .ca-service__section-content > .ca-service__paragraph { max-width: 760px; }
+  .ca-service .ca-service__bullet-list { max-width: 800px; margin-top: 0; }
+}
 
 /* FAQ ACTION — place the action beside the supporting copy instead of against the page edge. */
 .ca-service .ca-service__faq-link-inner {display: grid;grid-template-columns: minmax(0, 620px) max-content;justify-content: start;align-items: center;gap: clamp(24px, 4vw, 64px)}
@@ -105,9 +116,11 @@
 .ca-faq-page .page-hero h1 {font-size: clamp(37px, 4.35vw, 58px); max-width: 730px; line-height: 1.08}
 .ca-faq-page .page-hero p {font-size: 14px; line-height: 1.75}
 .ca-faq-page .faq-section-wrap {padding-top: clamp(48px, 5.8vw, 84px)}
-.ca-faq-page .faq-topic-picker {grid-template-columns: minmax(190px, 250px) minmax(0, 1fr); gap: clamp(30px, 5vw, 80px)}
-.ca-faq-page .faq-topic-index > p {font-size: 10px; padding-bottom: 12px}
-.ca-faq-page .faq-topic-index button {min-height: 46px; font-size: 12px; padding-block: 10px; line-height: 1.35}
+.ca-faq-page .faq-topic-picker {grid-template-columns: minmax(220px, 285px) minmax(0, 1fr); gap: clamp(34px, 5.5vw, 88px)}
+.ca-faq-page .faq-topic-index > p {font-size: 10px; padding-bottom: 14px}
+.ca-faq-page .faq-topic-index button {min-height: 60px; font-size: clamp(16px, 1.22vw, 18px); padding-block: 13px; line-height: 1.32; font-weight: 500; letter-spacing: -.018em}
+.ca-faq-page .faq-topic-index button > span {min-width: 0}
+.ca-faq-page .faq-topic-index button small {font-size: 11px; font-weight: 700; letter-spacing: .04em; font-variant-numeric: tabular-nums}
 .ca-faq-page .faq-accordion__heading {display: block; padding: 18px 0 23px; border-top: 1px solid #d6cfc4; margin: 0}
 .ca-faq-page .faq-accordion__heading > .eyebrow {display: block; font-size: 10px; margin: 0 0 10px}
 .ca-faq-page .faq-accordion__heading h2 {font-size: clamp(26px, 3vw, 39px); line-height: 1.18; letter-spacing: -.038em; margin: 0; font-weight: 700}
@@ -263,4 +276,273 @@
   .ca-service .ca-service__hero-actions .ca-service__button { min-height: 48px; padding-inline: 18px; }
   .ca-service .ca-service__hero-phone { min-height: 48px; display: inline-flex; align-items: center; }
   .ca-service .ca-service__hero-media > img { object-position: center 42%; }
+}
+
+/* The final Panel Beating note shares the heading rail at desktop widths. */
+@media (min-width: 921px) {
+  .ca-service .ca-service__chapter--panel-beating-contact .ca-service__chapter-inner { display: grid; grid-template-columns: minmax(210px, .43fr) minmax(0, 1fr); gap: clamp(50px, 9vw, 135px); align-items: start; }
+  .ca-service .ca-service__chapter--panel-beating-contact .ca-service__chapter-side { max-width: 470px; }
+  .ca-service .ca-service__chapter--panel-beating-contact .ca-service__section-content { max-width: 760px; margin-top: 0; }
+  .ca-service .ca-service__chapter--panel-beating-contact .ca-service__section-content > .ca-service__paragraph { max-width: 760px; margin: 0; }
+}
+
+/* The repairer guide collapses from its editorial two-rail layout only when space truly runs out. */
+@media (max-width: 900px) {
+  .about-tips { grid-template-columns: minmax(220px, .67fr) minmax(0, 1fr); gap: clamp(36px, 6vw, 72px); }
+}
+@media (max-width: 650px) {
+  .about-tips { grid-template-columns: 1fr; gap: clamp(30px, 7vw, 46px); }
+  .about-tips__heading { max-width: 680px; }
+  .about-tips__points .frame .grid[data-columns] { grid-template-columns: 1fr; }
+  .about-tips__points .frame .grid[data-columns] > .cell { grid-column: 1 / -1; }
+  .about-tips__points .frame .grid > .cell { padding: 22px 20px; }
+}
+
+/* Five repair services read as a complete 3 + 2 directory, rather than inheriting the old seven-service grid. */
+@media (min-width: 1021px) {
+  .hp-header .hp-mega--services .hp-mega__service-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .hp-header .hp-mega--services .hp-mega__service-grid > a { grid-column: span 2; }
+  .hp-header .hp-mega--services .hp-mega__service-grid > a:nth-child(4),
+  .hp-header .hp-mega--services .hp-mega__service-grid > a:nth-child(5) { grid-column: span 3; border-bottom: 0; }
+  .hp-header .hp-mega--services .hp-mega__service-grid > a:nth-child(4) { border-left: 0; }
+}
+
+/* The repairer criteria are one composed directory, not three competing cards. */
+@media (min-width: 651px) {
+  .about-tips__points .frame .grid[data-columns] { grid-template-columns: minmax(0, 1fr) !important; }
+  .about-tips__points .frame .grid[data-columns] > .cell { grid-column: 1 / -1 !important; min-height: 0; padding: clamp(26px, 2.6vw, 36px) clamp(26px, 3vw, 42px); }
+  .about-tips__points .cell .title { max-width: none; margin-bottom: 10px; }
+  .about-tips__points .cell .copy { max-width: 610px; }
+}
+
+/* Match the supplied reference: one ruled reading list, without a surrounding table or card surface. */
+.about-tips__points { border: 0; background: transparent; }
+.about-tips__points .frame .grid[data-columns] { border: 0; border-top: 1px solid var(--hp-line); background: transparent; }
+.about-tips__points .frame .grid[data-columns] > .cell { border: 0; border-bottom: 1px solid var(--hp-line); background: transparent; }
+.about-tips__points .frame .grid[data-columns] > .cell:last-child { border-bottom: 1px solid var(--hp-line); }
+
+/* Zeekr services use a composed two-rail directory: explanatory copy stays on the
+   heading rail while the repair scope is easy to scan without reading as a table. */
+.ca-service .ca-service__zeekr-offerings-copy { margin-top: clamp(30px, 3.4vw, 46px); max-width: 430px; }
+.ca-service .ca-service__zeekr-offerings-copy p { margin: 0; font-size: clamp(15px, 1.08vw, 17px); line-height: 1.75; color: #5d574e; }
+.ca-service .ca-service__zeekr-offerings-copy p + p { margin-top: 23px; padding-top: 23px; border-top: 1px solid #d8d2c7; }
+.ca-service .ca-service__zeekr-offerings-directory {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 clamp(26px, 3vw, 48px);
+  margin: 0; padding: clamp(12px, 1.6vw, 22px) clamp(20px, 2.4vw, 34px);
+  list-style: none; border: 1px solid #d8d2c7; background: #fbfaf7;
+}
+.ca-service .ca-service__zeekr-offerings-directory li {
+  position: relative; min-width: 0; margin: 0; padding: clamp(16px, 1.55vw, 21px) 0 clamp(16px, 1.55vw, 21px) 18px;
+  border-bottom: 1px solid #ddd7cd; color: #302d29; font-size: clamp(14px, 1vw, 16px); font-weight: 700; line-height: 1.42;
+}
+.ca-service .ca-service__zeekr-offerings-directory li::before { content: ""; position: absolute; top: calc(clamp(16px, 1.55vw, 21px) + .52em); left: 0; width: 5px; height: 5px; background: #a97836; }
+.ca-service .ca-service__zeekr-offerings-directory li:nth-last-child(-n + 2) { border-bottom: 0; }
+
+@media (min-width: 921px) {
+  .ca-service .ca-service__chapter--zeekr-offerings .ca-service__chapter-inner {
+    display: grid; grid-template-columns: minmax(235px, .7fr) minmax(0, 1.3fr); gap: clamp(54px, 8vw, 126px); align-items: start;
+  }
+  .ca-service .ca-service__chapter--zeekr-offerings .ca-service__chapter-side { max-width: 455px; }
+}
+
+@media (max-width: 690px) {
+  .ca-service .ca-service__zeekr-offerings-directory { grid-template-columns: minmax(0, 1fr); padding-inline: 22px; }
+  .ca-service .ca-service__zeekr-offerings-directory li:nth-last-child(-n + 2) { border-bottom: 1px solid #ddd7cd; }
+  .ca-service .ca-service__zeekr-offerings-directory li:last-child { border-bottom: 0; }
+}
+
+/* Keep desktop navigation disclosures above the page and restore the composed About directory
+   after the shared header refinements load. */
+@media (min-width: 1021px) {
+  .hp-header { z-index: 180; overflow: visible; }
+  .hp-header .hp-nav,
+  .hp-header .hp-nav__group { overflow: visible; }
+  .hp-header .hp-nav__group.is-open > .hp-mega {
+    display: block;
+    visibility: visible;
+    pointer-events: auto;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .hp-header .hp-nav__group:not(.is-open) > .hp-mega { pointer-events: none; }
+
+  .hp-header .hp-mega--about .hp-mega__tray {
+    grid-template-columns: minmax(330px, .93fr) minmax(0, 1.42fr);
+    align-items: stretch;
+  }
+  .hp-header .hp-mega--about .hp-mega__about-directory {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    align-content: center;
+    gap: 15px;
+    padding-left: clamp(34px, 4vw, 56px);
+    border-left: 1px solid #b9b09f;
+  }
+  .hp-header .hp-mega--about .hp-mega__links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    padding-left: 0;
+  }
+}
+
+/* Service and approved-brand heroes use the supplied workshop imagery as a dedicated
+   right-hand panel. Copy stays readable on the left instead of sitting on photography. */
+.ca-service .ca-service__hero {
+  position: relative;
+  isolation: isolate;
+  min-height: clamp(535px, 44vw, 670px);
+  background: #161512;
+  overflow: clip;
+}
+.ca-service .ca-service__hero-background,
+.brand-repair-page .brand-hero__background {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  overflow: hidden;
+}
+.ca-service .ca-service__hero-background img,
+.brand-repair-page .brand-hero__background img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(.72) contrast(1.04) brightness(.58);
+}
+.ca-service .ca-service__hero::before,
+.brand-repair-page .brand-hero::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(15,14,12,.78) 0%, rgba(15,14,12,.62) 48%, rgba(15,14,12,.36) 100%);
+  pointer-events: none;
+}
+.ca-service .ca-service__hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.04fr) minmax(360px, .86fr);
+  gap: clamp(42px, 6vw, 104px);
+  align-items: stretch;
+  padding-block: clamp(116px, 9vw, 152px) clamp(54px, 5vw, 78px);
+}
+.ca-service .ca-service__hero-info {
+  width: auto;
+  align-self: center;
+  padding-block: clamp(20px, 3vw, 40px);
+}
+.ca-service .ca-service__hero-media {
+  position: relative;
+  inset: auto;
+  z-index: 0;
+  align-self: stretch;
+  min-height: clamp(370px, 32vw, 520px);
+  margin: 0;
+  overflow: hidden;
+  background: #272521;
+}
+.ca-service .ca-service__hero-media > img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(.9) contrast(1.03);
+}
+.ca-service .ca-service__hero-media::after { display: none; }
+
+.brand-repair-page .brand-hero {
+  position: relative;
+  isolation: isolate;
+  min-height: 0;
+  background: #161512;
+  color: #fff;
+  overflow: clip;
+}
+.brand-repair-page .brand-hero__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.04fr) minmax(360px, .86fr);
+  gap: clamp(42px, 6vw, 104px);
+  align-items: stretch;
+  min-height: clamp(535px, 44vw, 670px);
+  padding-top: clamp(116px, 9vw, 152px);
+  padding-bottom: clamp(54px, 5vw, 78px);
+}
+.brand-repair-page .brand-hero__copy {
+  align-self: center;
+  max-width: 710px;
+  padding-block: clamp(20px, 3vw, 40px);
+}
+.brand-repair-page .brand-hero__media {
+  position: relative;
+  min-height: clamp(370px, 32vw, 520px);
+  overflow: hidden;
+  background: #272521;
+}
+.brand-repair-page .brand-hero__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(.9) contrast(1.03);
+}
+.brand-repair-page .brand-assessment-intake {
+  padding-block: clamp(66px, 7vw, 110px);
+  background: #f3f0e9;
+}
+.brand-repair-page .brand-assessment-intake__layout {
+  display: grid;
+  grid-template-columns: minmax(0, .8fr) minmax(360px, 1fr);
+  gap: clamp(42px, 7vw, 120px);
+  align-items: start;
+}
+.brand-repair-page .brand-assessment-intake__layout > div > h2 {
+  max-width: 520px;
+  margin: 14px 0 18px;
+  font-size: clamp(34px, 3.5vw, 52px);
+  letter-spacing: -.05em;
+  line-height: 1.04;
+}
+.brand-repair-page .brand-assessment-intake__layout > div > p:last-child {
+  max-width: 430px;
+  margin: 0;
+  color: #5a554c;
+  font-size: 15px;
+  line-height: 1.75;
+}
+.brand-repair-page .brand-assessment-intake .brand-assessment-form { max-width: none; }
+
+@media (max-width: 900px) {
+  .ca-service .ca-service__hero-grid,
+  .brand-repair-page .brand-hero__layout {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, .72fr);
+    gap: clamp(30px, 5vw, 56px);
+  }
+  .ca-service .ca-service__hero-media,
+  .brand-repair-page .brand-hero__media { min-height: clamp(360px, 48vw, 470px); }
+  .brand-repair-page .brand-assessment-intake__layout { grid-template-columns: minmax(0, .72fr) minmax(330px, 1fr); gap: 42px; }
+}
+
+@media (max-width: 700px) {
+  .ca-service .ca-service__hero-grid,
+  .brand-repair-page .brand-hero__layout,
+  .brand-repair-page .brand-assessment-intake__layout { grid-template-columns: 1fr; }
+  .ca-service .ca-service__hero-grid,
+  .brand-repair-page .brand-hero__layout { gap: 0; padding-top: 0; }
+  .ca-service .ca-service__hero-media,
+  .brand-repair-page .brand-hero__media {
+    order: -1;
+    min-height: 0;
+    height: clamp(280px, 72vw, 440px);
+    margin-inline: calc(-1 * var(--pad));
+  }
+  .ca-service .ca-service__hero-info,
+  .brand-repair-page .brand-hero__copy { padding-block: 38px 50px; }
+  .brand-repair-page .brand-hero__copy h1 { font-size: clamp(39px, 10vw, 54px); }
+  .brand-repair-page .brand-assessment-intake { padding-block: 54px 64px; }
+  .ca-service .ca-service__hero::before,
+  .brand-repair-page .brand-hero::before { background: rgba(15,14,12,.7); }
 }

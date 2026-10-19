@@ -93,9 +93,11 @@ export default function SiteHeader({ siteSettings }: { siteSettings: SiteSetting
     };
   }, [cancelClose, closeNavigation]);
 
+  // Some desktop and embedded browsers report conservative hover media queries
+  // even while a real mouse or pen is in use. The pointer itself is the reliable
+  // signal here; touch input still uses the explicit tap disclosure.
   const canHover = (event: PointerEvent<HTMLDivElement>) =>
-    (event.pointerType === "mouse" || event.pointerType === "pen") &&
-    window.matchMedia("(min-width: 1021px) and (hover: hover) and (pointer: fine)").matches;
+    event.pointerType === "mouse" || event.pointerType === "pen";
 
   const groupProps = (name: string) => ({
     className: `hp-nav__group ${openGroup === name ? "is-open" : ""}`,
@@ -164,11 +166,14 @@ export default function SiteHeader({ siteSettings }: { siteSettings: SiteSetting
                 <Link href="/about">About CA Autobody <ActionIcon /></Link>
               </div>
               <Link className="hp-mobile-submenu-start" href="/about"><span>About CA Autobody</span><ActionIcon /></Link>
-              <div className="hp-mega__links">
-                <Link href="/about#why"><strong>Why Choose CA</strong><span>Experience, quality and customer care.</span></Link>
-                <Link href="/about#insurance"><strong>Insurance</strong><span>Support through the repair and claim process.</span></Link>
-                <Link href="/gallery"><strong>Gallery</strong><span>See our workshop, repairs and facility.</span></Link>
-                <Link href="/areas-we-serve"><strong>Areas We Serve</strong><span>Local repair support across Melbourne’s bayside and nearby suburbs.</span></Link>
+                <div className="hp-mega__about-directory">
+                  <p>Explore CA Autobody</p>
+                  <div className="hp-mega__links">
+                  <Link href="/about#why"><strong>Why Choose CA</strong><span>Experience, quality and customer care.</span></Link>
+                  <Link href="/about#insurance"><strong>Insurance</strong><span>Support through the repair and claim process.</span></Link>
+                  <Link href="/gallery"><strong>Gallery</strong><span>See our workshop, repairs and facility.</span></Link>
+                  <Link href="/areas-we-serve"><strong>Areas We Serve</strong><span>Local repair support across Melbourne’s bayside and nearby suburbs.</span></Link>
+                  </div>
                 </div>
               </div>
             </div>
@@ -186,13 +191,11 @@ export default function SiteHeader({ siteSettings }: { siteSettings: SiteSetting
               </div>
               <Link className="hp-mobile-submenu-start" href="/services"><span>View all services</span><ActionIcon /></Link>
               <div className="hp-mega__service-grid">
-                <Link href="/services/tesla-approved-repair-centre"><span>01</span><strong>Tesla Repair</strong><small>Approved EV repair expertise</small></Link>
-                <Link href="/services/services-zeekr-approved-repairer-melbourne"><span>02</span><strong>Zeekr Repair</strong><small>Modern EV body repair</small></Link>
-                <Link href="/services/accident-assistance"><span>03</span><strong>Accident Assistance</strong><small>Support after a collision</small></Link>
-                <Link href="/services/panel-beating"><span>04</span><strong>Panel Beating</strong><small>Structural and cosmetic repair</small></Link>
-                <Link href="/services/spray-painting"><span>05</span><strong>Spray Painting</strong><small>Precise colour matching</small></Link>
-                <Link href="/services/paintless-dent-removal"><span>06</span><strong>Paintless Dent Removal</strong><small>Low-impact dent repair</small></Link>
-                <Link href="/services/replacement-vehicles"><span>07</span><strong>Replacement Vehicles</strong><small>Keep moving while we repair</small></Link>
+                <Link href="/services/accident-assistance"><span>01</span><strong>Accident Assistance</strong><small>Support after a collision</small></Link>
+                <Link href="/services/panel-beating"><span>02</span><strong>Panel Beating</strong><small>Structural and cosmetic repair</small></Link>
+                <Link href="/services/spray-painting"><span>03</span><strong>Spray Painting</strong><small>Precise colour matching</small></Link>
+                <Link href="/services/paintless-dent-removal"><span>04</span><strong>Paintless Dent Removal</strong><small>Low-impact dent repair</small></Link>
+                <Link href="/services/replacement-vehicles"><span>05</span><strong>Replacement Vehicles</strong><small>Keep moving while we repair</small></Link>
                 </div>
               </div>
             </div>

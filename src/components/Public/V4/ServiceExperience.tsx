@@ -9,8 +9,6 @@ import ChevronRightRounded from "@mui/icons-material/ChevronRightRounded";
 import ActionIcon from "@/components/UI/ActionIcon";
 
 const items = [
-  { label: "Tesla Repair", kicker: "01 / Tesla", title: "Tesla Repair", image: media.service.tesla, copy: "EV-aware collision repair, body work and refinishing for Tesla vehicles, handled with attention to modern construction and safety systems.", href: "/services/tesla-approved-repair-centre", cta: "Explore Tesla Repair" },
-  { label: "Zeekr Repair", kicker: "02 / Zeekr", title: "Zeekr Repair", image: media.service.zeekr, copy: "Dedicated accident repair support for Zeekr vehicles, including body repairs, refinishing and insurance assistance.", href: "/services/services-zeekr-approved-repairer-melbourne", cta: "Explore Zeekr Repair" },
   { label: "BYD Repair", kicker: "03 / BYD", title: "BYD Repair", image: media.brandRepair.bydHero, copy: "Approved repair support for BYD vehicles, with EV-aware assessment, genuine parts planning and manufacturer-aligned procedures.", href: "/services/byd-approved-repairer-melbourne", cta: "Explore BYD Repair" },
   { label: "Lexus Repair", kicker: "04 / Lexus", title: "Lexus Repair", image: media.brandRepair.lexusHero, copy: "Approved Lexus collision repair with careful body accuracy, refinishing and genuine parts planning.", href: "/services/lexus-approved-body-shop-melbourne", cta: "Explore Lexus Repair" },
   { label: "Prestige Brands", kicker: "05 / Approved Expertise", title: "Prestige Brands", image: media.workshop.exteriorWide, copy: "Approved repair support for Tesla, Zeekr, BYD and Lexus vehicles, with care for modern construction and finish quality.", href: "/services", cta: "All Services" },
@@ -65,7 +63,7 @@ export default function ServiceExperience() {
           <article className={`hp-service-panel ${itemIndex === index ? "is-active" : ""}`} key={item.label}>
             <img src={item.image} alt={`${item.title} at CA Autobody`} loading="lazy" />
             <div className="hp-service-panel__overlay">
-              <span>{item.kicker}</span><h3>{item.title}</h3><p>{item.copy}</p>
+              <span>{String(itemIndex + 1).padStart(2, "0")} / {item.kicker.replace(/^\d+\s*\/\s*/, "")}</span><h3>{item.title}</h3><p>{item.copy}</p>
               <div className="hp-service-panel__actions">
                 <Link className="hp-service-panel__detail" href={item.href}>{item.cta} <ActionIcon /></Link>
                 <Link className="hp-service-panel__book" href="/contact">Book a repair assessment <ActionIcon /></Link>

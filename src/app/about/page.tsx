@@ -81,15 +81,17 @@ export default function AboutPage() {
         <div className="about-tips__heading">
           <span className="eyebrow">Choosing a repairer</span>
           <h2 id="tips-title">What to look for in a reliable auto body repairer.</h2>
+          <p className="about-tips__lead">When choosing a repairer, look for a business with a strong record of quality service, skilled technicians and equipment suited to modern vehicles. These details make a real difference to the repair experience and the result.</p>
+          <p className="about-tips__closing">At CA Autobody, experienced technicians, factory-aligned repair procedures and a focus on customer care work together to give you confidence from assessment through to collection.</p>
         </div>
         <div className="about-tips__body">
-          <p className="about-tips__lead">When choosing a repairer, look for a business with a strong record of quality service, skilled technicians and equipment suited to modern vehicles. These details make a real difference to the repair experience and the result.</p>
           <div className="about-tips__points">
             <FeatureGrid items={choosingPoints.map(([title, copy]) => ({ title, content: <p>{copy}</p> }))} />
           </div>
-          <p className="about-tips__closing">At CA Autobody, experienced technicians, factory-aligned repair procedures and a focus on customer care work together to give you confidence from assessment through to collection.</p>
         </div>
       </section>
+
+      <div className="about-insurance-divider shell" aria-hidden="true" />
 
       <section id="insurance" className="about-insurance section-pad" aria-labelledby="insurance-title">
         <div className="shell about-insurance__grid hp-reveal">

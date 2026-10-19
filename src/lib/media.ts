@@ -16,6 +16,17 @@ export const media = {
     gallery: "/images/Chelsea-Auto-Body-003.webp",
     areas: "/images/Banner.webp",
   },
+  heroPanels: {
+    accident: "/images/accident.webp",
+    panelBeating: "/images/panel.webp",
+    paintlessDent: "/images/paintless.webp",
+    replacementVehicles: "/images/replacement.webp",
+    sprayPainting: "/images/spraypainting.webp",
+    tesla: "/images/teslamodel.webp",
+    byd: "/images/bydmodel.webp",
+    lexus: "/images/lexusmodel.webp",
+    zeekr: "/images/zeekrmodel.webp",
+  },
   service: {
     accident: "/images/ACCIDENT-ASSISTANCE-1.webp",
     accidentCard: "/images/homepage-Accident-Assistance.webp",
@@ -80,10 +91,10 @@ export function localBlogImageFor(slug: string) {
 }
 
 export const vehicleBrandLogos = [
-  ["Tesla", "/images/tesla_logo_PNG16.webp"],
-  ["Zeekr", "/images/zeekr-1663156129.567872.webp"],
-  ["BYD", "/images/BYD.webp"],
-  ["Lexus", "/images/lexus_PNG57.webp"],
+  ["Tesla", "/images/Tesla Red.webp"],
+  ["Zeekr", "/images/Zeekr Orange.webp"],
+  ["BYD", "/images/BYD Red.webp"],
+  ["Lexus", "/images/Lexus Silver.webp"],
   ["Porsche", "/images/porsche-logo01.webp"],
   ["BMW", "/images/bmw-logo01.webp"],
   ["Volkswagen", "/images/walks-logo01.webp"],

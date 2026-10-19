@@ -60,6 +60,22 @@ function sectionVariant(section: OriginalServiceSection): string {
 
 function sourceSectionId(index: number) { return `service-section-${index + 1}`; }
 
+const heroPanelByService: Record<string, string> = {
+  "accident-assistance": media.heroPanels.accident,
+  "panel-beating": media.heroPanels.panelBeating,
+  "paintless-dent-removal": media.heroPanels.paintlessDent,
+  "replacement-vehicles": media.heroPanels.replacementVehicles,
+  "spray-painting": media.heroPanels.sprayPainting,
+  "tesla-approved-repair-centre": media.heroPanels.tesla,
+  "services-zeekr-approved-repairer-melbourne": media.heroPanels.zeekr,
+  "byd-approved-repairer-melbourne": media.heroPanels.byd,
+  "lexus-approved-body-shop-melbourne": media.heroPanels.lexus,
+};
+
+function heroPanelFor(service: ServiceContent) {
+  return heroPanelByService[service.slug] ?? service.image;
+}
+
 function SectionContent({ section, variant, dark }: { section: OriginalServiceSection; variant: string; dark: boolean }) {
   const groups = contentGroups(section.blocks);
   // Keep prose and bullet lists in source order. Only adjacent, unordered
@@ -99,22 +115,47 @@ function SectionContent({ section, variant, dark }: { section: OriginalServiceSe
   );
 }
 
-function EditorialSection({ section, index, total, isZeekr }: { section: OriginalServiceSection; index: number; total: number; isZeekr: boolean }) {
+function zeekrOfferingsContent(section: OriginalServiceSection) {
+  const paragraphs = section.blocks
+    .filter((block) => block.type === "paragraph")
+    .map((block) => sourceText(block.text));
+  const items = section.blocks
+    .filter((block) => block.type === "bullet")
+    .map((block) => sourceText(block.text));
+
+  return {
+    copy: (
+      <div className="ca-service__zeekr-offerings-copy">
+        {paragraphs.map((paragraph, paragraphIndex) => <p key={paragraphIndex}>{paragraph}</p>)}
+      </div>
+    ),
+    directory: (
+      <ul className="ca-service__zeekr-offerings-directory" aria-label="Zeekr repair services">
+        {items.map((item, itemIndex) => <li key={itemIndex}>{item}</li>)}
+      </ul>
+    ),
+  };
+}
+
+function EditorialSection({ section, index, isZeekr, serviceSlug }: { section: OriginalServiceSection; index: number; isZeekr: boolean; serviceSlug: string }) {
   const variant = sectionVariant(section);
   const reverse = isZeekr && index % 3 === 2;
+  const isPanelBeatingContact = serviceSlug === "panel-beating" && /^Contact Us For Expert Panel Beating Services!?$/i.test(section.heading);
+  const isZeekrOfferings = isZeekr && variant === "offerings" && /^Wide Range Of Services$/i.test(section.heading);
+  const zeekrOfferings = isZeekrOfferings ? zeekrOfferingsContent(section) : null;
   return (
     <section
       id={sourceSectionId(index)}
-      className={`ca-service__chapter ca-service__chapter--${variant}${reverse ? " ca-service__chapter--ink" : ""}`}
+      className={`ca-service__chapter ca-service__chapter--${variant}${reverse ? " ca-service__chapter--ink" : ""}${isPanelBeatingContact ? " ca-service__chapter--panel-beating-contact" : ""}${isZeekrOfferings ? " ca-service__chapter--zeekr-offerings" : ""}`}
       aria-labelledby={`service-section-heading-${index}`}
     >
       <div className="shell ca-service__chapter-inner">
         <div className="ca-service__chapter-side">
-          <span className="ca-service__chapter-count">{String(index + 1).padStart(2, "0")} <span>/</span> {String(total).padStart(2, "0")}</span>
           <h2 id={`service-section-heading-${index}`}>{sourceText(section.heading)}</h2>
           <span className="ca-service__chapter-rule" aria-hidden="true" />
+          {zeekrOfferings?.copy}
         </div>
-        <SectionContent section={section} variant={variant} dark={reverse} />
+        {zeekrOfferings?.directory ?? <SectionContent section={section} variant={variant} dark={reverse} />}
       </div>
     </section>
   );
@@ -137,9 +178,7 @@ export default function EditorialServicePage({ service, copy }: { service: Servi
   return (
     <main className={`ca-service${isTesla ? " ca-service--tesla" : ""}${isZeekr ? " ca-service--zeekr" : ""}`}>
       <section className="ca-service__hero" aria-labelledby="service-heading">
-        <div className="ca-service__hero-media" aria-hidden="true">
-          <img src={service.image} alt="" fetchPriority="high" />
-        </div>
+        <div className="ca-service__hero-background" aria-hidden="true"><img src={service.image} alt="" /></div>
         <div className="shell ca-service__hero-grid">
           <div className="ca-service__hero-info">
             <div className="ca-service__crumbs"><Link href="/services">Services</Link><span aria-hidden="true">/</span><span>{sourceText(copy.category)}</span></div>
@@ -151,6 +190,9 @@ export default function EditorialServicePage({ service, copy }: { service: Servi
               <Link href="/contact" className="ca-service__button ca-service__button--gold">Enquire about a repair <Icon name="arrow-outward" /></Link>
               <a className="ca-service__hero-phone" href="tel:+61397727411">Call 03 9772 7411 <Icon name="arrow-outward" /></a>
             </div>
+          </div>
+          <div className="ca-service__hero-media" aria-hidden="true">
+            <img src={heroPanelFor(service)} alt="" fetchPriority="high" />
           </div>
         </div>
       </section>
@@ -181,7 +223,7 @@ export default function EditorialServicePage({ service, copy }: { service: Servi
       </section>}
 
       <div className="ca-service__chapters">
-        {chapters.map((section, index) => <EditorialSection key={`${index}-${section.heading}`} section={section} index={index} total={chapters.length} isZeekr={isZeekr} />)}
+        {chapters.map((section, index) => <EditorialSection key={`${index}-${section.heading}`} section={section} index={index} isZeekr={isZeekr} serviceSlug={service.slug} />)}
       </div>
 
       {copy.faqs.length > 0 && <section id="service-faqs" className="ca-service__faq-link">
