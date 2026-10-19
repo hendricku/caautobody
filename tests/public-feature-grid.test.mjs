@@ -138,8 +138,8 @@ test("editorial layout gives approved brands a useful, bounded introduction inde
   assert.match(refinementsCss, /\.ca-service--approved-brand \.ca-service__brand-intro-proof\{margin-top:auto\}/);
   assert.match(refinementsCss, /\.ca-service__brand-intro-proof\{width:min\(100%,840px\);margin-top:clamp\(42px,5\.5vw,84px\);padding:clamp\(28px,3vw,40px\) 0;border-top:1px solid #d6cfc2;border-bottom:1px solid #d6cfc2/);
   assert.match(refinementsCss, /\.ca-service__brand-intro-mark img\{display:block;width:min\(100%,500px\);height:clamp\(124px,11vw,164px\)/);
-  assert.match(refinementsCss, /\.ca-service--tesla \.ca-service__brand-intro-mark\{min-height:clamp\(154px,12vw,190px\)/);
-  assert.match(refinementsCss, /\.ca-service--tesla \.ca-service__brand-intro-mark img\{width:min\(100%,620px\);height:clamp\(154px,12vw,190px\)/);
+  assert.match(refinementsCss, /\.ca-service--tesla \.ca-service__brand-intro-mark\{min-height:clamp\(142px,11vw,174px\)/);
+  assert.match(refinementsCss, /\.ca-service--tesla \.ca-service__brand-intro-mark img\{width:min\(100%,560px\);height:clamp\(142px,11vw,174px\)/);
   const document = render(EditorialServicePage, { service: services.find((service) => service.slug === "tesla-approved-repair-centre"), copy: getEditorialServiceCopy("tesla-approved-repair-centre") });
   const mark = document.querySelector('img[alt="Tesla Approved Body Shop"]');
   assert.equal(mark.getAttribute("width"), "620");
