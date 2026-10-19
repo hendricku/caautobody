@@ -74,21 +74,19 @@ const heroPanelByService: Record<string, string> = {
 
 const approvedBrandIntroMarks: Record<string, { src: string; alt: string; width: number; height: number }> = {
   Tesla: { src: "/images/tesla-approved-body-shop.webp", alt: "Tesla Approved Body Shop", width: 620, height: 204 },
-  Zeekr: { src: "/images/Zeekr Orange.webp", alt: "Zeekr", width: 320, height: 120 },
-  BYD: { src: "/images/BYD Red.webp", alt: "BYD", width: 320, height: 120 },
-  Lexus: { src: "/images/Lexus Silver.webp", alt: "Lexus", width: 320, height: 120 },
 };
 
 function heroPanelFor(service: ServiceContent) {
   return heroPanelByService[service.slug] ?? service.image;
 }
 
-function SectionContent({ section, variant, dark }: { section: OriginalServiceSection; variant: string; dark: boolean }) {
+function SectionContent({ section, variant, dark, omitLeadingParagraph = false }: { section: OriginalServiceSection; variant: string; dark: boolean; omitLeadingParagraph?: boolean }) {
   const groups = contentGroups(section.blocks);
+  const visibleGroups = omitLeadingParagraph && groups[0]?.kind === "paragraph" ? groups.slice(1) : groups;
   // Keep prose and bullet lists in source order. Only adjacent, unordered
   // heading/description pairs become cells; process steps retain their timeline.
   const compactGroups: (ContentGroup | { kind: "features"; items: Extract<ContentGroup, { kind: "detail" }>[] })[] = [];
-  for (const group of groups) {
+  for (const group of visibleGroups) {
     if (group.kind === "detail" && variant !== "process") {
       const previous = compactGroups[compactGroups.length - 1];
       if (previous?.kind === "features") previous.items.push(group);
@@ -148,21 +146,24 @@ function EditorialSection({ section, index, isZeekr, serviceSlug }: { section: O
   const variant = sectionVariant(section);
   const reverse = isZeekr && index % 3 === 2;
   const isPanelBeatingContact = serviceSlug === "panel-beating" && /^Contact Us For Expert Panel Beating Services!?$/i.test(section.heading);
+  const isPanelBeatingWhyChoose = serviceSlug === "panel-beating" && /^Why Choose Us$/i.test(section.heading);
+  const sideLead = isPanelBeatingWhyChoose && section.blocks[0]?.type === "paragraph" ? sourceText(section.blocks[0].text) : null;
   const isZeekrOfferings = isZeekr && variant === "offerings" && /^Wide Range Of Services$/i.test(section.heading);
   const zeekrOfferings = isZeekrOfferings ? zeekrOfferingsContent(section) : null;
   return (
     <section
       id={sourceSectionId(index)}
-      className={`ca-service__chapter ca-service__chapter--${variant}${reverse ? " ca-service__chapter--ink" : ""}${isPanelBeatingContact ? " ca-service__chapter--panel-beating-contact" : ""}${isZeekrOfferings ? " ca-service__chapter--zeekr-offerings" : ""}`}
+      className={`ca-service__chapter ca-service__chapter--${variant}${reverse ? " ca-service__chapter--ink" : ""}${isPanelBeatingContact ? " ca-service__chapter--panel-beating-contact" : ""}${isPanelBeatingWhyChoose ? " ca-service__chapter--panel-beating-why" : ""}${isZeekrOfferings ? " ca-service__chapter--zeekr-offerings" : ""}`}
       aria-labelledby={`service-section-heading-${index}`}
     >
       <div className="shell ca-service__chapter-inner">
         <div className="ca-service__chapter-side">
           <h2 id={`service-section-heading-${index}`}>{sourceText(section.heading)}</h2>
           <span className="ca-service__chapter-rule" aria-hidden="true" />
+          {sideLead ? <p className="ca-service__chapter-side-copy">{sideLead}</p> : null}
           {zeekrOfferings?.copy}
         </div>
-        {zeekrOfferings?.directory ?? <SectionContent section={section} variant={variant} dark={reverse} />}
+        {zeekrOfferings?.directory ?? <SectionContent section={section} variant={variant} dark={reverse} omitLeadingParagraph={Boolean(sideLead)} />}
       </div>
     </section>
   );

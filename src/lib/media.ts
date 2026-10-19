@@ -7,6 +7,9 @@
 export const media = {
   logo: "/images/Gold.webp",
   favicon: "/images/Fevicon-Icon.webp",
+  home: {
+    evRepair: "/images/20261016_134834.webp",
+  },
   hero: {
     home: "/images/homepage-Replacement-Vehicles.webp",
     about: "/images/about-centerimg.webp",
@@ -25,7 +28,7 @@ export const media = {
     tesla: "/images/teslamodel.webp",
     byd: "/images/bydmodel.webp",
     lexus: "/images/lexusmodel.webp",
-    zeekr: "/images/zeekrmodel.webp",
+    zeekr: "/images/Zeekr Covered Plates.webp",
   },
   service: {
     accident: "/images/ACCIDENT-ASSISTANCE-1.webp",

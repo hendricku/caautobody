@@ -97,7 +97,7 @@ export default function HomeV4({ hero }: { hero: HomeHero }) {
       <section className="hp-approved hp-section hp-section--black">
         <div className="hp-shell hp-approved__grid">
           <div className="hp-approved__copy hp-reveal"><span className="hp-eyebrow hp-eyebrow--light">Electric vehicle repair expertise</span><h2>Specialists in the vehicles of tomorrow.</h2><p>Modern electric vehicles demand repair decisions that respect their construction, safety systems and refinishing requirements. CA Autobody supports Tesla and Zeekr owners with dedicated repair expertise.</p><div className="hp-approved__brands"><span>TESLA</span><span>ZEEKR</span></div><Button href="/services/tesla-approved-repair-centre" variant="gold" arrow>Explore approved repairs</Button></div>
-          <div className="hp-approved__media hp-reveal"><img src={media.service.tesla} alt="Tesla and electric vehicle repair" loading="lazy" /><div className="hp-approved__caption"><span>EV Repair</span><strong>Tesla + Zeekr</strong></div></div>
+          <div className="hp-approved__media hp-reveal"><img src={media.home.evRepair} alt="Tesla at the CA Autobody workshop" loading="lazy" /><div className="hp-approved__caption"><span>EV Repair</span><strong>Tesla + Zeekr</strong></div></div>
         </div>
       </section>
 

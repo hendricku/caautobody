@@ -98,6 +98,8 @@ test("About keeps all five benefits with pickup/drop-off copy below its heading"
   assert.equal(benefits.querySelector(".about-reasons, .feature-marker"), null);
   assert.equal(document.querySelectorAll(".about-tips__points .feature-cell").length, 3);
   assert.ok(document.querySelector('a[href="/contact"]'));
+  const enhancements = readFileSync(path.resolve(project, "src/app/site-enhancements.css"), "utf8");
+  assert.match(enhancements, /\.about-why__lead>div:last-child\{[^}]*font-size:clamp\(17px,1\.3vw,19px\);line-height:1\.78/);
 });
 
 test("repairer guidance sits below the heading while the criteria directory stays on the right", () => {
@@ -178,9 +180,16 @@ test("mobile homepage keeps the phone action above the brand directory", () => {
   assert.match(css, /@media\(max-width:720px\)\{[\s\S]*\.hp-hero\{min-height:0\}[\s\S]*\.hp-hero__actions \.hp-btn--phone\{display:inline-flex!important;min-height:52px;visibility:visible;opacity:1\}[\s\S]*\.hp-brands-wrap\{position:relative;bottom:auto;margin-top:32px/);
 });
 
-test("homepage hero uses the supplied Chelsea Autobody workshop image", () => {
+test("homepage hero keeps the supplied CA Autobody workshop image", () => {
   const css = readFileSync(path.resolve(project, "src/app/v4.css"), "utf8");
   assert.match(css, /\.hp-hero__media\{[\s\S]*background-image:url\("\/images\/Chelsea-Auto-Body-003\.webp"\)/);
+});
+
+test("homepage EV repair feature uses the supplied Tesla workshop image", () => {
+  const media = readFileSync(path.resolve(project, "src/lib/media.ts"), "utf8");
+  const home = readFileSync(path.resolve(project, "src/components/Public/HomeV4.tsx"), "utf8");
+  assert.match(media, /home:\s*\{\s*evRepair: "\/images\/20261016_134834\.webp"/);
+  assert.match(home, /<img src=\{media\.home\.evRepair\} alt="Tesla at the CA Autobody workshop" loading="lazy" \/>/);
 });
 
 test("homepage review proof states the current 350-plus five-star review count", () => {
@@ -254,9 +263,16 @@ test("service chapters use a consistent desktop title rail and contact FAQ actio
   const panel = render(EditorialServicePage, { service: panelService, copy: panelCopy });
   const whyChoose = [...panel.querySelectorAll(".ca-service__chapter")].find((chapter) => chapter.querySelector("h2")?.textContent === "Why Choose Us");
   assert.ok(whyChoose);
+  assert.ok(whyChoose.classList.contains("ca-service__chapter--panel-beating-why"));
+  assert.match(whyChoose.querySelector(".ca-service__chapter-side-copy").textContent, /At CA Autobody, we are committed to providing top-notch panel beating services/);
+  assert.equal(whyChoose.querySelectorAll(".ca-service__section-content > .ca-service__paragraph").length, 0, "the Panel Beating lead belongs below the left heading, not above the proof points");
   assert.equal(whyChoose.querySelectorAll(".feature-cell").length, 3);
   const panelContact = [...panel.querySelectorAll(".ca-service__chapter")].find((chapter) => chapter.querySelector("h2")?.textContent === "Contact Us For Expert Panel Beating Services!");
   assert.ok(panelContact.classList.contains("ca-service__chapter--panel-beating-contact"));
+
+  const serviceRefresh = readFileSync(path.resolve(project, "src/app/service-refresh.css"), "utf8");
+  assert.match(serviceRefresh, /\.ca-service \.ca-service__introduction-body > p:first-child \{font-size: clamp\(16px, 1\.28vw, 19px\)\}/);
+  assert.doesNotMatch(serviceRefresh, /ca-service--opening-lead/);
 
   for (const service of services) {
     const copy = getEditorialServiceCopy(service.slug);
@@ -319,11 +335,13 @@ for (const service of services) {
       assert.deepEqual(cellTitles(capabilities), copy.sections.slice(0, 6).map((section) => section.heading));
       assert.equal(capabilities.querySelectorAll("h2").length, 6);
       assert.ok(capabilities.querySelector(".feature-dark"));
-      const expectedMarkAlt = { Tesla: "Tesla Approved Body Shop", Zeekr: "Zeekr", BYD: "BYD", Lexus: "Lexus" }[copy.category];
       const introProof = document.querySelector(".ca-service__brand-intro-proof");
-      assert.ok(introProof, `${service.slug} should balance its introduction with supplied brand artwork`);
-      assert.equal(introProof.querySelector("img").getAttribute("alt"), expectedMarkAlt);
-      assert.equal(introProof.querySelector(".ca-service__brand-intro-focus"), null, `${service.slug} should keep the approval area focused on its supplied mark`);
+      if (copy.category === "Tesla") {
+        assert.ok(introProof, `${service.slug} should retain its supplied approval mark`);
+        assert.equal(introProof.querySelector("img").getAttribute("alt"), "Tesla Approved Body Shop");
+      } else {
+        assert.equal(introProof, null, `${service.slug} should use its expanded opening copy instead of an intro logo`);
+      }
     }
     const chapters = approved ? copy.sections.slice(6) : copy.sections;
     chapters.forEach((section, index) => {
@@ -367,6 +385,23 @@ test("mixed prose, capabilities and bullet lists stay in their supplied order", 
   assert.equal(chapter.querySelectorAll(".feature-grid").length, 2);
 });
 
+test("Zeekr, BYD and Lexus introductions use the supplied full copy without intro logos", () => {
+  const expected = {
+    "services-zeekr-approved-repairer-melbourne": "When your Zeekr has been damaged in an accident, choosing the right repairer matters.",
+    "byd-approved-repairer-melbourne": "BYD vehicles combine high voltage architecture, battery systems, advanced driver assistance technology and model specific body structures.",
+    "lexus-approved-body-shop-melbourne": "A Lexus repair must restore safety, body accuracy, finish quality and the quiet refinement expected from the vehicle.",
+  };
+  for (const [slug, opening] of Object.entries(expected)) {
+    const service = services.find((item) => item.slug === slug);
+    const copy = getEditorialServiceCopy(slug);
+    const document = render(EditorialServicePage, { service, copy });
+    assert.equal(copy.introParagraphs.length, 3);
+    assert.ok(copy.introParagraphs[0].startsWith(opening));
+    assert.equal(document.querySelector(".ca-service__brand-intro-proof"), null);
+    assert.equal(document.querySelectorAll(".ca-service__introduction-body > p").length, 3);
+  }
+});
+
 test("every offer uses the same grid while retaining step order and contact links", () => {
   for (const offer of offers) {
     const document = render(OfferPage, { offer });
@@ -389,7 +424,7 @@ test("service and brand heroes keep copy separate from their supplied right-hand
   const servicePage = readFileSync(path.resolve(project, "src/components/Public/EditorialServicePage.tsx"), "utf8");
   const brandPage = readFileSync(path.resolve(project, "src/components/Public/BrandRepairPage.tsx"), "utf8");
   const css = readFileSync(path.resolve(project, "src/app/service-refresh.css"), "utf8");
-  assert.match(media, /heroPanels:\s*\{[\s\S]*accident: "\/images\/accident\.webp"[\s\S]*tesla: "\/images\/teslamodel\.webp"[\s\S]*lexus: "\/images\/lexusmodel\.webp"[\s\S]*zeekr: "\/images\/zeekrmodel\.webp"/);
+  assert.match(media, /heroPanels:\s*\{[\s\S]*accident: "\/images\/accident\.webp"[\s\S]*tesla: "\/images\/teslamodel\.webp"[\s\S]*lexus: "\/images\/lexusmodel\.webp"[\s\S]*zeekr: "\/images\/Zeekr Covered Plates\.webp"/);
   assert.match(servicePage, /const heroPanelByService: Record<string, string>/);
   assert.match(servicePage, /className="ca-service__hero-background"/);
   assert.match(servicePage, /<img src=\{heroPanelFor\(service\)\} alt="" fetchPriority="high" \/>/);
@@ -402,8 +437,10 @@ test("service and brand heroes keep copy separate from their supplied right-hand
   assert.match(brandPage, /className="brand-assessment-intake"/);
   assert.match(css, /\.ca-service \.ca-service__hero-grid \{\s*display: grid;\s*grid-template-columns: minmax\(0, 1\.04fr\) minmax\(360px, \.86fr\);/);
   assert.match(css, /\.brand-repair-page \.brand-hero__layout \{\s*display: grid;\s*grid-template-columns: minmax\(0, 1\.04fr\) minmax\(360px, \.86fr\);/);
+  assert.match(css, /\.ca-service \.ca-service__hero-media \{[\s\S]*border: 1px solid rgba\(226, 211, 180, \.46\);[\s\S]*box-shadow: inset 0 1px 0 rgba\(255,255,255,\.20\), 0 22px 46px rgba\(0,0,0,\.34\);/);
+  assert.match(css, /\.brand-repair-page \.brand-hero__media \{[\s\S]*border: 1px solid rgba\(226, 211, 180, \.46\);[\s\S]*box-shadow: inset 0 1px 0 rgba\(255,255,255,\.20\), 0 22px 46px rgba\(0,0,0,\.34\);/);
   assert.match(css, /\.ca-service \.ca-service__hero-background,[\s\S]*\.brand-repair-page \.brand-hero__background \{/);
-  assert.match(css, /@media \(max-width: 700px\) \{[\s\S]*\.ca-service \.ca-service__hero-media,[\s\S]*order: -1;/);
+  assert.match(css, /@media \(max-width: 700px\) \{[\s\S]*\.ca-service \.ca-service__hero-media,[\s\S]*order: -1;[\s\S]*border: 0;[\s\S]*box-shadow: none;/);
 });
 
 test("shared CSS parses and includes container-based tablet/mobile layouts without fixed heights or motion", () => {
