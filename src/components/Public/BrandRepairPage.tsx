@@ -6,6 +6,7 @@ import BrandRepairMedia from "@/components/Public/BrandRepairMedia";
 import InsurerLogoGrid from "@/components/Public/InsurerLogoGrid";
 import { insurers } from "@/lib/siteContent";
 import BrandAssessmentForm from "@/components/Public/BrandAssessmentForm";
+import FeatureGrid from "./FeatureGrid";
 
 export default function BrandRepairPage({ content }: { content: BrandRepairContent }) {
   const copy = content.sections;
@@ -13,11 +14,11 @@ export default function BrandRepairPage({ content }: { content: BrandRepairConte
   return <main className="brand-repair-page" data-brand={content.brand.toLowerCase()}>
     <section className="brand-hero"><img src={content.heroImage} alt={content.heroAlt} /><div className="brand-hero__shade" aria-hidden="true" /><div className="brand-hero__layout shell"><div className="brand-hero__copy"><p className="eyebrow light">{content.eyebrow}</p><h1>{content.title}</h1><p className="brand-hero__intro">{content.intro}</p><p className="brand-hero__guide"><span>Service guide</span>{content.serviceGuide.map((item, index) => <span key={item}>{String(index + 1).padStart(2, "0")} {item}</span>)}</p><a className="brand-hero__call" href="tel:+61397727411">Call 03 9772 7411</a></div><BrandAssessmentForm brand={content.brand} cta={content.assessmentCta} assessmentNote={copy.assessmentNote} /></div></section>
 
-    <section className="brand-approval section-pad"><div className="shell"><div className="brand-approval__intro">{content.logo ? <div className="brand-approval__logo"><Image src={content.logo} alt={`${content.brand} logo`} width={640} height={288} sizes="(max-width: 720px) 380px, (max-width: 1020px) 480px, 640px" /></div> : <span className="brand-approval__brand-mark">{content.brand}</span>}<div><p className="eyebrow">{copy.approvalEyebrow}</p><h2>{content.approvalTitle}</h2><p>{content.approvalCopy}</p></div></div><div className="brand-pillars">{content.pillars.map((item) => <article key={item.title}><span>{item.code}</span><h3>{item.title}</h3><p>{item.copy}</p></article>)}</div></div></section>
+    <section className="brand-approval section-pad"><div className="shell"><div className="brand-approval__intro">{content.logo ? <div className="brand-approval__logo"><Image src={content.logo} alt={`${content.brand} logo`} width={640} height={288} sizes="(max-width: 720px) 380px, (max-width: 1020px) 480px, 640px" /></div> : <span className="brand-approval__brand-mark">{content.brand}</span>}<div><p className="eyebrow">{copy.approvalEyebrow}</p><h2>{content.approvalTitle}</h2><p>{content.approvalCopy}</p></div></div><FeatureGrid items={content.pillars.map((item) => ({ title: item.title, marker: item.code, content: <p>{item.copy}</p> }))} /></div></section>
 
-    <section className="brand-principles shell section-pad"><div className="brand-section-heading"><p className="eyebrow">{copy.principlesEyebrow}</p><h2>{copy.principlesTitle}</h2></div><ol>{content.principles.map((item) => <li key={item.title}><h3>{item.title}</h3><p>{item.copy}</p></li>)}</ol></section>
+    <section className="brand-principles shell section-pad"><div className="brand-section-heading"><p className="eyebrow">{copy.principlesEyebrow}</p><h2>{copy.principlesTitle}</h2></div><FeatureGrid items={content.principles.map((item) => ({ title: item.title, content: <p>{item.copy}</p> }))} /></section>
 
-    <section className="brand-capability section-pad"><div className="shell"><div className="brand-section-heading"><p className="eyebrow light">{copy.capabilityEyebrow}</p><h2>{copy.capabilityTitle}</h2><p>{copy.capabilityIntro}</p></div><ol>{content.capabilities.map((item) => <li key={item.title}><h3>{item.title}</h3><p>{item.copy}</p></li>)}</ol></div></section>
+    <section className="brand-capability section-pad"><div className="shell"><div className="brand-section-heading"><p className="eyebrow light">{copy.capabilityEyebrow}</p><h2>{copy.capabilityTitle}</h2><p>{copy.capabilityIntro}</p></div><FeatureGrid tone="dark" items={content.capabilities.map((item) => ({ title: item.title, content: <p>{item.copy}</p> }))} /></div></section>
 
     <section className="brand-systems shell section-pad"><div className="brand-systems__copy"><p className="eyebrow">{copy.systemsEyebrow}</p><h2>{content.systemsTitle}</h2><p>{content.systemsCopy}</p></div><BrandRepairMedia items={content.media} /></section>
 

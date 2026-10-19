@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { FocusEvent, PointerEvent } from "react";
 import { media } from "@/lib/media";
 import CloseRounded from "@mui/icons-material/CloseRounded";
 import ExpandMoreRounded from "@mui/icons-material/ExpandMoreRounded";
@@ -27,6 +28,20 @@ export default function SiteHeader({ siteSettings }: { siteSettings: SiteSetting
   const [menuOpen, setMenuOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [scrollY, setScrollY] = useState(0);
+  const headerRef = useRef<HTMLElement>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const inputMode = useRef<"pointer" | "keyboard">("pointer");
+
+  const cancelClose = useCallback(() => {
+    if (closeTimer.current !== null) clearTimeout(closeTimer.current);
+    closeTimer.current = null;
+  }, []);
+
+  const closeNavigation = useCallback(() => {
+    cancelClose();
+    setOpenGroup(null);
+    setMenuOpen(false);
+  }, [cancelClose]);
 
   useEffect(() => {
     const sync = () => setScrollY(window.scrollY || 0);
@@ -36,10 +51,9 @@ export default function SiteHeader({ siteSettings }: { siteSettings: SiteSetting
   }, []);
 
   useEffect(() => {
-    setMenuOpen(false);
-    setOpenGroup(null);
+    closeNavigation();
     document.body.classList.remove("hp-menu-open");
-  }, [pathname]);
+  }, [pathname, closeNavigation]);
 
   useEffect(() => {
     document.body.classList.toggle("hp-menu-open", menuOpen);
@@ -48,17 +62,25 @@ export default function SiteHeader({ siteSettings }: { siteSettings: SiteSetting
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
+      inputMode.current = "keyboard";
       if (event.key === "Escape") {
-        setOpenGroup(null);
-        setMenuOpen(false);
+        const header = headerRef.current;
+        const trigger = window.innerWidth <= 1020 && header?.querySelector(".hp-nav.is-open")
+          ? header.querySelector<HTMLButtonElement>(".hp-menu-toggle")
+          : header?.querySelector<HTMLButtonElement>(".hp-nav__group.is-open > .hp-nav__trigger");
+        if (header?.contains(document.activeElement)) trigger?.focus();
+        closeNavigation();
       }
     };
     const onClick = (event: MouseEvent) => {
       const target = event.target as Element | null;
-      if (!target?.closest(".hp-nav__group")) setOpenGroup(null);
+      if (!target?.closest(".hp-nav__group")) {
+        cancelClose();
+        setOpenGroup(null);
+      }
     };
     const onResize = () => {
-      if (window.innerWidth > 1020) setMenuOpen(false);
+      closeNavigation();
     };
     document.addEventListener("keydown", onKey);
     document.addEventListener("click", onClick);
@@ -67,18 +89,51 @@ export default function SiteHeader({ siteSettings }: { siteSettings: SiteSetting
       document.removeEventListener("keydown", onKey);
       document.removeEventListener("click", onClick);
       window.removeEventListener("resize", onResize);
+      cancelClose();
     };
-  }, []);
+  }, [cancelClose, closeNavigation]);
+
+  const canHover = (event: PointerEvent<HTMLDivElement>) =>
+    (event.pointerType === "mouse" || event.pointerType === "pen") &&
+    window.matchMedia("(min-width: 1021px) and (hover: hover) and (pointer: fine)").matches;
 
   const groupProps = (name: string) => ({
     className: `hp-nav__group ${openGroup === name ? "is-open" : ""}`,
+    onPointerEnter: (event: PointerEvent<HTMLDivElement>) => {
+      if (!canHover(event)) return;
+      inputMode.current = "pointer";
+      cancelClose();
+      setOpenGroup(name);
+    },
+    onPointerLeave: (event: PointerEvent<HTMLDivElement>) => {
+      if (!canHover(event)) return;
+      // Keyboard users may still be navigating links while the mouse moves away.
+      if (inputMode.current === "keyboard" && event.currentTarget.contains(document.activeElement)) return;
+      cancelClose();
+      closeTimer.current = setTimeout(() => {
+        closeTimer.current = null;
+        setOpenGroup((value) => value === name ? null : value);
+      }, 120);
+    },
+    onBlur: (event: FocusEvent<HTMLDivElement>) => {
+      if (event.currentTarget.contains(event.relatedTarget as Node | null)) return;
+      cancelClose();
+      setOpenGroup((value) => value === name ? null : value);
+    },
   });
 
-  const toggleGroup = (name: string) => setOpenGroup((value) => value === name ? null : name);
+  const toggleGroup = (name: string) => {
+    cancelClose();
+    setOpenGroup((value) => value === name ? null : name);
+  };
   const active = (href: string) => href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
-    <header className={`hp-header ${scrollY > 18 ? "is-scrolled" : ""} ${scrollY > 88 ? "is-compact" : ""}`}>
+    <header ref={headerRef} className={`hp-header ${scrollY > 18 ? "is-scrolled" : ""} ${scrollY > 88 ? "is-compact" : ""}`}
+      onPointerDownCapture={() => { inputMode.current = "pointer"; }}
+      onClickCapture={(event) => {
+        if ((event.target as Element).closest("a")) closeNavigation();
+      }}>
       <div className="hp-header__inner">
         <Link className="hp-logo" href="/" aria-label={`${siteSettings.name} home`}>
           <img src={media.logo} alt={siteSettings.name} />
@@ -90,19 +145,17 @@ export default function SiteHeader({ siteSettings }: { siteSettings: SiteSetting
           aria-label={menuOpen ? "Close navigation" : "Open navigation"}
           aria-expanded={menuOpen}
           aria-controls="hp-navigation"
-          onClick={() => setMenuOpen((value) => !value)}
+          onClick={() => { cancelClose(); setOpenGroup(null); setMenuOpen((value) => !value); }}
         >
           {menuOpen ? <CloseRounded aria-hidden="true" /> : <MenuRounded aria-hidden="true" />}
         </button>
 
-        <nav className={`hp-nav ${menuOpen ? "is-open" : ""}`} id="hp-navigation" aria-label="Primary navigation" onClick={(event) => {
-          if ((event.target as Element).closest("a")) setMenuOpen(false);
-        }}>
+        <nav className={`hp-nav ${menuOpen ? "is-open" : ""}`} id="hp-navigation" aria-label="Primary navigation">
           <Link className={`hp-nav__link ${active("/") ? "is-active" : ""}`} href="/">Home</Link>
 
           <div {...groupProps("about")}>
-            <button className="hp-nav__link hp-nav__trigger" type="button" aria-expanded={openGroup === "about"} onClick={() => toggleGroup("about")}>About Us {chevron}</button>
-            <div className="hp-mega hp-mega--about">
+            <button className="hp-nav__link hp-nav__trigger" type="button" aria-expanded={openGroup === "about"} aria-controls="hp-mega-about" onClick={() => toggleGroup("about")}>About Us {chevron}</button>
+            <div className="hp-mega hp-mega--about" id="hp-mega-about" aria-hidden={openGroup !== "about"}>
               <div className="hp-mega__tray">
                 <div className="hp-mega__intro">
                 <span className="hp-kicker">CA Autobody</span>
@@ -122,8 +175,8 @@ export default function SiteHeader({ siteSettings }: { siteSettings: SiteSetting
           </div>
 
           <div {...groupProps("services")}>
-            <button className="hp-nav__link hp-nav__trigger" type="button" aria-expanded={openGroup === "services"} onClick={() => toggleGroup("services")}>Services {chevron}</button>
-            <div className="hp-mega hp-mega--services">
+            <button className="hp-nav__link hp-nav__trigger" type="button" aria-expanded={openGroup === "services"} aria-controls="hp-mega-services" onClick={() => toggleGroup("services")}>Services {chevron}</button>
+            <div className="hp-mega hp-mega--services" id="hp-mega-services" aria-hidden={openGroup !== "services"}>
               <div className="hp-mega__tray">
                 <div className="hp-mega__intro hp-mega__intro--service">
                 <span className="hp-kicker">Repair Services</span>
@@ -148,14 +201,14 @@ export default function SiteHeader({ siteSettings }: { siteSettings: SiteSetting
           <Link className={`hp-nav__link ${active("/blog") ? "is-active" : ""}`} href="/blog">Blog</Link>
 
           <div {...groupProps("brands")}>
-            <button className="hp-nav__link hp-nav__trigger" type="button" aria-expanded={openGroup === "brands"} onClick={() => toggleGroup("brands")}>Brands {chevron}</button>
-            <div className="hp-mobile-brand-links" aria-label="Brand repair services">
+            <button className="hp-nav__link hp-nav__trigger" type="button" aria-expanded={openGroup === "brands"} aria-controls="hp-mega-brands hp-mobile-brands" onClick={() => toggleGroup("brands")}>Brands {chevron}</button>
+            <div className="hp-mobile-brand-links" id="hp-mobile-brands" aria-label="Brand repair services" aria-hidden={openGroup !== "brands"}>
               <Link href="/services/tesla-approved-repair-centre">Tesla Repair</Link>
               <Link href="/services/services-zeekr-approved-repairer-melbourne">Zeekr Repair</Link>
               <Link href="/services/byd-approved-repairer-melbourne">BYD Repair</Link>
               <Link href="/services/lexus-approved-body-shop-melbourne">Lexus Repair</Link>
             </div>
-            <div className="hp-mega hp-mega--brands">
+            <div className="hp-mega hp-mega--brands" id="hp-mega-brands" aria-hidden={openGroup !== "brands"}>
               <div className="hp-mega__tray">
                 <div className="hp-brand-features">
                   <Link className="hp-brand-feature" href="/services/tesla-approved-repair-centre">

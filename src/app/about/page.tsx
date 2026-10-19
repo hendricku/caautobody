@@ -2,6 +2,7 @@ import Button from "@/components/UI/Button";
 import type { Metadata } from "next";
 import PageHero from "@/components/Common/PageHero";
 import InsurerLogoGrid from "@/components/Public/InsurerLogoGrid";
+import FeatureGrid from "@/components/Public/FeatureGrid";
 import { insurers } from "@/lib/siteContent";
 import { media } from "@/lib/media";
 
@@ -72,15 +73,7 @@ export default function AboutPage() {
               <p>That is why Melbourne drivers, including EV owners, turn to our Chelsea Heights workshop.</p>
             </div>
           </div>
-          <div className="about-reasons hp-reveal">
-            {reasons.map(([title, copy]) => (
-              <article key={title}>
-                <span aria-hidden="true" />
-                <h3>{title}</h3>
-                <p>{copy}</p>
-              </article>
-            ))}
-          </div>
+          <FeatureGrid tone="warm" items={reasons.map(([title, copy]) => ({ title, content: <p>{copy}</p> }))} />
         </div>
       </section>
 
@@ -90,11 +83,11 @@ export default function AboutPage() {
           <h2 id="tips-title">What to look for in a reliable auto body repairer.</h2>
         </div>
         <div className="about-tips__body">
-          <p>When choosing a repairer, look for a business with a strong record of quality service, skilled technicians and equipment suited to modern vehicles. These details make a real difference to the repair experience and the result.</p>
+          <p className="about-tips__lead">When choosing a repairer, look for a business with a strong record of quality service, skilled technicians and equipment suited to modern vehicles. These details make a real difference to the repair experience and the result.</p>
           <div className="about-tips__points">
-            {choosingPoints.map(([title, copy]) => <article key={title}><h3>{title}</h3><p>{copy}</p></article>)}
+            <FeatureGrid items={choosingPoints.map(([title, copy]) => ({ title, content: <p>{copy}</p> }))} />
           </div>
-          <p>At CA Autobody, experienced technicians, factory-aligned repair procedures and a focus on customer care work together to give you confidence from assessment through to collection.</p>
+          <p className="about-tips__closing">At CA Autobody, experienced technicians, factory-aligned repair procedures and a focus on customer care work together to give you confidence from assessment through to collection.</p>
         </div>
       </section>
 

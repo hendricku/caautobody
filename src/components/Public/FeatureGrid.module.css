@@ -1,0 +1,128 @@
+.frame {
+  container-type: inline-size;
+  min-width: 0;
+}
+
+.frame.frame + p {
+  margin-top: 24px;
+}
+
+.light {
+  --feature-line: #d0c8bb;
+  --feature-title: #171614;
+  --feature-copy: #514d46;
+  --feature-marker: #8a6228;
+}
+
+.warm {
+  --feature-line: #bdb3a2;
+  --feature-title: #171614;
+  --feature-copy: #5d574e;
+  --feature-marker: #805a20;
+}
+
+.dark {
+  --feature-line: #39352f;
+  --feature-title: #ffffff;
+  --feature-copy: #c6c1b9;
+  --feature-marker: #d2a15a;
+}
+
+.frame .grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid var(--feature-line);
+  border-left: 1px solid var(--feature-line);
+  list-style: none;
+}
+
+.frame .grid > .cell {
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: clamp(24px, 3cqi, 38px);
+  border: 0;
+  border-right: 1px solid var(--feature-line);
+  border-bottom: 1px solid var(--feature-line);
+  overflow-wrap: anywhere;
+}
+
+.grid > .cell {
+  grid-column: span 2;
+}
+
+.grid > .cell::before {
+  content: none;
+}
+
+/* Balance incomplete rows without inventing an extra item or leaving a hole. */
+.grid:where([data-columns="2"]) > .cell,
+.grid:where([data-columns="3"][data-remainder="2"]) > .cell:where(:nth-last-child(-n + 2)) {
+  grid-column: span 3;
+}
+
+.grid:where([data-columns="1"]) > .cell,
+.grid:where([data-columns="3"][data-remainder="1"]) > .cell:where(:last-child) {
+  grid-column: 1 / -1;
+}
+
+.cell .marker {
+  display: block;
+  margin: 0 0 24px;
+  color: var(--feature-marker);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.4;
+  letter-spacing: .12em;
+}
+
+.cell .title {
+  margin: 0;
+  color: var(--feature-title);
+  font-size: clamp(20px, 2.2cqi, 27px);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -.035em;
+}
+
+.cell .copy {
+  margin-top: 14px;
+  color: var(--feature-copy);
+  font-size: clamp(14px, 1.4cqi, 16px);
+  line-height: 1.75;
+}
+
+.cell .copy p {
+  margin: 0 0 12px;
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.cell .copy p:last-child {
+  margin-bottom: 0;
+}
+
+@container (max-width: 60rem) {
+  .frame .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grid > .cell {
+    grid-column: auto;
+  }
+
+  .grid > .cell:where(:last-child:nth-child(odd)) {
+    grid-column: 1 / -1;
+  }
+}
+
+@container (max-width: 38rem) {
+  .frame .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

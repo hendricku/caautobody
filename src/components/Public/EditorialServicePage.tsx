@@ -7,6 +7,7 @@ import { services } from "@/lib/siteContent";
 import { media } from "@/lib/media";
 import ServiceSectionNav, { type SectionNavigationItem } from "./ServiceSectionNav";
 import Icon from "@/components/UI/Icon";
+import FeatureGrid from "./FeatureGrid";
 
 type ContentGroup =
   | { kind: "paragraph"; text: string }
@@ -59,12 +60,28 @@ function sectionVariant(section: OriginalServiceSection): string {
 
 function sourceSectionId(index: number) { return `service-section-${index + 1}`; }
 
-function SectionContent({ section, variant }: { section: OriginalServiceSection; variant: string }) {
+function SectionContent({ section, variant, dark }: { section: OriginalServiceSection; variant: string; dark: boolean }) {
   const groups = contentGroups(section.blocks);
+  // Keep prose and bullet lists in source order. Only adjacent, unordered
+  // heading/description pairs become cells; process steps retain their timeline.
+  const compactGroups: (ContentGroup | { kind: "features"; items: Extract<ContentGroup, { kind: "detail" }>[] })[] = [];
+  for (const group of groups) {
+    if (group.kind === "detail" && variant !== "process") {
+      const previous = compactGroups[compactGroups.length - 1];
+      if (previous?.kind === "features") previous.items.push(group);
+      else compactGroups.push({ kind: "features", items: [group] });
+    } else compactGroups.push(group);
+  }
   let detailIndex = 0;
   return (
-    <div className={`ca-service__section-content ca-service__section-content--${variant}`}>
-      {groups.map((group, index) => {
+    <div className={`ca-service__section-content${variant === "process" ? " ca-service__section-content--process" : ""}`}>
+      {compactGroups.map((group, index) => {
+        if (group.kind === "features") return (
+          <FeatureGrid key={`features-${index}`} tone={dark ? "dark" : "light"} items={group.items.map((item) => ({
+            title: item.heading,
+            content: item.paragraphs.map((paragraph, paragraphIndex) => <p key={paragraphIndex}>{paragraph}</p>),
+          }))} />
+        );
         if (group.kind === "paragraph") return <p key={`paragraph-${index}`} className="ca-service__paragraph">{group.text}</p>;
         if (group.kind === "bullets") return <ul key={`bullets-${index}`} className="ca-service__bullet-list">{group.items.map((item, itemIndex) => <li key={`${index}-${itemIndex}`}>{item}</li>)}</ul>;
         detailIndex += 1;
@@ -97,7 +114,7 @@ function EditorialSection({ section, index, total, isZeekr }: { section: Origina
           <h2 id={`service-section-heading-${index}`}>{sourceText(section.heading)}</h2>
           <span className="ca-service__chapter-rule" aria-hidden="true" />
         </div>
-        <SectionContent section={section} variant={variant} />
+        <SectionContent section={section} variant={variant} dark={reverse} />
       </div>
     </section>
   );
@@ -147,7 +164,7 @@ export default function EditorialServicePage({ service, copy }: { service: Servi
           </div>
           <div className="ca-service__introduction-body">
             {copy.introParagraphs.map((paragraph, index) => <p key={index}>{sourceText(paragraph)}</p>)}
-            {isTesla && copy.brandMarks.length > 0 ? <div className="ca-service__brand-mark ca-service__brand-mark--image"><Image src="/images/Tesla Approved.webp" alt="Tesla Approved Body Shop" width={500} height={170} sizes="(max-width: 720px) 100vw, 500px" /></div> : copy.brandMarks.length > 0 ? <div className="ca-service__brand-mark" aria-label={copy.brandMarks.map(sourceText).join(" ")}>{copy.brandMarks.map((mark, index) => <span key={mark} className={index === 0 ? "ca-service__brand-name" : "ca-service__brand-caption"}>{sourceText(mark)}</span>)}</div> : null}
+            {isTesla && copy.brandMarks.length > 0 ? <div className="ca-service__brand-mark ca-service__brand-mark--image"><Image src="/images/Tesla Approved.webp" alt="Tesla Approved Body Shop" width={620} height={220} sizes="(max-width: 720px) 100vw, 620px" /></div> : copy.brandMarks.length > 0 ? <div className="ca-service__brand-mark" aria-label={copy.brandMarks.map(sourceText).join(" ")}>{copy.brandMarks.map((mark, index) => <span key={mark} className={index === 0 ? "ca-service__brand-name" : "ca-service__brand-caption"}>{sourceText(mark)}</span>)}</div> : null}
           </div>
         </div>
       </section>
@@ -155,13 +172,11 @@ export default function EditorialServicePage({ service, copy }: { service: Servi
       {featureSections.length > 0 && <section id="repair-standard" className="ca-service__features" aria-label={`${sourceText(copy.category)} repair standards`}>
         <div className="shell">
           <div className="ca-service__features-top"><span className="ca-service__small-label">OUR CAPABILITIES</span><span>01 — 06</span></div>
-          <div className="ca-service__features-grid">{featureSections.map((section, index) => (
-            <article className="ca-service__feature" key={section.heading}>
-              <span className="ca-service__feature-number">{String(index + 1).padStart(2, "0")}</span>
-              <h2>{sourceText(section.heading)}</h2>
-              {section.blocks.filter((block) => block.type === "paragraph").map((block, blockIndex) => <p key={blockIndex}>{sourceText(block.text)}</p>)}
-            </article>
-          ))}</div>
+          <FeatureGrid tone="dark" headingLevel={2} items={featureSections.map((section, index) => ({
+            title: sourceText(section.heading),
+            marker: String(index + 1).padStart(2, "0"),
+            content: section.blocks.filter((block) => block.type === "paragraph").map((block, blockIndex) => <p key={blockIndex}>{sourceText(block.text)}</p>),
+          }))} />
         </div>
       </section>}
 
