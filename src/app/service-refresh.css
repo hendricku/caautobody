@@ -49,29 +49,27 @@
 
 /* SIDE NAV — every anchor targets a DOM section on the same service page. */
 .ca-service .ca-service__introduction {padding-block: clamp(72px, 7vw, 110px)}
-.ca-service .ca-service__introduction-grid {grid-template-columns: minmax(215px, .33fr) minmax(0, 1fr); gap: clamp(42px, 7vw, 115px)}
+.ca-service .ca-service__introduction-grid {grid-template-columns: minmax(215px, .33fr) minmax(0, 1fr); gap: clamp(32px, 4vw, 68px)}
 .ca-service .ca-service__introduction-aside {top: 110px; max-height: calc(100vh - 130px); overflow-y: auto; scrollbar-width: thin}
 .ca-service .ca-service__introduction-aside > p {font-size: clamp(20px, 1.45vw, 24px); letter-spacing: -.035em; line-height: 1.22; margin: 11px 0 22px}
 .ca-service .ca-service__index-links {border-top: 1px solid #d4cec3; padding-top: 16px}
 .ca-service .ca-service__index-links > span {font-size: 10px; color: #8b7965; margin-bottom: 13px; letter-spacing: .15em}
 .ca-service .ca-service__index-links a {
-  display: grid; grid-template-columns: 25px minmax(0,1fr); gap: 10px;
-  font-size: clamp(14px, .9vw, 15px); line-height: 1.48; padding: 12px 7px 12px 0;
+  display: grid; grid-template-columns: 30px minmax(0,1fr); gap: 12px;
+  font-size: clamp(18px, 1.35vw, 20px); font-weight: 700; line-height: 1.38; padding: 17px 7px 17px 0;
   border-bottom: 1px solid #e6e2dc; color: #47433d; transition: color .2s, padding-left .2s;
 }
-.ca-service .ca-service__index-links a > span:first-child {color: #ae8248; font-size: 10px; padding-top: 2px}
+.ca-service .ca-service__index-links a > span:first-child {color: #ae8248; font-size: 12px; padding-top: 3px}
 .ca-service .ca-service__index-links a > span:last-child {min-width: 0}
 .ca-service .ca-service__index-links a:hover, .ca-service .ca-service__index-links a.is-current {color: #8a5d26; padding-left: 5px}
 .ca-service .ca-service__index-links a.is-current {font-weight: 700}
 .ca-service .ca-service__introduction-body > p {font-size: clamp(16px, 1.28vw, 19px); line-height: 1.85}
 .ca-service .ca-service__introduction-body > p:first-child {font-size: inherit}
-.ca-service .ca-service__chapter, .ca-service .ca-service__features, .ca-service .ca-service__faq-link {scroll-margin-top: 105px}
+.ca-service .ca-service__chapter, .ca-service .ca-service__features {scroll-margin-top: 105px}
 .ca-service .ca-service__features {scroll-margin-top: 105px}
 .ca-service .ca-service__chapter-side h2 {font-size: clamp(29px, 2.7vw, 44px); line-height: 1.16; margin-top: 0}
 .ca-service .ca-service__chapter {padding-block: clamp(66px, 7vw, 105px)}
 .ca-service .ca-service__paragraph, .ca-service .ca-service__detail p {font-size: clamp(15px, 1.15vw, 17px); line-height: 1.86}
-.ca-service .ca-service__faq-link {padding-block: clamp(48px, 5vw, 76px); background: #eee8dd}
-.ca-service .ca-service__faq-link h2 {font-size: clamp(26px, 2.6vw, 40px)}
 
 /* CHAPTER FLOW — narrow screens read top-to-bottom; desktop returns the chapter title
    to its own left rail so every service page shares the same reading structure. */
@@ -93,15 +91,6 @@
   .ca-service .ca-service__section-content { max-width: 800px; margin-top: 0; }
   .ca-service .ca-service__section-content > .ca-service__paragraph { max-width: 760px; }
   .ca-service .ca-service__bullet-list { max-width: 800px; margin-top: 0; }
-}
-
-/* FAQ ACTION — place the action beside the supporting copy instead of against the page edge. */
-.ca-service .ca-service__faq-link-inner {display: grid;grid-template-columns: minmax(0, 620px) max-content;justify-content: start;align-items: center;gap: clamp(24px, 4vw, 64px)}
-.ca-service .ca-service__faq-link-inner > div {max-width: 620px}
-
-@media(max-width:900px) {
-  .ca-service .ca-service__faq-link-inner {grid-template-columns: minmax(0, 1fr);gap: 26px}
-  .ca-service .ca-service__faq-link .ca-service__button {justify-self: start}
 }
 
 @media(max-width:690px) {
@@ -545,4 +534,45 @@
   .brand-repair-page .brand-assessment-intake { padding-block: 54px 64px; }
   .ca-service .ca-service__hero::before,
   .brand-repair-page .brand-hero::before { background: rgba(15,14,12,.7); }
+}
+
+/* Service guide is a genuine page directory. Keep it prominent against the body copy,
+   including where older editorial rules are loaded by a cached stylesheet. */
+.ca-service .ca-service__introduction-aside > .ca-service__small-label {
+  font-size: 13px !important;
+  letter-spacing: .18em;
+}
+.ca-service .ca-service__introduction-aside > p {
+  font-size: clamp(26px, 1.9vw, 30px) !important;
+  line-height: 1.16;
+  margin-bottom: 28px;
+}
+.ca-service .ca-service__index-links > span {
+  font-size: 12px !important;
+  letter-spacing: .16em;
+  margin-bottom: 16px;
+}
+.ca-service .ca-service__index-links a {
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 16px;
+  font-size: clamp(23px, 1.8vw, 26px) !important;
+  font-weight: 700;
+  line-height: 1.3;
+  padding-block: 22px;
+}
+.ca-service .ca-service__index-links a > span:first-child {
+  font-size: 15px !important;
+  padding-top: 4px;
+}
+.ca-service .ca-service__index-links a > span:last-child {
+  font-size: clamp(18px, 1.3vw, 20px) !important;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+@media (max-width: 650px) {
+  .ca-service .ca-service__introduction-aside > .ca-service__small-label { font-size: 12px !important; }
+  .ca-service .ca-service__introduction-aside > p { font-size: 27px !important; }
+  .ca-service .ca-service__index-links a { font-size: 23px !important; }
+  .ca-service .ca-service__index-links a > span:last-child { font-size: 18px !important; }
 }

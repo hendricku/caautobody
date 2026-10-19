@@ -39,7 +39,7 @@ export default function HomeV4({ hero }: { hero: HomeHero }) {
         <div className="hp-brands-wrap">
           <div className="hp-brands hp-shell" aria-label="Vehicle brands serviced by CA Autobody">
             <div className="hp-brand-grid">
-              {vehicleBrandLogos.map(([name, image]) => <div className="hp-brand-logo" key={name}><img src={image} alt={name} /><span>{name}</span></div>)}
+              {vehicleBrandLogos.map(([name, image]) => <div className={`hp-brand-logo${name === "Zeekr" ? " hp-brand-logo--zeekr" : ""}`} key={name}><img src={image} alt={name} /><span>{name}</span></div>)}
             </div>
             <div className="hp-brand-rule"><span /><strong>All makes &amp; models</strong><span /></div>
           </div>
@@ -50,7 +50,7 @@ export default function HomeV4({ hero }: { hero: HomeHero }) {
         <div className="hp-trust hp-shell">
           <article className="hp-trust__item hp-trust__item--google">
             <span className="hp-trust__brand hp-trust__brand--google" aria-hidden="true"><svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3A12 12 0 0 1 12 24a12 12 0 0 1 19.2-9.6l5.7-5.7A20 20 0 1 0 44 24c0-1.2-.1-2.3-.4-3.5Z" /><path fill="#FF3D00" d="M6.3 14.7 12.9 19A12 12 0 0 1 31.2 14.4l5.7-5.7A20 20 0 0 0 6.3 14.7Z" /><path fill="#4CAF50" d="M24 44c5.2 0 9.8-2 13.3-5.2l-6.1-5.2A12 12 0 0 1 13 29l-6.5 5A20 20 0 0 0 24 44Z" /><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3a12 12 0 0 1-4.1 5.6l6.1 5.2C41 35.4 44 30.4 44 24c0-1.2-.1-2.3-.4-3.5Z" /></svg></span>
-            <div className="hp-trust__copy"><strong>4.9 star rating</strong><span className="hp-stars" aria-label="4.9 star rating">{Array.from({ length: 5 }, (_, index) => <StarRounded key={index} aria-hidden="true" />)}</span><p>Based on Google reviews from our happy customers.</p></div>
+            <div className="hp-trust__copy"><strong>4.9 star rating</strong><span className="hp-stars" aria-label="4.9 star rating">{Array.from({ length: 5 }, (_, index) => <StarRounded key={index} aria-hidden="true" />)}</span><p>350+ 5-star Google reviews.</p></div>
           </article>
           <article className="hp-trust__item">
             <span className="hp-trust__brand hp-trust__brand--car" aria-hidden="true"><DirectionsCarFilledRounded /></span>

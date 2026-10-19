@@ -9,6 +9,8 @@ import ChevronRightRounded from "@mui/icons-material/ChevronRightRounded";
 import ActionIcon from "@/components/UI/ActionIcon";
 
 const items = [
+  { label: "Tesla Repair", kicker: "01 / Tesla", title: "Tesla Repair", image: media.heroPanels.tesla, copy: "Specialist accident repair support for Tesla vehicles, with care for modern EV construction, finish and approved repair requirements.", href: "/services/tesla-approved-repair-centre", cta: "Explore Tesla Repair" },
+  { label: "Zeekr Repair", kicker: "02 / Zeekr", title: "Zeekr Repair", image: media.heroPanels.zeekr, copy: "Approved repair support for Zeekr vehicles, with careful assessment, accurate colour matching and modern EV repair procedures.", href: "/services/services-zeekr-approved-repairer-melbourne", cta: "Explore Zeekr Repair" },
   { label: "BYD Repair", kicker: "03 / BYD", title: "BYD Repair", image: media.brandRepair.bydHero, copy: "Approved repair support for BYD vehicles, with EV-aware assessment, genuine parts planning and manufacturer-aligned procedures.", href: "/services/byd-approved-repairer-melbourne", cta: "Explore BYD Repair" },
   { label: "Lexus Repair", kicker: "04 / Lexus", title: "Lexus Repair", image: media.brandRepair.lexusHero, copy: "Approved Lexus collision repair with careful body accuracy, refinishing and genuine parts planning.", href: "/services/lexus-approved-body-shop-melbourne", cta: "Explore Lexus Repair" },
   { label: "Prestige Brands", kicker: "05 / Approved Expertise", title: "Prestige Brands", image: media.workshop.exteriorWide, copy: "Approved repair support for Tesla, Zeekr, BYD and Lexus vehicles, with care for modern construction and finish quality.", href: "/services", cta: "All Services" },

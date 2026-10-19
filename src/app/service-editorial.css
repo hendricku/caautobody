@@ -76,16 +76,13 @@
 .ca-service__bullet-list li{position:relative;border-bottom:1px solid #d8d2c7;padding:15px 10px 15px 22px;font-size:14px;line-height:1.5;font-weight:700;color:#34312b}
 .ca-service__bullet-list li::before{content:"";width:6px;height:6px;background:#a97836;position:absolute;top:22px;left:1px}
 .ca-service__chapter--ink .ca-service__bullet-list li{color:#efebe6;border-bottom-color:#514a40}
-.ca-service__faq-link{background:#efe8db;padding:clamp(60px,6vw,94px) 0}
-.ca-service__faq-link-inner{display:flex;align-items:center;justify-content:space-between;gap:50px}
-.ca-service__faq-link h2{font-size:clamp(30px,3.35vw,47px);line-height:1.1;letter-spacing:-.045em;margin:15px 0}
-.ca-service__faq-link p{color:#5c564c;font-size:15px;line-height:1.7;margin:0;max-width:570px}
-.ca-service__faq-link .ca-service__button{flex-shrink:0}
 .ca-service__contact-band{background:#10100f;color:#fff;padding:clamp(78px,9vw,125px) 0}
 .ca-service__contact-band-inner{display:flex;justify-content:space-between;align-items:center;gap:45px}
 .ca-service__contact-band .ca-service__small-label{color:#d3a963}
 .ca-service__contact-band h2{font-size:clamp(37px,5vw,68px);letter-spacing:-.06em;font-weight:650;line-height:1.08;max-width:700px;margin:17px 0 23px}
 .ca-service__contact-band p{color:#beb8af;font-size:15px;line-height:1.75;max-width:550px;margin:0}
+.ca-service__contact-faq{margin-top:clamp(24px,2.4vw,32px)}
+.ca-service__contact-faq .ca-service__button{min-width:min(100%,260px)}
 .ca-service__contact-band-inner>div:last-child{display:grid;gap:19px;justify-items:stretch;min-width:235px}
 .ca-service__contact-phone{color:#fff;text-align:center;font-size:19px;letter-spacing:-.025em;font-weight:650}
 .ca-service__contact-phone:hover{color:#d3a963}
@@ -128,7 +125,7 @@
   .ca-service__section-content--offerings,.ca-service__section-content--reasons,.ca-service__bullet-list{grid-template-columns:1fr}
   .ca-service__section-content--offerings>.ca-service__detail{padding:25px 0}
   .ca-service__detail{gap:8px;grid-template-columns:30px minmax(0,1fr)}
-  .ca-service__faq-link-inner,.ca-service__contact-band-inner{display:grid;grid-template-columns:1fr;gap:34px}.ca-service__faq-link .ca-service__button{justify-self:start}
+  .ca-service__contact-band-inner{display:grid;grid-template-columns:1fr;gap:34px}
   .ca-service__contact-band-inner>div:last-child{justify-items:start;min-width:0}
   .ca-service__related-header{align-items:start;flex-direction:column}.ca-service__related-grid{grid-template-columns:1fr;border-left:0}.ca-service__related-grid>a{min-height:125px;border-right:0;border-bottom:1px solid #d6cfc2;padding:23px 0}.ca-service__related-grid h3{margin:8px 0 12px}
 }

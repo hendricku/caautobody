@@ -33,7 +33,7 @@ export default function QuickActions() {
         href="https://admin.trustindex.io/api/googleReview?place-id=ChIJ5xaw2aoS1moRDU4kUHImdPg"
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Read CA Autobody's 4.9 star Google rating"
+        aria-label="Read CA Autobody's 4.9 star Google rating from more than 350 five-star reviews"
       >
         <svg className="hp-google-rating-float__mark" viewBox="0 0 48 48" aria-hidden="true">
           <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.61l6.86-6.86C35.9 2.36 30.5 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.2C12.43 13.56 17.74 9.5 24 9.5Z" />
@@ -41,8 +41,10 @@ export default function QuickActions() {
           <path fill="#FBBC05" d="M10.54 28.58A14.43 14.43 0 0 1 9.77 24c0-1.59.27-3.13.77-4.58l-7.98-6.2A23.9 23.9 0 0 0 0 24c0 3.86.92 7.52 2.56 10.78l7.98-6.2Z" />
           <path fill="#34A853" d="M24 48c6.5 0 11.95-2.15 15.94-5.85l-7.56-5.87c-2.1 1.41-4.78 2.25-8.38 2.25-6.26 0-11.57-4.06-13.46-9.95l-7.98 6.2C6.51 42.62 14.62 48 24 48Z" />
         </svg>
-        <span className="hp-google-rating-float__copy"><b>Google rating</b><strong>4.9</strong></span>
-        <span className="hp-google-rating-float__stars" aria-hidden="true">★★★★★</span>
+        <span className="hp-google-rating-float__copy">
+          <b>350+ five-star reviews</b>
+          <span className="hp-google-rating-float__metric"><strong>4.9</strong><span className="hp-google-rating-float__stars" aria-hidden="true">★★★★★</span></span>
+        </span>
       </a>
       <aside className={`hp-utility-rail ${footerVisible ? "is-footer-visible" : ""}`} aria-label="Quick actions">
         <a href="tel:+61397727411" aria-label="Call CA Autobody">

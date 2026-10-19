@@ -72,6 +72,13 @@ const heroPanelByService: Record<string, string> = {
   "lexus-approved-body-shop-melbourne": media.heroPanels.lexus,
 };
 
+const approvedBrandIntroMarks: Record<string, { src: string; alt: string; width: number; height: number }> = {
+  Tesla: { src: "/images/tesla-approved-body-shop.webp", alt: "Tesla Approved Body Shop", width: 620, height: 204 },
+  Zeekr: { src: "/images/Zeekr Orange.webp", alt: "Zeekr", width: 320, height: 120 },
+  BYD: { src: "/images/BYD Red.webp", alt: "BYD", width: 320, height: 120 },
+  Lexus: { src: "/images/Lexus Silver.webp", alt: "Lexus", width: 320, height: 120 },
+};
+
 function heroPanelFor(service: ServiceContent) {
   return heroPanelByService[service.slug] ?? service.image;
 }
@@ -169,14 +176,14 @@ export default function EditorialServicePage({ service, copy }: { service: Servi
   const chapters = usesApprovedBrandLayout ? copy.sections.slice(6) : copy.sections;
   const related = services.filter((other) => other.slug !== service.slug && getEditorialServiceCopy(other.slug)).slice(0, 3);
   const faqHref = `/frequently-asked-questions?category=${encodeURIComponent(copy.category)}`;
+  const brandIntroMark = usesApprovedBrandLayout ? approvedBrandIntroMarks[copy.category] : undefined;
   const navigation: SectionNavigationItem[] = [
     ...(usesApprovedBrandLayout ? [{ id: "repair-standard", label: `${sourceText(copy.category)} repair standards`, number: "01" }] : []),
     ...chapters.map((section, index) => ({ id: sourceSectionId(index), label: sourceText(section.heading), number: String(index + 1 + (usesApprovedBrandLayout ? 1 : 0)).padStart(2, "0") })),
-    ...(copy.faqs.length ? [{ id: "service-faqs", label: "Questions & answers", number: "FAQ" }] : []),
   ];
 
   return (
-    <main className={`ca-service${isTesla ? " ca-service--tesla" : ""}${isZeekr ? " ca-service--zeekr" : ""}`}>
+    <main className={`ca-service${isTesla ? " ca-service--tesla" : ""}${isZeekr ? " ca-service--zeekr" : ""}${usesApprovedBrandLayout ? " ca-service--approved-brand" : ""}`}>
       <section className="ca-service__hero" aria-labelledby="service-heading">
         <div className="ca-service__hero-background" aria-hidden="true"><img src={service.image} alt="" /></div>
         <div className="shell ca-service__hero-grid">
@@ -206,7 +213,7 @@ export default function EditorialServicePage({ service, copy }: { service: Servi
           </div>
           <div className="ca-service__introduction-body">
             {copy.introParagraphs.map((paragraph, index) => <p key={index}>{sourceText(paragraph)}</p>)}
-            {isTesla && copy.brandMarks.length > 0 ? <div className="ca-service__brand-mark ca-service__brand-mark--image"><Image src="/images/Tesla Approved.webp" alt="Tesla Approved Body Shop" width={620} height={220} sizes="(max-width: 720px) 100vw, 620px" /></div> : copy.brandMarks.length > 0 ? <div className="ca-service__brand-mark" aria-label={copy.brandMarks.map(sourceText).join(" ")}>{copy.brandMarks.map((mark, index) => <span key={mark} className={index === 0 ? "ca-service__brand-name" : "ca-service__brand-caption"}>{sourceText(mark)}</span>)}</div> : null}
+            {brandIntroMark ? <div className="ca-service__brand-intro-proof"><div className="ca-service__brand-intro-mark"><Image src={brandIntroMark.src} alt={brandIntroMark.alt} width={brandIntroMark.width} height={brandIntroMark.height} sizes="(max-width: 920px) 320px, 620px" /></div></div> : copy.brandMarks.length > 0 ? <div className="ca-service__brand-mark" aria-label={copy.brandMarks.map(sourceText).join(" ")}>{copy.brandMarks.map((mark, index) => <span key={mark} className={index === 0 ? "ca-service__brand-name" : "ca-service__brand-caption"}>{sourceText(mark)}</span>)}</div> : null}
           </div>
         </div>
       </section>
@@ -226,13 +233,6 @@ export default function EditorialServicePage({ service, copy }: { service: Servi
         {chapters.map((section, index) => <EditorialSection key={`${index}-${section.heading}`} section={section} index={index} isZeekr={isZeekr} serviceSlug={service.slug} />)}
       </div>
 
-      {copy.faqs.length > 0 && <section id="service-faqs" className="ca-service__faq-link">
-        <div className="shell ca-service__faq-link-inner">
-          <div><span className="ca-service__small-label">NEED MORE INFORMATION?</span><h2>Questions before your repair?</h2><p>Read the original {copy.category} questions and answers on our dedicated FAQ page.</p></div>
-          <Link className="ca-service__button ca-service__button--outline" href={faqHref}>View {copy.category} FAQs <Icon name="arrow-outward" /></Link>
-        </div>
-      </section>}
-
       <section className="ca-service__contact-band" aria-label="Contact the CA Autobody team">
         <div className="shell ca-service__contact-band-inner">
           <div className="ca-service__contact-copy">
@@ -240,6 +240,7 @@ export default function EditorialServicePage({ service, copy }: { service: Servi
             <h2>{sourceText(copy.contactHeading ?? "Let’s talk about your vehicle.")}</h2>
             <span className="ca-service__chapter-rule" aria-hidden="true" />
             <p>{sourceText(copy.contactCopy ?? "Talk directly with our team about an assessment, repair options and getting back on the road.")}</p>
+            {copy.faqs.length > 0 ? <div className="ca-service__contact-faq"><Link className="ca-service__button ca-service__button--outline" href={faqHref}>View {copy.category} FAQs <Icon name="arrow-outward" /></Link></div> : null}
             {copy.disclaimer ? <p className="ca-service__disclaimer"><strong>Small print:</strong> {sourceText(copy.disclaimer)}</p> : null}
             <div className="ca-service__contact-detail"><span>VISIT THE WORKSHOP</span><strong>7 Ashley Park Drive<br />Chelsea Heights, VIC 3196</strong></div>
           </div>

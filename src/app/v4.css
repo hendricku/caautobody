@@ -383,7 +383,7 @@ body.home-v2 .hp-location__actions .hp-btn--black:hover{color:#111!important}
   position:absolute;
   inset:0;
   z-index:0;
-  background-image:url("/images/homepage-Replacement-Vehicles.webp");
+  background-image:url("/images/Chelsea-Auto-Body-003.webp");
   background-size:cover;
   background-position:center 48%;
   transform:scale(1.012);
@@ -769,3 +769,11 @@ body.home-v2 .hp-btn--hero-secondary:hover{border-color:#111;color:#fff!importan
 @media(prefers-reduced-motion:reduce){
   .hp-service-controls button{transition:none}
 }
+
+/* Zeekr's supplied lockup is intentionally vertical. It needs its own taller
+   mark area so the wordmark remains part of the logo at every breakpoint. */
+.hp-brand-logo--zeekr{min-height:82px}
+.hp-brand-logo--zeekr img{max-width:92px;max-height:76px}
+@media(max-width:1020px){.hp-brand-logo--zeekr{min-height:70px}.hp-brand-logo--zeekr img{max-width:76px;max-height:64px}}
+@media(max-width:720px){.hp-brand-logo--zeekr{min-height:62px}.hp-brand-logo--zeekr img{max-width:66px;max-height:56px}}
+@media(max-width:420px){.hp-brand-logo--zeekr{min-height:56px}.hp-brand-logo--zeekr img{max-width:58px;max-height:50px}}
