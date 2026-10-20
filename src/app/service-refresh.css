@@ -348,6 +348,9 @@
   .hp-header .hp-mega--services .hp-mega__service-grid > a:nth-child(4),
   .hp-header .hp-mega--services .hp-mega__service-grid > a:nth-child(5) { grid-column: span 3; border-bottom: 0; }
   .hp-header .hp-mega--services .hp-mega__service-grid > a:nth-child(4) { border-left: 0; }
+  .hp-header .hp-mega--services .hp-mega__service-grid:has(> a:nth-child(6)) > a:nth-child(4),
+  .hp-header .hp-mega--services .hp-mega__service-grid:has(> a:nth-child(6)) > a:nth-child(5) { grid-column: span 2; border-bottom: 1px solid #292929; }
+  .hp-header .hp-mega--services .hp-mega__service-grid:has(> a:nth-child(6)) > a:nth-child(4) { border-left: 1px solid #292929; }
 }
 
 /* The repairer criteria are one composed directory, not three competing cards. */

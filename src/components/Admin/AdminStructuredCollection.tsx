@@ -7,7 +7,7 @@ import { useCmsCollection, type CmsCollection } from "@/lib/cms/useCmsCollection
 
 type StructuredItem = { slug: string; title?: string; name?: string; seoTitle: string; eyebrow?: string; intro: string; body: string[]; image: string; bullets?: string[]; coordinates?: [number,number]; mapDescription?: string; status?: "draft" | "published" };
 export default function AdminStructuredCollection({ collection, heading }: { collection: Extract<CmsCollection,"offers"|"areas">; heading: string }) {
-  const { items, role, error, save, retire, reload } = useCmsCollection<StructuredItem>(collection);
+  const { items, role, error, save, retire, duplicate, reload, lastSynced } = useCmsCollection<StructuredItem>(collection);
   const [editing,setEditing] = useState<StructuredItem|null>(null);
   const [draft,setDraft] = useState<StructuredItem|null>(null);
   const [busy,setBusy] = useState(false);
@@ -27,9 +27,16 @@ export default function AdminStructuredCollection({ collection, heading }: { col
     const confirmation = await Swal.fire({icon:"warning",title:`Retire ${item.title || item.name}?`,text:"The URL will no longer be published. Content remains in the database.",showCancelButton:true,confirmButtonText:"Retire",confirmButtonColor:"#9d3c36"});
     if (confirmation.isConfirmed) {try {await retire(item.slug);void Swal.fire({icon:"success",title:"Page retired",timer:1600,showConfirmButton:false});}catch(err){void Swal.fire({icon:"error",text:err instanceof Error?err.message:"Retirement failed"});}}
   }
+  async function duplicateItem(item: StructuredItem) {
+    try {
+      const copy = await duplicate(item.slug);
+      edit(copy);
+      void Swal.fire({ icon:"success", title:"Draft copy created", timer:1400, showConfirmButton:false });
+    } catch (err) { void Swal.fire({ icon:"error", text:err instanceof Error ? err.message : "Unable to duplicate content" }); }
+  }
   return <><div className="admin-page-head"><div><span>Content</span><h1>{heading}</h1><p>Published pages, drafts and SEO metadata are stored in Supabase.</p></div><button className="admin-primary" type="button" onClick={()=>edit()}>+ New {collection === "offers" ? "offer" : "area"}</button></div>
-    {error ? <p role="alert" className="admin-note">{error}</p> : null}<div className="admin-toolbar"><span>{items.length} active and draft pages</span><button type="button" onClick={()=>void reload()}>Refresh CMS</button></div>
-    <div className="admin-card-grid">{items.map(item=><article className="admin-content-card" key={item.slug}><img src={item.image || "/images/Banner.webp"} alt=""/><div><span>{item.status}</span><h2>{item.title || item.name}</h2><p>{item.intro}</p><small>/{collection === "offers" ? "offers" : "areas-we-serve"}/{item.slug}</small><div className="table-actions"><button type="button" onClick={()=>edit(item)}>Edit</button><button className="admin-danger" type="button" onClick={()=>void remove(item)}>Retire</button></div></div></article>)}</div>
+    {error ? <p role="alert" className="admin-note">{error}</p> : null}<div className="admin-toolbar"><span>{items.length} active and draft pages · {lastSynced ? "Live sync active" : "Syncing"}</span><button type="button" onClick={()=>void reload()}>Refresh CMS</button></div>
+    <div className="admin-card-grid">{items.map(item=><article className="admin-content-card" key={item.slug}><img src={item.image || "/images/Banner.webp"} alt=""/><div><span>{item.status}</span><h2>{item.title || item.name}</h2><p>{item.intro}</p><small>/{collection === "offers" ? "offers" : "areas-we-serve"}/{item.slug}</small><div className="table-actions"><button type="button" onClick={()=>edit(item)}>Edit</button><button type="button" onClick={()=>void duplicateItem(item)}>Duplicate</button><button className="admin-danger" type="button" onClick={()=>void remove(item)}>Retire</button></div></div></article>)}</div>
     {draft ? <AdminModal title={`Edit ${heading}`} onClose={()=>{setDraft(null);setEditing(null);}}><form className="admin-form" onSubmit={event=>void submit(event)}>
       <label>{collection === "offers" ? "Title" : "Area name"}<input required value={collection==="offers" ? draft.title || "" : draft.name || ""} onChange={event=>setDraft({...draft,[collection === "offers" ? "title" : "name"]:event.target.value})}/></label>
       <label>Slug<input value={draft.slug} onChange={event=>setDraft({...draft,slug:event.target.value})}/></label><label>SEO title<input value={draft.seoTitle} onChange={event=>setDraft({...draft,seoTitle:event.target.value})}/></label>

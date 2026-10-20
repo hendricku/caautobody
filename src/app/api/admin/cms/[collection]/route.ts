@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 import { getAdmin, sameOrigin } from "@/lib/cms/admin-server";
+import { copySlug, duplicateInput, type DuplicateCollection } from "@/lib/cms/content-duplicate";
 import { CMS_IMAGE_FORMATS, formatFromStagingPath, isSafeCmsImageReference, normaliseCmsImageReference, stagingPathFromReference } from "@/lib/cms/image-reference";
+import { consumePublicRateLimit } from "@/lib/security/public-rate-limit";
 
 const allowed = {
   blogs: { table: "cms_blog_posts", key: "slug", path: "/blog" },
@@ -13,6 +16,7 @@ const allowed = {
 } as const;
 type Collection = keyof typeof allowed;
 function config(collection: string) { return allowed[collection as Collection] || null; }
+const duplicateRequestSchema = z.object({ sourceId: z.string().trim().min(1).max(140) }).strict();
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const str = (value: unknown, max = 10000) => typeof value === "string" ? value.trim().slice(0, max) : "";
 const normaliseImage = normaliseCmsImageReference;
@@ -46,9 +50,33 @@ function shapeBlocks(value: unknown): Record<string, unknown>[] | null {
   }
   return blocks;
 }
+function object(value: unknown): Record<string, unknown> | null {
+  return value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
+}
+function servicePlacement(value: unknown, slug: unknown) {
+  const configured = object(object(value)?.placement);
+  const key = str(slug, 120);
+  const navigationDefaults = new Set(["accident-assistance", "panel-beating", "spray-painting", "paintless-dent-removal", "replacement-vehicles"]);
+  const sliderDefaults = new Set(["tesla-approved-repair-centre", "services-zeekr-approved-repairer-melbourne", "byd-approved-repairer-melbourne", "lexus-approved-body-shop-melbourne", "panel-beating", "spray-painting", "replacement-vehicles", "paintless-dent-removal", "accident-assistance"]);
+  return {
+    navigation: typeof configured?.navigation === "boolean" ? configured.navigation : navigationDefaults.has(key),
+    navigationLabel: str(configured?.navigationLabel, 100),
+    navigationSummary: str(configured?.navigationSummary, 240),
+    homeSlider: typeof configured?.homeSlider === "boolean" ? configured.homeSlider : sliderDefaults.has(key),
+    sliderLabel: str(configured?.sliderLabel, 100),
+    sliderKicker: str(configured?.sliderKicker, 100),
+    sliderCopy: str(configured?.sliderCopy, 600),
+    sliderCta: str(configured?.sliderCta, 100),
+  };
+}
+function servicePresentation(value: unknown) {
+  const content = object(value);
+  if (!content) return { variant: "standard" };
+  return Object.fromEntries(Object.entries(content).filter(([key]) => key !== "placement"));
+}
 function mapRow(collection: Collection, row: Record<string, unknown>) {
   if (collection === "blogs") return { slug: row.slug, title: row.title, date: row.display_date, category: row.category, excerpt: row.excerpt, image: row.image_path, status: row.status, blocks: row.blocks };
-  if (collection === "services") return { slug: row.slug, title: row.title, seoTitle: row.seo_title, eyebrow: row.eyebrow, intro: row.intro, body: row.body, image: row.image_path, highlights: row.highlights, contentPending: row.content_pending, presentation: row.content_json, status: row.status };
+  if (collection === "services") return { slug: row.slug, title: row.title, seoTitle: row.seo_title, eyebrow: row.eyebrow, intro: row.intro, body: row.body, image: row.image_path, highlights: row.highlights, contentPending: row.content_pending, presentation: servicePresentation(row.content_json), placement: servicePlacement(row.content_json, row.slug), status: row.status };
   if (collection === "faqs") return { id: row.legacy_key, category: row.category, question: row.question, answer: row.answer, visible: row.is_visible, status: row.status };
   if (collection === "gallery") return { id: row.legacy_key, image: row.image_path, caption: row.caption, category: row.category, status: row.status };
   if (collection === "offers") return { slug: row.slug, title: row.title, seoTitle: row.seo_title, eyebrow: row.eyebrow, intro: row.intro, body: row.body, image: row.image_path, bullets: row.bullets, status: row.status };
@@ -69,7 +97,12 @@ function toRow(collection: Collection, input: Record<string, unknown>): Record<s
   if (collection === "faqs") { if (!id || !str(input.question)) return null; return { ...basic, legacy_key: id, category: str(input.category,120), question: str(input.question,500), answer: str(input.answer,10000), is_visible: Boolean(input.visible) }; }
   if (collection === "gallery") { if (!id || !image) return null; return { ...basic, legacy_key: id, image_path: image, caption: str(input.caption,500), category: str(input.category,120) }; }
   if (!slugPattern.test(slug)) return null;
-  if (collection === "services") return { ...basic, content_json: input.presentation && typeof input.presentation === "object" && !Array.isArray(input.presentation) && JSON.stringify(input.presentation).length < 200000 ? input.presentation : {variant:"standard"}, legacy_key: `admin-service-${slug}`, slug, title: str(input.title,300), seo_title: str(input.seoTitle,300), eyebrow: str(input.eyebrow,200), intro: str(input.intro,3000), body: arr(input.body), image_path: image, highlights: arr(input.highlights), content_pending: Boolean(input.contentPending) };
+  if (collection === "services") {
+    const presentation = input.presentation && typeof input.presentation === "object" && !Array.isArray(input.presentation) && JSON.stringify(input.presentation).length < 200000 ? input.presentation as Record<string, unknown> : { variant: "standard" };
+    const rawPlacement = object(input.placement) || {};
+    const placement = { navigation: Boolean(rawPlacement.navigation), navigationLabel: str(rawPlacement.navigationLabel, 100), navigationSummary: str(rawPlacement.navigationSummary, 240), homeSlider: Boolean(rawPlacement.homeSlider), sliderLabel: str(rawPlacement.sliderLabel, 100), sliderKicker: str(rawPlacement.sliderKicker, 100), sliderCopy: str(rawPlacement.sliderCopy, 600), sliderCta: str(rawPlacement.sliderCta, 100) };
+    return { ...basic, content_json: { ...presentation, placement }, legacy_key: `admin-service-${slug}`, slug, title: str(input.title,300), seo_title: str(input.seoTitle,300), eyebrow: str(input.eyebrow,200), intro: str(input.intro,3000), body: arr(input.body), image_path: image, highlights: arr(input.highlights), content_pending: Boolean(input.contentPending) };
+  }
   if (collection === "offers") return { ...basic, legacy_key: `admin-offer-${slug}`, slug, title: str(input.title,300), seo_title: str(input.seoTitle,300), eyebrow: str(input.eyebrow,200), intro: str(input.intro,3000), body: arr(input.body), image_path: image, bullets: arr(input.bullets) };
   return { ...basic, legacy_key: `admin-area-${slug}`, slug, name: str(input.name,300), seo_title: str(input.seoTitle,300), intro: str(input.intro,3000), body: arr(input.body), image_path: image, coordinates: Array.isArray(input.coordinates) && input.coordinates.length === 2 && input.coordinates.every((n) => typeof n === "number" && Number.isFinite(n)) ? input.coordinates : [0,0], map_description: str(input.mapDescription,3000) };
 }
@@ -108,6 +141,18 @@ function blogValidationError(input: Record<string, unknown>) {
 function databaseFailure(area: string, code?: string) {
   console.error("CMS database failure", { area, code });
   return NextResponse.json({ error: "The CMS is temporarily unavailable. Please try again." }, { status: 503 });
+}
+function revalidateCollection(collection: Collection, originalId?: string, nextSlug?: string) {
+  const cfg = allowed[collection];
+  revalidatePath(cfg.path);
+  // Services also feed the global header menu and the homepage carousel.
+  // Revalidate the root layout so placement changes reach every public route.
+  if (collection === "services") revalidatePath("/", "layout");
+  if (cfg.key === "slug") {
+    if (originalId) revalidatePath(`${cfg.path}/${originalId}`);
+    if (nextSlug) revalidatePath(`${cfg.path}/${nextSlug}`);
+  }
+  revalidatePath("/sitemap.xml");
 }
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ collection: string }> }) {
   const collection = (await params).collection as Collection;
@@ -157,10 +202,63 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   const action = existing ? admin.client.from(cfg.table).update(values).eq("id", existing.id) : admin.client.from(cfg.table).insert(values);
   const { data, error } = await action.select().single();
   if (error) return databaseFailure(`${collection}:save`, error.code);
-  revalidatePath(cfg.path);
-  if (cfg.key === "slug") { if (originalId) revalidatePath(`${cfg.path}/${originalId}`); revalidatePath(`${cfg.path}/${str(row.slug)}`); }
-  revalidatePath("/sitemap.xml");
+  revalidateCollection(collection, originalId, str(row.slug));
   return NextResponse.json({ item: mapRow(collection, data) });
+}
+export async function POST(request: NextRequest, { params }: { params: Promise<{ collection: string }> }) {
+  const collection = (await params).collection as Collection;
+  const cfg = config(collection);
+  if (!cfg) return invalid();
+  if (!sameOrigin(request)) return NextResponse.json({ error: "Invalid request origin" }, { status: 403 });
+
+  let duplicateRequest: z.infer<typeof duplicateRequestSchema>;
+  try { duplicateRequest = duplicateRequestSchema.parse(await request.json()); }
+  catch { return invalid("Select a CMS item to duplicate."); }
+
+  try {
+    const permitted = await consumePublicRateLimit({ request, scope: "cms-duplicate", limit: 30, windowSeconds: 60 });
+    if (!permitted) return NextResponse.json({ error: "Too many duplicate requests. Please wait a minute and try again." }, { status: 429 });
+  } catch {
+    return NextResponse.json({ error: "The CMS is temporarily unavailable. Please try again." }, { status: 503 });
+  }
+
+  const admin = await getAdmin();
+  if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { data: source, error: sourceError } = await admin.client
+    .from(cfg.table)
+    .select("*")
+    .eq(cfg.key, duplicateRequest.sourceId)
+    .neq("status", "retired")
+    .maybeSingle();
+  if (sourceError) return databaseFailure(`${collection}:duplicate-source`, sourceError.code);
+  if (!source) return NextResponse.json({ error: "CMS record not found" }, { status: 404 });
+
+  const sourceItem = mapRow(collection, source) as Record<string, unknown>;
+  const sourceSortOrder = typeof source.sort_order === "number" && Number.isSafeInteger(source.sort_order) ? source.sort_order : 0;
+  const maxAttempts = cfg.key === "slug" ? 100 : 1;
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    const nextSlug = cfg.key === "slug" ? copySlug(str(source.slug, 120), attempt) : undefined;
+    if (nextSlug) {
+      const { data: collision, error: collisionError } = await admin.client.from(cfg.table).select("id").eq("slug", nextSlug).limit(1);
+      if (collisionError) return databaseFailure(`${collection}:duplicate-slug`, collisionError.code);
+      if (collision && collision.length > 0) continue;
+    }
+
+    const input = duplicateInput(collection as DuplicateCollection, sourceItem, nextSlug);
+    const row = toRow(collection, input);
+    if (!row) return invalid("The selected content cannot be duplicated because it no longer passes CMS validation.");
+    row.sort_order = sourceSortOrder;
+    const { data, error } = await admin.client.from(cfg.table).insert(row).select().single();
+    if (!error) {
+      revalidateCollection(collection, undefined, nextSlug);
+      return NextResponse.json({ item: mapRow(collection, data) }, { status: 201 });
+    }
+    // Slugs are uniquely constrained in the database. Retrying also handles a
+    // concurrent duplicate request that claims the candidate after our lookup.
+    if (cfg.key === "slug" && error.code === "23505") continue;
+    return databaseFailure(`${collection}:duplicate`, error.code);
+  }
+  return NextResponse.json({ error: "Unable to create a unique draft URL. Please try again." }, { status: 409 });
 }
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ collection: string }> }) {
   const collection = (await params).collection as Collection; const cfg = config(collection);
@@ -173,7 +271,6 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
   const { data, error } = await admin.client.from(cfg.table).update({ status: "retired" }).eq(cfg.key,id).select("id").maybeSingle();
   if (error) return databaseFailure(`${collection}:retire`, error.code);
   if (!data) return NextResponse.json({ error: "CMS record not found" }, { status: 404 });
-  revalidatePath(cfg.path); if (cfg.key === "slug") revalidatePath(`${cfg.path}/${id}`);
-  revalidatePath("/sitemap.xml");
+  revalidateCollection(collection, id);
   return NextResponse.json({ ok: true });
 }

@@ -9,9 +9,9 @@ const require = createRequire(import.meta.url);
 function sourceModule(path, mocks = {}) {
   const source = readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
   const { outputText } = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } });
-  const module = { exports: {} };
-  new Function("require", "module", "exports", outputText)((id) => Object.hasOwn(mocks, id) ? mocks[id] : require(id), module, module.exports);
-  return module.exports;
+  const loadedModule = { exports: {} };
+  new Function("require", "module", "exports", outputText)((id) => Object.hasOwn(mocks, id) ? mocks[id] : require(id), loadedModule, loadedModule.exports);
+  return loadedModule.exports;
 }
 const { manageTeamMember, TeamError } = sourceModule("src/lib/cms/team-management.ts");
 const validation = sourceModule("src/lib/cms/team-validation.ts");

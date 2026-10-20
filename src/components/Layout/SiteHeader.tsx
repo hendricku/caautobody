@@ -10,6 +10,7 @@ import ExpandMoreRounded from "@mui/icons-material/ExpandMoreRounded";
 import MenuRounded from "@mui/icons-material/MenuRounded";
 import PhoneRounded from "@mui/icons-material/PhoneRounded";
 import ActionIcon from "@/components/UI/ActionIcon";
+import type { ServiceNavigationItem } from "@/lib/cms/public-content";
 
 const chevron = (
   <ExpandMoreRounded className="hp-chevron" aria-hidden="true" focusable="false" />
@@ -22,8 +23,15 @@ type SiteSettings = {
   email: string;
   address: string;
 };
+const defaultServiceNavigation: ServiceNavigationItem[] = [
+  { slug: "accident-assistance", label: "Accident Assistance", summary: "Support after a collision" },
+  { slug: "panel-beating", label: "Panel Beating", summary: "Structural and cosmetic repair" },
+  { slug: "spray-painting", label: "Spray Painting", summary: "Precise colour matching" },
+  { slug: "paintless-dent-removal", label: "Paintless Dent Removal", summary: "Low-impact dent repair" },
+  { slug: "replacement-vehicles", label: "Replacement Vehicles", summary: "Keep moving while we repair" },
+];
 
-export default function SiteHeader({ siteSettings }: { siteSettings: SiteSettings }) {
+export default function SiteHeader({ siteSettings, serviceNavigation = defaultServiceNavigation }: { siteSettings: SiteSettings; serviceNavigation?: ServiceNavigationItem[] }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
@@ -191,11 +199,7 @@ export default function SiteHeader({ siteSettings }: { siteSettings: SiteSetting
               </div>
               <Link className="hp-mobile-submenu-start" href="/services"><span>View all services</span><ActionIcon /></Link>
               <div className="hp-mega__service-grid">
-                <Link href="/services/accident-assistance"><span>01</span><strong>Accident Assistance</strong><small>Support after a collision</small></Link>
-                <Link href="/services/panel-beating"><span>02</span><strong>Panel Beating</strong><small>Structural and cosmetic repair</small></Link>
-                <Link href="/services/spray-painting"><span>03</span><strong>Spray Painting</strong><small>Precise colour matching</small></Link>
-                <Link href="/services/paintless-dent-removal"><span>04</span><strong>Paintless Dent Removal</strong><small>Low-impact dent repair</small></Link>
-                <Link href="/services/replacement-vehicles"><span>05</span><strong>Replacement Vehicles</strong><small>Keep moving while we repair</small></Link>
+                {serviceNavigation.map((service, index) => <Link href={`/services/${service.slug}`} key={service.slug}><span>{String(index + 1).padStart(2, "0")}</span><strong>{service.label}</strong><small>{service.summary}</small></Link>)}
                 </div>
               </div>
             </div>

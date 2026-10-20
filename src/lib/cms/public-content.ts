@@ -3,6 +3,7 @@ import { cache } from "react";
 import { brandRepairContent, type BrandRepairContent } from "@/lib/brandRepairContent";
 import { getEditorialServiceCopy, type OriginalServicePage } from "@/lib/originalServiceCopy";
 import { blogs, faqs, gallery, locations, offers, services } from "@/lib/siteContent";
+import { media } from "@/lib/media";
 import type { BlogContent, FAQContent, GalleryContent, LocationContent, OfferContent, ServiceContent } from "@/types/content";
 
 type PublicationStatus = "draft" | "published" | "retired";
@@ -12,7 +13,20 @@ export type ServicePresentation =
   | { variant: "brand"; data: BrandRepairContent }
   | { variant: "standard" };
 
-export type CmsServiceContent = ServiceContent & { presentation?: ServicePresentation };
+export type ServicePlacement = {
+  navigation: boolean;
+  navigationLabel: string;
+  navigationSummary: string;
+  homeSlider: boolean;
+  sliderLabel: string;
+  sliderKicker: string;
+  sliderCopy: string;
+  sliderCta: string;
+};
+
+export type CmsServiceContent = ServiceContent & { presentation?: ServicePresentation; placement: ServicePlacement };
+export type ServiceNavigationItem = { slug: string; label: string; summary: string };
+export type ServiceCarouselItem = { label: string; kicker: string; title: string; image: string; copy: string; href: string; cta: string };
 
 type CmsRow = Record<string, unknown>;
 
@@ -29,6 +43,27 @@ const defaultHomeHero = {
   title: "Quality repairs. Honest service.",
   accent: "Peace of mind.",
   description: "We make the smash repair process simple — from the first call and insurance support through to quality repair work and getting you safely back on the road.",
+};
+
+const navigationDefaults: Record<string, Pick<ServicePlacement, "navigationLabel" | "navigationSummary">> = {
+  "accident-assistance": { navigationLabel: "Accident Assistance", navigationSummary: "Support after a collision" },
+  "panel-beating": { navigationLabel: "Panel Beating", navigationSummary: "Structural and cosmetic repair" },
+  "spray-painting": { navigationLabel: "Spray Painting", navigationSummary: "Precise colour matching" },
+  "paintless-dent-removal": { navigationLabel: "Paintless Dent Removal", navigationSummary: "Low-impact dent repair" },
+  "replacement-vehicles": { navigationLabel: "Replacement Vehicles", navigationSummary: "Keep moving while we repair" },
+};
+
+const carouselDefaults: Record<string, Omit<ServiceCarouselItem, "href">> = {
+  "tesla-approved-repair-centre": { label: "Tesla Repair", kicker: "Tesla", title: "Tesla Repair", image: media.heroPanels.tesla, copy: "Specialist accident repair support for Tesla vehicles, with care for modern EV construction, finish and approved repair requirements.", cta: "Explore Tesla Repair" },
+  "services-zeekr-approved-repairer-melbourne": { label: "Zeekr Repair", kicker: "Zeekr", title: "Zeekr Repair", image: media.heroPanels.zeekr, copy: "Approved repair support for Zeekr vehicles, with careful assessment, accurate colour matching and modern EV repair procedures.", cta: "Explore Zeekr Repair" },
+  "byd-approved-repairer-melbourne": { label: "BYD Repair", kicker: "BYD", title: "BYD Repair", image: media.brandRepair.bydHero, copy: "Approved repair support for BYD vehicles, with EV-aware assessment, genuine parts planning and manufacturer-aligned procedures.", cta: "Explore BYD Repair" },
+  "lexus-approved-body-shop-melbourne": { label: "Lexus Repair", kicker: "Lexus", title: "Lexus Repair", image: media.brandRepair.lexusHero, copy: "Approved Lexus collision repair with careful body accuracy, refinishing and genuine parts planning.", cta: "Explore Lexus Repair" },
+  "prestige-brands": { label: "Prestige Brands", kicker: "Approved Expertise", title: "Prestige Brands", image: media.workshop.exteriorWide, copy: "Explore the services we offer for all prestige brands in all makes and models", cta: "All Services" },
+  "panel-beating": { label: "Panel Beating", kicker: "Body Repair", title: "Panel Beating", image: media.service.panelBeating, copy: "Precision panel restoration for cosmetic damage through to more involved collision repairs.", cta: "Explore Panel Beating" },
+  "spray-painting": { label: "Spray Painting", kicker: "Refinishing", title: "Spray Painting", image: media.service.sprayPainting, copy: "Professional refinishing with careful preparation, colour matching and controlled application.", cta: "Explore Spray Painting" },
+  "replacement-vehicles": { label: "Replacement Vehicles", kicker: "Keep Moving", title: "Replacement Vehicles", image: media.service.replacementVehiclesCard, copy: "Practical mobility options to help keep your routine moving while your vehicle is being repaired.", cta: "Explore Replacement Vehicles" },
+  "paintless-dent-removal": { label: "Paintless Dent Removal", kicker: "Dent Repair", title: "Paintless Dent Removal", image: media.service.paintlessDent, copy: "A low-impact approach for suitable dents that helps preserve the vehicle’s existing paint finish.", cta: "Explore PDR" },
+  "accident-assistance": { label: "Accident Assistance", kicker: "Support", title: "Accident Assistance", image: media.service.accident, copy: "Clear support after an accident, from repair planning and towing guidance to insurer coordination.", cta: "Explore Accident Assistance" },
 };
 
 function publicClient() {
@@ -51,6 +86,23 @@ function asStringArray(value: unknown): string[] {
 
 function record(value: unknown): CmsRow | null {
   return value && typeof value === "object" && !Array.isArray(value) ? value as CmsRow : null;
+}
+
+function placement(value: unknown, slug: string): ServicePlacement {
+  const configured = record(record(value)?.placement);
+  const navigation = navigationDefaults[slug];
+  const slider = carouselDefaults[slug];
+  const string = (key: keyof ServicePlacement, fallback = "") => typeof configured?.[key] === "string" ? configured[key] as string : fallback;
+  return {
+    navigation: typeof configured?.navigation === "boolean" ? configured.navigation : Boolean(navigation),
+    navigationLabel: string("navigationLabel", navigation?.navigationLabel || ""),
+    navigationSummary: string("navigationSummary", navigation?.navigationSummary || ""),
+    homeSlider: typeof configured?.homeSlider === "boolean" ? configured.homeSlider : Boolean(slider),
+    sliderLabel: string("sliderLabel", slider?.label || ""),
+    sliderKicker: string("sliderKicker", slider?.kicker || ""),
+    sliderCopy: string("sliderCopy", slider?.copy || ""),
+    sliderCta: string("sliderCta", slider?.cta || ""),
+  };
 }
 
 function staticPresentation(slug: string): ServicePresentation {
@@ -84,6 +136,7 @@ function mapService(row: CmsRow): CmsServiceContent {
     highlights: asStringArray(row.highlights),
     contentPending: Boolean(row.content_pending),
     presentation: presentation(row.content_json, slug),
+    placement: placement(row.content_json, slug),
   };
 }
 
@@ -132,8 +185,48 @@ async function readRows<T>(table: string, fallback: T[], mapper: (row: CmsRow) =
 }
 
 export const getPublishedServices = cache(async (): Promise<CmsServiceContent[]> =>
-  readRows("cms_services", services.map((item) => ({ ...item, presentation: staticPresentation(item.slug) })), mapService),
+  readRows("cms_services", services.map((item) => ({ ...item, presentation: staticPresentation(item.slug), placement: placement(undefined, item.slug) })), mapService),
 );
+
+export const getPublishedServiceNavigation = cache(async (): Promise<ServiceNavigationItem[]> =>
+  (await getPublishedServices())
+    .filter((service) => service.placement.navigation)
+    .map((service) => ({ slug: service.slug, label: service.placement.navigationLabel || service.title, summary: service.placement.navigationSummary || service.intro })),
+);
+
+export const getPublishedServiceCarousel = cache(async (): Promise<ServiceCarouselItem[]> => {
+  const published = await getPublishedServices();
+  const order = Object.keys(carouselDefaults);
+  const configured = published
+    .filter((service) => service.placement.homeSlider)
+    .map((service, sourceIndex) => {
+      const fallback = carouselDefaults[service.slug];
+      return {
+        label: service.placement.sliderLabel || fallback?.label || service.title,
+        kicker: service.placement.sliderKicker || fallback?.kicker || service.eyebrow || "CA Autobody service",
+        title: fallback?.title || service.title,
+        image: fallback?.image || service.image,
+        copy: service.placement.sliderCopy || fallback?.copy || service.intro,
+        href: `/services/${service.slug}`,
+        cta: service.placement.sliderCta || fallback?.cta || `Explore ${service.title}`,
+        sourceIndex,
+      };
+    });
+  // Keep the existing Prestige directory slide until a published service with
+  // that slug exists. A future CMS entry then replaces this static fallback.
+  if (!configured.some((item) => item.href === "/services/prestige-brands")) {
+    const prestige = carouselDefaults["prestige-brands"];
+    configured.push({ ...prestige, href: "/services", sourceIndex: 4 });
+  }
+  const position = (item: (typeof configured)[number]) => {
+    const slug = item.href === "/services" ? "prestige-brands" : item.href.split("/").pop() || "";
+    const index = order.indexOf(slug);
+    return index === -1 ? 1000 : index;
+  };
+  return configured
+    .sort((left, right) => position(left) - position(right) || left.sourceIndex - right.sourceIndex)
+    .map((item) => ({ label: item.label, kicker: item.kicker, title: item.title, image: item.image, copy: item.copy, href: item.href, cta: item.cta }));
+});
 
 export const getPublishedLocations = cache(async () => readRows("cms_locations", locations, mapLocation));
 export const getPublishedOffers = cache(async () => readRows("cms_offers", offers, mapOffer));

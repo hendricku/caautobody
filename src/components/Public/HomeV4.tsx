@@ -9,6 +9,7 @@ import LocationOnRounded from "@mui/icons-material/LocationOnRounded";
 import PhoneRounded from "@mui/icons-material/PhoneRounded";
 import StarRounded from "@mui/icons-material/StarRounded";
 import ActionIcon from "@/components/UI/ActionIcon";
+import { getPublishedServiceCarousel } from "@/lib/cms/public-content";
 
 type HomeHero = {
   eyebrow: string;
@@ -17,7 +18,8 @@ type HomeHero = {
   description: string;
 };
 
-export default function HomeV4({ hero }: { hero: HomeHero }) {
+export default async function HomeV4({ hero }: { hero: HomeHero }) {
+  const serviceCarousel = await getPublishedServiceCarousel();
   return (
     <main className="v4-home">
       <section className="hp-hero" aria-labelledby="hero-title">
@@ -71,7 +73,7 @@ export default function HomeV4({ hero }: { hero: HomeHero }) {
       <section className="hp-services hp-section hp-section--warm" id="services">
         <div className="hp-shell">
           <div className="hp-services__heading hp-reveal"><div><span className="hp-eyebrow">Our repair services</span><h2>Specialist care for the damage you can see — and the details you can’t.</h2></div><p>Choose a service to explore how CA Autobody can help. Each repair path is handled with the same focus on workmanship, communication and finish.</p></div>
-          <ServiceExperience />
+          <ServiceExperience items={serviceCarousel} />
         </div>
       </section>
 

@@ -24,7 +24,7 @@ export default function CmsImageField({
   value,
   onChange,
   disabled = false,
-  hint = "JPG, PNG, or WebP · 5 MB maximum · up to 4096 px.",
+  hint = "JPG, PNG, or WebP · 5 MB maximum · automatically optimized to high-quality WebP.",
 }: CmsImageFieldProps) {
   const [uploading, setUploading] = useState(false);
   const [previewFailed, setPreviewFailed] = useState(false);
@@ -52,8 +52,8 @@ export default function CmsImageField({
       onChange(result.image);
       await Swal.fire({
         icon: "success",
-        title: "Image ready",
-        text: "It will become public when this item is published.",
+        title: "Image optimized",
+        text: "Converted to high-quality WebP and ready to publish.",
         timer: 1800,
         showConfirmButton: false,
       });

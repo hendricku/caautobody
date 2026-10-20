@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { media } from "@/lib/media";
+import type { ServiceCarouselItem } from "@/lib/cms/public-content";
 import ArrowForwardRounded from "@mui/icons-material/ArrowForwardRounded";
 import ChevronLeftRounded from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRounded from "@mui/icons-material/ChevronRightRounded";
 import ActionIcon from "@/components/UI/ActionIcon";
 
-const items = [
+const fallbackItems: ServiceCarouselItem[] = [
   { label: "Tesla Repair", kicker: "01 / Tesla", title: "Tesla Repair", image: media.heroPanels.tesla, copy: "Specialist accident repair support for Tesla vehicles, with care for modern EV construction, finish and approved repair requirements.", href: "/services/tesla-approved-repair-centre", cta: "Explore Tesla Repair" },
   { label: "Zeekr Repair", kicker: "02 / Zeekr", title: "Zeekr Repair", image: media.heroPanels.zeekr, copy: "Approved repair support for Zeekr vehicles, with careful assessment, accurate colour matching and modern EV repair procedures.", href: "/services/services-zeekr-approved-repairer-melbourne", cta: "Explore Zeekr Repair" },
   { label: "BYD Repair", kicker: "03 / BYD", title: "BYD Repair", image: media.brandRepair.bydHero, copy: "Approved repair support for BYD vehicles, with EV-aware assessment, genuine parts planning and manufacturer-aligned procedures.", href: "/services/byd-approved-repairer-melbourne", cta: "Explore BYD Repair" },
@@ -21,10 +22,11 @@ const items = [
   { label: "Accident Assistance", kicker: "10 / Support", title: "Accident Assistance", image: media.service.accident, copy: "Clear support after an accident, from repair planning and towing guidance to insurer coordination.", href: "/services/accident-assistance", cta: "Explore Accident Assistance" },
 ] as const;
 
-export default function ServiceExperience() {
+export default function ServiceExperience({ items = fallbackItems }: { items?: ServiceCarouselItem[] }) {
   const [index, setIndex] = useState(0);
-  const move = (delta: number) => setIndex((value) => (value + delta + items.length) % items.length);
   const pointerX = useRef<number | null>(null);
+  if (!items.length) return null;
+  const move = (delta: number) => setIndex((value) => (value + delta + items.length) % items.length);
 
   return (
     <div
