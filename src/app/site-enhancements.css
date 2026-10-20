@@ -4,7 +4,10 @@
 .service-area-map__directory{padding:56px clamp(30px,4vw,62px);display:flex;flex-direction:column;border-right:1px solid var(--hp-line)}
 .service-area-map__directory h2{max-width:440px;margin:13px 0 15px;font-size:clamp(30px,3vw,47px);line-height:1.04;letter-spacing:-.05em}
 .service-area-map__intro{max-width:420px;margin:0 0 30px;color:var(--hp-muted);font-size:13px;line-height:1.75}
+.service-area-map__nearby-head{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:13px 2px;border-top:1px solid var(--hp-line);border-bottom:1px solid var(--hp-line)}
+.service-area-map__nearby-head h3{margin:0;color:var(--hp-text);font-size:12px;font-weight:800;letter-spacing:.03em;line-height:1.35}
 .service-area-map__all{min-height:52px;width:100%;padding:0 2px;background:transparent;border:0;border-top:1px solid var(--hp-line);border-bottom:1px solid var(--hp-line);display:flex;align-items:center;justify-content:space-between;text-align:left;cursor:pointer;color:var(--hp-text);font-size:12px;font-weight:800}
+.service-area-map__nearby-head .service-area-map__all{flex:0 0 auto;min-height:30px;width:auto;gap:9px;padding:0;border:0;font-size:10px;white-space:nowrap}
 .service-area-map__all b{display:grid;place-items:center;width:24px;height:24px;border:1px solid #b8aa91;border-radius:50%;font-size:10px;color:var(--hp-gold)}
 .service-area-map__all.is-active,.service-area-map__all:hover{color:var(--hp-gold)}
 .service-area-map__all:focus-visible,.service-area-map__areas button:focus-visible,.service-area-map__selection a:focus-visible,.service-area-map__directions:focus-visible{outline:2px solid var(--hp-gold);outline-offset:3px}
@@ -41,6 +44,7 @@
 @media(max-width:780px){.service-area-map-section{padding-bottom:68px}.service-area-map{grid-template-columns:1fr}.service-area-map__directory{border-right:0;border-bottom:1px solid var(--hp-line);padding:44px 26px}.service-area-map__directory h2{max-width:550px}.service-area-map__intro{max-width:570px}.service-area-map__areas{grid-template-columns:repeat(2,minmax(0,1fr));max-width:640px}.service-area-map__selection{margin-top:14px}.service-area-map__map-panel,.service-area-map__map{min-height:490px}.hp-footer__grid{grid-template-columns:1fr 1fr;gap:42px 28px;padding-top:52px;padding-bottom:44px}.hp-footer__brand{grid-column:1/-1;grid-row:auto}.hp-footer__areas{grid-column:auto}.hp-footer__contact{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;column-gap:24px}.hp-footer__contact h3{grid-column:1/-1}.hp-footer__contact .hp-footer__socials{align-self:start}.hp-footer__rating{justify-self:start;align-self:start;margin-top:0!important}}
 @media(max-width:780px){.service-area-map--single .service-area-map__selection{grid-template-columns:1fr;gap:7px}.service-area-map--single .service-area-map__selection>span{grid-row:auto}.service-area-map--single .service-area-map__map-panel,.service-area-map--single .service-area-map__map{min-height:clamp(360px,72vw,490px)}}
 @media(max-width:520px){.service-area-map-section{padding-bottom:50px}.service-area-map{width:100%;border-inline:0}.service-area-map__directory{padding:38px 20px}.service-area-map__areas{gap:0 14px}.service-area-map__areas button{min-height:46px;font-size:11px}.service-area-map__map-panel,.service-area-map__map{min-height:420px}.service-area-map__legend{right:12px;top:12px;gap:8px;padding:9px}.service-area-map__legend span{font-size:9px}.service-area-map__directions{left:12px;bottom:12px;padding:12px}.hp-footer__grid{grid-template-columns:1fr;gap:35px;padding-top:44px}.hp-footer__brand{grid-column:auto}.hp-footer__contact{grid-column:auto;display:block}.hp-footer__contact .hp-footer__socials{margin-top:18px}.hp-footer__rating{margin-top:18px!important}.hp-footer__areas{grid-template-columns:1fr 1fr}.hp-footer__bottom{align-items:flex-start;font-size:9px}}
+@media(max-width:520px){.service-area-map__nearby-head{align-items:flex-start;flex-direction:column;gap:8px}.service-area-map__nearby-head h3{font-size:11px}.service-area-map__nearby-head .service-area-map__all{min-height:28px}}
 @media(prefers-reduced-motion:reduce){.service-area-map__areas button,.service-area-map__areas button i,.service-area-map__pin,.service-area-map__selection a,.service-area-map__selection a b,.service-area-map__directions{transition:none!important}}
 
 /* Global review link: compact, recognisable and available on every public page. */
@@ -368,4 +372,10 @@
 .service-area-map__map-panel{isolation:isolate;z-index:0}
 .service-area-map__legend,.service-area-map__directions{z-index:2}
 .service-area-map__fallback{z-index:3}
+
+/* The local ten remain prominent; wider Melbourne coverage stays quiet until the map is explored. */
+.service-area-map__pin--coverage{width:10px;height:10px;border-width:2px;background:#706b62;box-shadow:0 1px 5px rgba(0,0,0,.22)}
+.service-area-map__cluster{display:grid;place-items:center;width:34px;height:34px;border:2px solid #fff;border-radius:50%;background:#2d2a25;color:#fff;box-shadow:0 3px 12px rgba(0,0,0,.28);font-family:inherit;font-size:10px;font-weight:800}
+.service-area-map__legend{flex-wrap:wrap;justify-content:flex-end;gap:8px 14px;max-width:min(310px,calc(100% - 36px))}
+.service-area-map__legend-pin--coverage{width:8px;height:8px;border-width:1px;background:#706b62}
 

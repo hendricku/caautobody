@@ -22,7 +22,7 @@ export default function SiteFooter({siteSettings}: {siteSettings: Awaited<Return
           <Link href="/services">Services</Link>
           <Link href="/gallery">Gallery</Link>
           <Link href="/contact">Contact</Link>
-          <Link href="/areas-we-serve">Areas We Serve</Link>
+          <Link href="/areas-we-serve">All Service Areas</Link>
           <Link href="/blog">Blogs</Link>
           <Link href="/frequently-asked-questions">FAQs</Link>
         </nav>
@@ -37,7 +37,7 @@ export default function SiteFooter({siteSettings}: {siteSettings: Awaited<Return
         </nav>
 
         <nav className="hp-footer__areas" aria-label="Areas CA Autobody serves">
-          <h3>Areas We Serve</h3>
+          <h3>All Service Areas</h3>
           {areas.map((area) => <Link key={area} href={`/areas-we-serve/${area.toLowerCase()}`}>{area}</Link>)}
         </nav>
 

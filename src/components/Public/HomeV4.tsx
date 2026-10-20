@@ -54,7 +54,7 @@ export default function HomeV4({ hero }: { hero: HomeHero }) {
           </article>
           <article className="hp-trust__item">
             <span className="hp-trust__brand hp-trust__brand--car" aria-hidden="true"><DirectionsCarFilledRounded /></span>
-            <div className="hp-trust__copy"><strong className="hp-trust__number">1000+</strong><b>Vehicles repaired</b><p>Thousands of Melbourne drivers trust us every year.</p></div>
+            <div className="hp-trust__copy"><strong className="hp-trust__number">10,000+</strong><b>Vehicles repaired</b><p>Thousands of Melbourne drivers trust us every year.</p></div>
           </article>
           <article className="hp-trust__item hp-trust__item--ev">
             <span className="hp-trust__brand hp-trust__brand--all-makes" aria-hidden="true"><img src="/images/4e9c3412-bc32-4a7c-a9bf-9df059150907.webp" alt="" /></span>

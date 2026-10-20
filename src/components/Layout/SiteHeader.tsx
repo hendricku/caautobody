@@ -172,7 +172,7 @@ export default function SiteHeader({ siteSettings }: { siteSettings: SiteSetting
                   <Link href="/about#why"><strong>Why Choose CA</strong><span>Experience, quality and customer care.</span></Link>
                   <Link href="/about#insurance"><strong>Insurance</strong><span>Support through the repair and claim process.</span></Link>
                   <Link href="/gallery"><strong>Gallery</strong><span>See our workshop, repairs and facility.</span></Link>
-                  <Link href="/areas-we-serve"><strong>Areas We Serve</strong><span>Local repair support across Melbourne’s bayside and nearby suburbs.</span></Link>
+                  <Link href="/areas-we-serve"><strong>All Service Areas</strong><span>Local repair support across Melbourne’s bayside and nearby suburbs.</span></Link>
                   </div>
                 </div>
               </div>
@@ -215,7 +215,7 @@ export default function SiteHeader({ siteSettings }: { siteSettings: SiteSetting
               <div className="hp-mega__tray">
                 <div className="hp-brand-features">
                   <Link className="hp-brand-feature" href="/services/tesla-approved-repair-centre">
-                <span className="hp-kicker">Approved Expertise</span><strong>Tesla</strong><small>Specialist collision repair for Tesla vehicles.</small><b>Explore Tesla repair <ActionIcon /></b>
+                <span className="hp-kicker">Approved Repairer</span><strong>Tesla</strong><small>Specialist collision repair for Tesla vehicles.</small><b>Explore Tesla repair <ActionIcon /></b>
               </Link>
               <Link className="hp-brand-feature" href="/services/services-zeekr-approved-repairer-melbourne">
                 <span className="hp-kicker">Approved Repairer</span><strong>Zeekr</strong><small>Repair support for modern electric vehicle construction.</small><b>Explore Zeekr repair <ActionIcon /></b>

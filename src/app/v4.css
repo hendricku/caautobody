@@ -692,7 +692,7 @@ body.home-v2 .hp-btn--hero-secondary:hover{border-color:#111;color:#fff!importan
 @media(max-width:1020px){.hp-utility-socials{bottom:100%!important}}
 .hp-home-priority{display:flex;flex-direction:column}
 .hp-home-priority .hp-why{order:1}
-.hp-home-priority .hp-accident-strip{position:sticky;top:94px;z-index:30;align-self:center;order:2;scroll-margin-top:112px;box-shadow:0 14px 30px rgba(30,25,18,.1)}
+.hp-home-priority .hp-accident-strip{position:relative;align-self:center;order:2;box-shadow:0 14px 30px rgba(30,25,18,.1)}
 .hp-home-priority .hp-services{order:3}
 .hp-home-priority .hp-approved{order:4}
 .hp-home-priority .hp-about{order:5}
