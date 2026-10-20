@@ -198,6 +198,7 @@ export default function EditorialServicePage({ service, copy }: { service: Servi
   const chapters = usesApprovedBrandLayout ? copy.sections.slice(6) : copy.sections;
   const related = services.filter((other) => other.slug !== service.slug && getEditorialServiceCopy(other.slug)).slice(0, 3);
   const faqHref = `/frequently-asked-questions?category=${encodeURIComponent(copy.category)}`;
+  const hasFaqLink = copy.faqs.length > 0 || ["BYD", "Lexus"].includes(copy.category);
   const brandIntroMark = usesApprovedBrandLayout ? approvedBrandIntroMarks[copy.category] : undefined;
   const navigation: SectionNavigationItem[] = [
     ...(usesApprovedBrandLayout ? [{ id: "repair-standard", label: `${sourceText(copy.category)} repair standards`, number: "01" }] : []),
@@ -262,7 +263,7 @@ export default function EditorialServicePage({ service, copy }: { service: Servi
             <h2>{sourceText(copy.contactHeading ?? "Let’s talk about your vehicle.")}</h2>
             <span className="ca-service__chapter-rule" aria-hidden="true" />
             <p>{sourceText(copy.contactCopy ?? "Talk directly with our team about an assessment, repair options and getting back on the road.")}</p>
-            {copy.faqs.length > 0 ? <div className="ca-service__contact-faq"><Link className="ca-service__button ca-service__button--outline" href={faqHref}>View {copy.category} FAQs <Icon name="arrow-outward" /></Link></div> : null}
+            {hasFaqLink ? <div className="ca-service__contact-faq"><Link className="ca-service__button ca-service__button--outline" href={faqHref}>View {copy.category} FAQs <Icon name="arrow-outward" /></Link></div> : null}
             {copy.disclaimer ? <p className="ca-service__disclaimer"><strong>Small print:</strong> {sourceText(copy.disclaimer)}</p> : null}
             <div className="ca-service__contact-detail"><span>VISIT THE WORKSHOP</span><strong>7 Ashley Park Drive<br />Chelsea Heights, VIC 3196</strong></div>
           </div>

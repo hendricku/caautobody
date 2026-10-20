@@ -297,9 +297,18 @@ test("service chapters use a consistent desktop title rail and contact FAQ actio
     assert.ok(contactCopy.querySelector(".ca-service__contact-faq").compareDocumentPosition(contactCopy.querySelector(".ca-service__contact-detail")) & 4, `${service.slug} should place the FAQ action before the workshop details`);
   }
 
+  for (const slug of ["byd-approved-repairer-melbourne", "lexus-approved-body-shop-melbourne"]) {
+    const brandService = services.find((service) => service.slug === slug);
+    const brandCopy = getEditorialServiceCopy(brandService.slug);
+    const brandDocument = render(EditorialServicePage, { service: brandService, copy: brandCopy });
+    const faq = brandDocument.querySelector(".ca-service__contact-faq a");
+    assert.equal(faq?.getAttribute("href"), `/frequently-asked-questions?category=${encodeURIComponent(brandCopy.category)}`);
+    assert.match(faq?.textContent ?? "", new RegExp(`View ${brandCopy.category} FAQs`));
+  }
+
   const serviceWithoutFaqs = services.find((service) => {
     const copy = getEditorialServiceCopy(service.slug);
-    return copy && copy.faqs.length === 0;
+    return copy && copy.faqs.length === 0 && !["BYD", "Lexus"].includes(copy.category);
   });
   const noFaqDocument = render(EditorialServicePage, { service: serviceWithoutFaqs, copy: getEditorialServiceCopy(serviceWithoutFaqs.slug) });
   assert.equal(noFaqDocument.querySelector(".ca-service__contact-faq"), null, "services without FAQs should not render an empty FAQ action");
