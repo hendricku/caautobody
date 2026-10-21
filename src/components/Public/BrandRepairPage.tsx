@@ -12,11 +12,9 @@ import ServiceBreadcrumbs from "./ServiceBreadcrumbs";
 
 export default function BrandRepairPage({ content }: { content: BrandRepairContent }) {
   const copy = content.sections;
-  const heroImage = content.brand === "BYD"
-    ? media.heroPanels.byd
-    : content.brand === "Lexus"
-      ? media.heroPanels.lexus
-      : content.heroImage;
+  const heroImage = (content as BrandRepairContent & { rightImage?: string }).rightImage
+    || (content.brand === "BYD" ? media.heroPanels.byd
+      : content.brand === "Lexus" ? media.heroPanels.lexus : content.heroImage);
 
   return <main className="brand-repair-page" data-brand={content.brand.toLowerCase()}>
     <section className="brand-hero"><div className="brand-hero__background" aria-hidden="true"><img src={content.heroImage} alt="" /></div><div className="brand-hero__layout shell"><div className="brand-hero__copy"><ServiceBreadcrumbs current={content.brand} className="brand-hero__crumbs" /><p className="eyebrow light">{content.eyebrow}</p><h1>{content.title}</h1><p className="brand-hero__intro">{content.intro}</p><p className="brand-hero__guide"><span>Service guide</span>{content.serviceGuide.map((item, index) => <span key={item}>{String(index + 1).padStart(2, "0")} {item}</span>)}</p><a className="brand-hero__call" href="tel:+61397727411">Call 03 9772 7411</a></div><div className="brand-hero__media"><img src={heroImage} alt={content.heroAlt} fetchPriority="high" /></div></div></section>

@@ -13,7 +13,13 @@ export async function GET() {
     // before the new publication-state migration is applied. It returns only
     // a timestamp, never row data, drafts or customer information.
     const tables = ["cms_services", "cms_locations", "cms_offers", "cms_blog_posts", "cms_faqs", "cms_gallery_items", "cms_page_sections", "cms_site_settings"];
-    const results = await Promise.all(tables.map((table) => database.from(table).select("updated_at").order("updated_at", { ascending: false }).limit(1).maybeSingle()));
+    const results = await Promise.all(tables.map((table) => {
+      // Without the publication-state migration, never count draft edits as
+      // public change signals. Public settings have their own flag.
+      const query = database.from(table).select("updated_at");
+      return (table === "cms_site_settings" ? query.eq("is_public", true) : query.eq("status", "published"))
+        .order("updated_at", { ascending: false }).limit(1).maybeSingle();
+    }));
     const timestamps = results.flatMap((result) => result.data?.updated_at ? [result.data.updated_at] : []);
     return versionResponse(timestamps.sort().at(-1) || "0");
   } catch {

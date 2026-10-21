@@ -1,0 +1,252 @@
+[
+  {
+    "id": "start",
+    "title": "Getting started",
+    "summary": "This is your control room for the CA Autobody website. You manage published content here without touching website code.",
+    "website": "Dashboard: /caautobodyadmin/dashboard",
+    "steps": [
+      "Sign in with your authorized work email and verification code.",
+      "On the redesigned Dashboard, review the content metrics, drafts, and quick module shortcuts. Navigate with the floating sidebar.",
+      "Collapse or expand the floating sidebar on desktop. Its scrollbar is invisible but you can still scroll navigation by wheel, touch or keyboard. Open the menu on mobile.",
+      "Check the status pill on each item. Draft is private; Published is live; Deleted means archived from public view.",
+      "Use the profile at the bottom of the menu to sign out after your session."
+    ]
+  },
+  {
+    "id": "workflow",
+    "title": "Create, preview, publish",
+    "summary": "Use the same safe editorial workflow for services, blogs, FAQs, offers, areas and gallery content.",
+    "website": "All content modules in the left sidebar",
+    "steps": [
+      "Open the relevant module and select New, or choose Edit on an existing record.",
+      "Start with a clear title, then complete content fields and upload approved images.",
+      "The Publish panel and all editor settings panels remain in the normal page flow. Scroll the page to reach them; they do not stick to the viewport.",
+      "Use Save draft while the item is still being prepared. Do not publish incomplete pages.",
+      "Open Preview on the saved record to see the page rendered with the website's layout. The preview is visible only to authorized CMS staff.",
+      "Review on desktop and mobile. Check headings, text, images, links and any publication or placement settings.",
+      "Select Publish or Update only when the page has been approved. An Editor account may need a Publisher or Admin to publish.",
+      "Reopen the published page through Preview or the View website link to confirm the live result."
+    ],
+    "caution": "Preview reflects the last saved version. Unsaved local edits must be saved before they appear in a private preview; don't save a live Published record as Draft without considering its public visibility."
+  },
+  {
+    "id": "lists",
+    "title": "Find and manage records",
+    "summary": "Each content library includes search, visible status counts, and actions for individual entries.",
+    "website": "Services, Blogs, Offers, Areas, Gallery and FAQ module lists",
+    "steps": [
+      "Choose All, Published, Draft or Deleted above the listing to narrow the records.",
+      "Use Search or a category filter to locate the record you need.",
+      "Open Edit to modify content or Preview to inspect the last saved version privately.",
+      "Choose Duplicate to create an independent Draft copy before testing a large revision.",
+      "Use Delete only when you intend to remove the item from the public website. Confirm the dialog. This is a soft delete: the CMS retains its record for auditing.",
+      "Select Refresh CMS if changes made by someone else aren't yet reflected on your screen."
+    ]
+  },
+  {
+    "id": "services",
+    "title": "Services and brand pages",
+    "summary": "Manage Service and Brand content in the main editor, with separate compact Hero Background and Right-Side Image cards below Page Settings.",
+    "website": "Website: /services and /services/[slug]; homepage Services menu / service slider, when enabled",
+    "steps": [
+      "Open Services and select New or Edit. Enter the service title and edit the introduction and content in the main editor column.",
+      "In the right settings column, use Publish to save a draft, preview the last saved version, or publish when authorized. The column scrolls normally rather than staying fixed.",
+      "Under Page Settings, verify the URL slug, SEO title and existing website-placement toggles.",
+      "In Hero Background, click Upload image or Replace image. Choose a wide photograph; the system prepares a WebP version and shows a landscape preview.",
+      "For Editorial and Brand layouts, use the separate Right-Side Image card to upload a portrait or landscape photograph. The two image fields are independent.",
+      "Use Remove to clear an image. For an existing link, expand Use image URL instead. Wait for the WebP ready confirmation when uploading a file.",
+      "Choose the Page layout on the main canvas and edit the supporting sections. Save draft, then use Preview to inspect the saved record.",
+      "Publish or Update after approval. After publishing, the website uses the independent right-side image. The original website image is used if this field has not been set.",
+      "For order and visibility within the global Services menu and homepage slider, open the separate Menu arrangement module; per-Service Page Settings still determines eligibility."
+    ]
+  },
+  {
+    "id": "menu-arrangement",
+    "title": "Mega Menu and Homepage Slider ordering",
+    "summary": "Arrange published Service links in the global Services Mega Menu and homepage Services Slider independently, without altering the website design.",
+    "website": "Admin: /caautobodyadmin/menu-arrangement; published output: global Services dropdown and homepage service slider",
+    "steps": [
+      "Open Content → Menu arrangement from the floating sidebar.",
+      "Choose Services Mega Menu or Homepage Services Slider. Each tab keeps a different order and set of visible entries.",
+      "Drag a service using its grip handle to a new position; for keyboard or touchscreen, use its Position selector (Alt + arrow keys also work on the focused drag handle).",
+      "Select Hide to remove a link from that website location without unpublishing the actual Service. Use + Add on an available published service to include it again.",
+      "If a Service isn't available, edit that Service's Page Settings and enable the corresponding menu or homepage slider placement, then publish it.",
+      "Click Save arrangement, then open the website. Under normal connectivity open tabs should refresh after a publication-version change; page refresh on a different device can be delayed by the connectivity/polling fallback.",
+      "If you receive a conflict warning, another administrator changed the order. Reload, compare, and then reapply your intended order."
+    ],
+    "caution": "Only Publisher or Admin roles may save ordering. The menu/slider appearance is unchanged; this module changes only which services appear and their order. No draft service is eligible."
+  },
+  {
+    "id": "blogs",
+    "title": "Blog articles",
+    "summary": "Articles use a separate editor for metadata and a draggable body builder.",
+    "website": "Website: /blog, /blog/ca-knows or /blog/client-stories, and /blog/[slug]",
+    "steps": [
+      "Choose Blogs → New article. Enter title, category, display date, slug, excerpt and featured image.",
+      "Save the article first to open its full article builder.",
+      "In the builder, add Heading, Text, List, Image or Callout blocks.",
+      "Drag blocks by their grip handles to change reading order. Keyboard drag support is available via the block controls.",
+      "Save the changed blocks. The Unsaved changes notice shows when there is work you have not saved.",
+      "Select Preview to inspect the saved article on the real website template; then Publish or Update."
+    ]
+  },
+  {
+    "id": "faq",
+    "title": "Frequently asked questions",
+    "summary": "Answers are grouped by category. Visibility is separate from the publishing state.",
+    "website": "Website: /frequently-asked-questions",
+    "steps": [
+      "Choose FAQ → Add FAQ or Edit an existing question.",
+      "Enter the question, answer and appropriate category.",
+      "Use Visible on the public FAQ page to show or hide the answer where that setting is supported.",
+      "Save the draft and use Preview to review the content privately.",
+      "Publish to make an approved, visible FAQ appear on the public FAQ page.",
+      "Use Duplicate to prepare an alternate answer without overwriting the original."
+    ]
+  },
+  {
+    "id": "offers",
+    "title": "Offers",
+    "summary": "Manage the headlines, images and detail paragraphs of public offers.",
+    "website": "Website: /offers and /offers/[slug]",
+    "steps": [
+      "Choose Offers → New offer.",
+      "Enter title, slug, SEO title, image, introduction and body paragraphs.",
+      "Add key points, using one point per line.",
+      "Save draft; choose Preview to see the offer page.",
+      "Publish or Update when it is ready. Use Delete to remove an obsolete offer from public view."
+    ]
+  },
+  {
+    "id": "areas",
+    "title": "Areas we serve",
+    "summary": "Manage the primary suburb pages. The full suburb map-pins dataset is separate from those editable pages.",
+    "website": "Website: /areas-we-serve and /areas-we-serve/[slug]",
+    "steps": [
+      "Choose Areas we serve → New area.",
+      "Enter the suburb name, slug, SEO title, introduction and page image.",
+      "Fill in the map description and exact latitude/longitude for that dedicated area when applicable.",
+      "Save draft and Preview before publishing.",
+      "Do not assume that editing these ten dedicated pages changes the separate extended-suburbs pin dataset."
+    ]
+  },
+  {
+    "id": "gallery",
+    "title": "Gallery and images",
+    "summary": "Organize approved repair imagery in a draggable bento grid, with one combined preview for the complete gallery.",
+    "website": "Website: /gallery",
+    "steps": [
+      "Open Gallery. Images are arranged in the same responsive bento pattern used for the website gallery.",
+      "Select Add image. Choose or drag in a supported photo; the CMS compresses it before transfer and the server validates/converts it to WebP.",
+      "Wait for the WebP ready message and check the original and optimized file sizes. Add caption and category; save the record as Draft, then Publish if approved.",
+      "Select Preview gallery at the top to see the whole published gallery; Include drafts is a private editor-only preview.",
+      "Clear Search and choose All. Publisher/Admin accounts can drag an image by its grip to a different bento position. Keyboard users can focus the grip and use arrow keys.",
+      "Select Save layout to persist the image order. Other open admin tabs reload the saved order automatically; the public gallery uses the existing publication refresh mechanism.",
+      "Open the live gallery page to verify the published order and appearance. Repositioning changes the order, not the aspect ratio, public layout code or caption."
+    ],
+    "caution": "Gallery changes do not save until Save layout succeeds. Do not leave the page with an unsaved order. A different administrator may have edited the gallery; refresh and reconcile if a conflict is reported."
+  },
+  {
+    "id": "images",
+    "title": "Smart image uploading and placement",
+    "summary": "Upload a large photo once; the CMS optimizes it to WebP while preserving its proportions and the existing public website design.",
+    "website": "CMS-only image fields in Services, Blogs, Offers, Areas, Gallery and relevant brand/service content sections",
+    "steps": [
+      "Open an image field in the editor and click Choose or drop photo, or drag a supported JPG, PNG, WebP, AVIF or browser-supported HEIC image into the upload area.",
+      "The browser first reduces the pixel dimensions and file size if necessary. It then uploads the compressed WebP to the authenticated CMS server; a progress indicator shows transfer status.",
+      "The server validates and converts the image to WebP and stores it privately in Supabase staging until the surrounding content is published.",
+      "Check the WebP ready confirmation: it displays actual original and optimized sizes, plus the output dimensions. Always inspect the image preview.",
+      "Hero image fields use a wide-image optimization profile without cutting pixels off. On the public website the existing hero frame determines how a picture is cropped.",
+      "Supporting article, portrait, featured, and Gallery pictures preserve their proportions. The Gallery bento pattern is unchanged.",
+      "Save Draft, open the private content Preview, adjust the image if needed, then Publish when the layout is approved."
+    ],
+    "caution": "Large images are supported within safe processing limits (32 MB original file, 100 megapixels). The CMS cannot guarantee a particular KB result, and HEIC depends on browser/server decoder support. Uploads are not automatically published."
+  },
+  {
+    "id": "realtime",
+    "title": "Live updates and synchronization",
+    "summary": "CMS lists and counters stay current without unnecessary manual refreshes, using automatic notifications and a safe polling fallback.",
+    "website": "Admin dashboard, Services, Blogs, Gallery, FAQ, Offers, Areas, Contacts, Audit and the existing published-page refresh system",
+    "steps": [
+      "Save, publish, duplicate or delete an item. Wait for a successful server response before leaving the editor.",
+      "The CMS signals other open tabs on the same browser immediately. Matching lists refetch using existing authenticated API endpoints.",
+      "Publishing events from other sessions use the existing public-content version signal where configured. Other edits appear through periodic synchronization while tabs are visible.",
+      "Dashboard totals refresh automatically, and Contacts and Audit Log periodically check for new records.",
+      "Changes arriving remotely never replace unsaved text typed into an open editor. Finish or discard local edits and reopen the record if another administrator changed it.",
+      "Published routes are revalidated by existing server-side publishing logic. The public site retains its exact design and uses its existing publication listener; its behavior is subject to installed database trigger and infrastructure support.",
+      "If a connection drops, reconnect and allow the automatic refresh to recover; manual Refresh is still available as a fallback."
+    ],
+    "caution": "Changes across different users are near-real-time, not guaranteed instant. Never use a success notice as proof until the server confirms the write; review a published page for important updates."
+  },
+  {
+    "id": "contacts",
+    "title": "Contact management",
+    "summary": "Handle customer enquiries and the team's follow-up workflow.",
+    "website": "Website: contact forms at /contact and other website entry points",
+    "steps": [
+      "Open Contact management from Operations.",
+      "Review the customer's submitted details and the requested service.",
+      "Update the enquiry status as the team responds and resolves it.",
+      "Use the stored details only for its intended enquiry workflow; do not share personal contact details outside authorized staff."
+    ]
+  },
+  {
+    "id": "analytics",
+    "title": "Analytics and export",
+    "summary": "The Google Site Kit-inspired design displays the existing GA4 and Google Search Console reporting—not synthetic traffic.",
+    "website": "Admin only: /caautobodyadmin/analytics (nothing is published on the website)",
+    "steps": [
+      "Open Analytics in the sidebar.",
+      "Choose Last 28 days, Day, Month, Year or Custom range; fill the relevant dates.",
+      "Select Apply period to fetch that period's verified GA4/Search Console report.",
+      "Read real GA4 and Search Console values from the compact Site Kit-inspired sections: charts, devices, top pages, search queries, and engagement.",
+      "Select Export CSV for spreadsheet analysis or Export PDF for a downloadable book-style report of the currently displayed period.",
+      "If connection is unavailable, follow the setup message. Export buttons remain disabled until a real report is loaded."
+    ]
+  },
+  {
+    "id": "access",
+    "title": "Team, authentication and audit",
+    "summary": "Permissions and audit history stay in place, even though the interface looks different.",
+    "website": "Admin only: /caautobodyadmin/team and /caautobodyadmin/audit",
+    "steps": [
+      "Go to Team & access to review authorized accounts and roles.",
+      "Use work emails, restrict publisher access, and never share verification codes.",
+      "Editors can work on drafts; only the permitted roles can publish.",
+      "Use Audit log to investigate who changed an item and when.",
+      "Delete is an archived status, not a database wipe. Confirm important changes before deleting."
+    ]
+  },
+  {
+    "id": "settings",
+    "title": "Settings and website placement",
+    "summary": "Business details feed into the public website, while integrations remain in deployment configuration.",
+    "website": "Website: business phone, address, contact details and related locations",
+    "steps": [
+      "Open Settings in the sidebar.",
+      "Update the correct business name, email, phone and address.",
+      "Save verified details only; some values are displayed across multiple public pages.",
+      "Reopen the affected public page to confirm the changes.",
+      "GA4 tracking and private Search Console credentials are managed in deployment environment variables, not via the CMS form."
+    ]
+  },
+  {
+    "id": "troubleshooting",
+    "title": "Checks before asking for help",
+    "summary": "Most editor problems can be narrowed down without touching code or Supabase.",
+    "website": "Admin only",
+    "steps": [
+      "If Preview does not show new text, save the item first and reopen the private preview.",
+      "If Publish is unavailable, check your CMS role.",
+      "If an image does not appear, check upload confirmation, the accepted file type and the URL preview.",
+      "If a large photo fails, check that it is no larger than the 32 MB safety limit and that the browser supports decoding it; try JPG or PNG if HEIC is unsupported.",
+      "If updates appear stale, ensure the tab is online and visible. Authorized lists poll periodically when idle; recent saves also signal other tabs.",
+      "If you cannot reorder the Gallery, verify you have a Publisher/Admin role, switch to All, and clear Search before dragging. Use arrow keys on the grip for keyboard sorting.",
+      "If Analytics shows a connection error, check the reporting configuration with an administrator; do not enter private keys in content fields.",
+      "If a save fails, read the error toast and avoid resubmitting until you know whether the record changed.",
+      "If a newly uploaded Service/Brand right-side image appears in the editor but not on the public page, this release preserves existing public hardcoded image bindings. Request approval for the small public-data-binding update; do not alter the hero background to compensate.",
+      "If a published edit is missing on the live site, verify the record is Published, check its image/placement settings, and have an administrator inspect /api/public/content-version and server logs for public CMS read errors.",
+      "The website's open-tab refresh checks a publication marker about every five seconds; this is near-real-time under a working network, not offline or guaranteed instant update."
+    ]
+  }
+]

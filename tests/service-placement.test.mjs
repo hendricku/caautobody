@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
-const servicesEditor = read("src/app/caautobodyadmin/(protected)/services/page.tsx");
+const servicesEditor = read("src/components/Admin/AdminServiceEditor.tsx");
 const publicContent = read("src/lib/cms/public-content.ts");
 const cmsRoute = read("src/app/api/admin/cms/[collection]/route.ts");
 const siteHeader = read("src/components/Layout/SiteHeader.tsx");
@@ -12,7 +12,7 @@ const carousel = read("src/components/Public/V4/ServiceExperience.tsx");
 test("Services CMS exposes independent menu and homepage placement controls", () => {
   assert.match(servicesEditor, /Show in Services menu/);
   assert.match(servicesEditor, /Show in homepage slider/);
-  assert.match(servicesEditor, /Published services can appear/);
+  assert.match(servicesEditor, /Only published services can be displayed/);
   assert.match(servicesEditor, /placement: \{ \.\.\.value\.placement \}/);
 });
 

@@ -17,13 +17,16 @@ const repairSteps = [
   ["Quality check", "Final inspection before vehicle handover."],
 ];
 
-export default function ServicePage({ service }: { service: CmsServiceContent }) {
-  const exactCopy = getApprovedBrandServiceCopy(service.slug)
-    ?? (service.presentation?.variant === "editorial" ? service.presentation.data : getEditorialServiceCopy(service.slug));
+export default function ServicePage({ service, relatedServices = services }: { service: CmsServiceContent; relatedServices?: { slug: string; title: string }[] }) {
+  // Saved published CMS presentation is authoritative. Bundled copy is only
+  // a compatibility fallback for records that have no editorial presentation.
+  const exactCopy = service.presentation?.variant === "editorial" ? service.presentation.data
+    : service.presentation?.variant === "brand" || service.presentation?.variant === "standard" ? undefined
+    : getApprovedBrandServiceCopy(service.slug) ?? getEditorialServiceCopy(service.slug);
   if (exactCopy) return <EditorialServicePage service={service} copy={exactCopy} />;
   const brandContent = service.presentation?.variant === "brand" ? service.presentation.data : service.presentation ? undefined : brandRepairContent[service.slug];
   if (brandContent) return <BrandRepairPage content={brandContent} />;
-  if (!service.contentPending) return <SourceServicePage service={service} />;
+  if (!service.contentPending) return <SourceServicePage service={service} relatedServices={relatedServices} />;
 
   return (
     <main>
@@ -49,7 +52,7 @@ export default function ServicePage({ service }: { service: CmsServiceContent })
       <section className="service-related section-pad">
         <div className="shell">
           <div className="service-related__head hp-reveal"><div><span className="eyebrow">Related services</span><h2>Explore more repair support.</h2></div><Link className="text-link" href="/services">All services <span aria-hidden="true">→</span></Link></div>
-          <div className="service-related__list hp-reveal">{services.filter((item) => item.slug !== service.slug).slice(0, 3).map((item) => <Link key={item.slug} href={`/services/${item.slug}`}><span>{item.title}</span><b aria-hidden="true">→</b></Link>)}</div>
+          <div className="service-related__list hp-reveal">{relatedServices.filter((item) => item.slug !== service.slug).slice(0, 3).map((item) => <Link key={item.slug} href={`/services/${item.slug}`}><span>{item.title}</span><b aria-hidden="true">→</b></Link>)}</div>
         </div>
       </section>
     </main>

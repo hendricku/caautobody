@@ -4,13 +4,14 @@ import { brandRepairContent, type BrandRepairContent } from "@/lib/brandRepairCo
 import { getEditorialServiceCopy, type OriginalServicePage } from "@/lib/originalServiceCopy";
 import { blogs, faqs, gallery, locations, offers, services } from "@/lib/siteContent";
 import { media } from "@/lib/media";
+import { asServiceArrangement, orderByPreference, SERVICE_ARRANGEMENT_KEY } from "@/lib/cms/service-arrangement";
 import type { BlogContent, FAQContent, GalleryContent, LocationContent, OfferContent, ServiceContent } from "@/types/content";
 
 type PublicationStatus = "draft" | "published" | "retired";
 
 export type ServicePresentation =
-  | { variant: "editorial"; data: OriginalServicePage }
-  | { variant: "brand"; data: BrandRepairContent }
+  | { variant: "editorial"; data: OriginalServicePage & { rightImage?: string } }
+  | { variant: "brand"; data: BrandRepairContent & { rightImage?: string } }
   | { variant: "standard" };
 
 export type ServicePlacement = {
@@ -123,7 +124,7 @@ function presentation(value: unknown, slug: string): ServicePresentation {
   return staticPresentation(slug);
 }
 
-function mapService(row: CmsRow): CmsServiceContent {
+export function mapService(row: CmsRow): CmsServiceContent {
   const slug = asString(row.slug);
   return {
     slug,
@@ -140,7 +141,7 @@ function mapService(row: CmsRow): CmsServiceContent {
   };
 }
 
-function mapLocation(row: CmsRow): LocationContent {
+export function mapLocation(row: CmsRow): LocationContent {
   const coordinates = Array.isArray(row.coordinates) && row.coordinates.length === 2
     ? [Number(row.coordinates[0]), Number(row.coordinates[1])] as [number, number]
     : [0, 0] as [number, number];
@@ -150,7 +151,7 @@ function mapLocation(row: CmsRow): LocationContent {
   };
 }
 
-function mapOffer(row: CmsRow): OfferContent {
+export function mapOffer(row: CmsRow): OfferContent {
   return {
     slug: asString(row.slug), title: asString(row.title), seoTitle: asString(row.seo_title), eyebrow: asString(row.eyebrow),
     intro: asString(row.intro), body: asStringArray(row.body), image: asString(row.image_path), bullets: asStringArray(row.bullets),
@@ -167,12 +168,12 @@ function mapBlog(row: CmsRow): BlogContent {
   };
 }
 
-function mapFaq(row: CmsRow): FAQContent {
-  return { id: asString(row.legacy_key), category: asString(row.category), question: asString(row.question), answer: asString(row.answer), visible: Boolean(row.is_visible) };
+export function mapFaq(row: CmsRow): FAQContent {
+  return { id: asString(row.legacy_key), category: asString(row.category), question: asString(row.question), answer: asString(row.answer), visible: Boolean(row.is_visible), status: asString(row.status) as FAQContent["status"] };
 }
 
-function mapGallery(row: CmsRow): GalleryContent {
-  return { id: asString(row.legacy_key), image: asString(row.image_path), caption: asString(row.caption), category: asString(row.category) };
+export function mapGallery(row: CmsRow): GalleryContent {
+  return { id: asString(row.legacy_key), image: asString(row.image_path), caption: asString(row.caption), category: asString(row.category), status: asString(row.status) as GalleryContent["status"] };
 }
 
 async function readRows<T>(table: string, fallback: T[], mapper: (row: CmsRow) => T): Promise<T[]> {
@@ -180,22 +181,37 @@ async function readRows<T>(table: string, fallback: T[], mapper: (row: CmsRow) =
   if (!client) return fallback;
 
   const { data, error } = await client.from(table).select("*").eq("status", "published").order("sort_order", { ascending: true });
-  if (error || !data) return fallback;
+  if (error || !data) {
+    // A static fallback keeps the website available during an outage, but
+    // logging ensures the CMS/public mismatch is visible in server logs.
+    console.error("Public CMS collection read failed; serving static fallback", { table, code: error?.code });
+    return fallback;
+  }
   return (data as CmsRow[]).map(mapper);
 }
+
+export const getPublishedServiceArrangement = cache(async () => {
+  const client = publicClient();
+  if (!client) return null;
+  const { data, error } = await client.from("cms_site_settings").select("value")
+    .eq("key", SERVICE_ARRANGEMENT_KEY).eq("is_public", true).maybeSingle();
+  if (error) { console.error("CMS published service arrangement unavailable", { code: error.code }); return null; }
+  return asServiceArrangement(data?.value);
+});
 
 export const getPublishedServices = cache(async (): Promise<CmsServiceContent[]> =>
   readRows("cms_services", services.map((item) => ({ ...item, presentation: staticPresentation(item.slug), placement: placement(undefined, item.slug) })), mapService),
 );
 
-export const getPublishedServiceNavigation = cache(async (): Promise<ServiceNavigationItem[]> =>
-  (await getPublishedServices())
-    .filter((service) => service.placement.navigation)
-    .map((service) => ({ slug: service.slug, label: service.placement.navigationLabel || service.title, summary: service.placement.navigationSummary || service.intro })),
-);
+export const getPublishedServiceNavigation = cache(async (): Promise<ServiceNavigationItem[]> => {
+  const [published, arrangement] = await Promise.all([getPublishedServices(), getPublishedServiceArrangement()]);
+  const items = published.filter((service) => service.placement.navigation);
+  return orderByPreference(items, arrangement?.menu, (service) => service.slug)
+    .map((service) => ({ slug: service.slug, label: service.placement.navigationLabel || service.title, summary: service.placement.navigationSummary || service.intro }));
+});
 
 export const getPublishedServiceCarousel = cache(async (): Promise<ServiceCarouselItem[]> => {
-  const published = await getPublishedServices();
+  const [published, arrangement] = await Promise.all([getPublishedServices(), getPublishedServiceArrangement()]);
   const order = Object.keys(carouselDefaults);
   const configured = published
     .filter((service) => service.placement.homeSlider)
@@ -204,8 +220,8 @@ export const getPublishedServiceCarousel = cache(async (): Promise<ServiceCarous
       return {
         label: service.placement.sliderLabel || fallback?.label || service.title,
         kicker: service.placement.sliderKicker || fallback?.kicker || service.eyebrow || "CA Autobody service",
-        title: fallback?.title || service.title,
-        image: fallback?.image || service.image,
+        title: service.title || fallback?.title || "",
+        image: service.image || fallback?.image || "",
         copy: service.placement.sliderCopy || fallback?.copy || service.intro,
         href: `/services/${service.slug}`,
         cta: service.placement.sliderCta || fallback?.cta || `Explore ${service.title}`,
@@ -214,7 +230,8 @@ export const getPublishedServiceCarousel = cache(async (): Promise<ServiceCarous
     });
   // Keep the existing Prestige directory slide until a published service with
   // that slug exists. A future CMS entry then replaces this static fallback.
-  if (!configured.some((item) => item.href === "/services/prestige-brands")) {
+  if (!configured.some((item) => item.href === "/services/prestige-brands") &&
+      (!arrangement || arrangement.slider.includes("prestige-brands"))) {
     const prestige = carouselDefaults["prestige-brands"];
     configured.push({ ...prestige, href: "/services", sourceIndex: 4 });
   }
@@ -223,9 +240,9 @@ export const getPublishedServiceCarousel = cache(async (): Promise<ServiceCarous
     const index = order.indexOf(slug);
     return index === -1 ? 1000 : index;
   };
-  return configured
-    .sort((left, right) => position(left) - position(right) || left.sourceIndex - right.sourceIndex)
-    .map((item) => ({ label: item.label, kicker: item.kicker, title: item.title, image: item.image, copy: item.copy, href: item.href, cta: item.cta }));
+  const sorted = arrangement ? orderByPreference(configured, arrangement.slider, (item) => item.href === "/services" ? "prestige-brands" : item.href.split("/").pop() || "") :
+    configured.sort((left, right) => position(left) - position(right) || left.sourceIndex - right.sourceIndex);
+  return sorted.map((item) => ({ label: item.label, kicker: item.kicker, title: item.title, image: item.image, copy: item.copy, href: item.href, cta: item.cta }));
 });
 
 export const getPublishedLocations = cache(async () => readRows("cms_locations", locations, mapLocation));

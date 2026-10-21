@@ -1,49 +1,19 @@
 "use client";
-import { FormEvent, useState } from "react";
+
+import Link from "next/link";
+import AdminStatusTabs from "@/components/Admin/AdminStatusTabs";
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
-import AdminModal from "@/components/Admin/AdminModal";
-import CmsImageField from "@/components/Admin/CmsImageField";
 import { useCmsCollection, type CmsCollection } from "@/lib/cms/useCmsCollection";
 
-type StructuredItem = { slug: string; title?: string; name?: string; seoTitle: string; eyebrow?: string; intro: string; body: string[]; image: string; bullets?: string[]; coordinates?: [number,number]; mapDescription?: string; status?: "draft" | "published" };
-export default function AdminStructuredCollection({ collection, heading }: { collection: Extract<CmsCollection,"offers"|"areas">; heading: string }) {
-  const { items, role, error, save, retire, duplicate, reload, lastSynced } = useCmsCollection<StructuredItem>(collection);
-  const [editing,setEditing] = useState<StructuredItem|null>(null);
-  const [draft,setDraft] = useState<StructuredItem|null>(null);
-  const [busy,setBusy] = useState(false);
-  function edit(item?: StructuredItem) {
-    const value = item ? { ...item, body: [...item.body] } : { slug:"",title:"",name:"",seoTitle:"",intro:"",image:"",body:[],bullets:[],coordinates:[0,0] as [number,number],mapDescription:"",status:"draft" as const };
-    setEditing(value);setDraft(value);
-  }
-  async function submit(event: FormEvent) {
-    event.preventDefault();if (!draft) return;
-    setBusy(true);
-    const slug = draft.slug || (draft.title || draft.name || "").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"");
-    try { await save({ ...draft,slug },editing?.slug);setEditing(null);setDraft(null); void Swal.fire({icon:"success",title:editing?.slug ? `${heading} updated` : `${heading} created`,timer:1700,showConfirmButton:false}); }
-    catch (err) { void Swal.fire({icon:"error",text:err instanceof Error ? err.message : "Save failed"}); }
-    finally {setBusy(false);}
-  }
-  async function remove(item: StructuredItem) {
-    const confirmation = await Swal.fire({icon:"warning",title:`Retire ${item.title || item.name}?`,text:"The URL will no longer be published. Content remains in the database.",showCancelButton:true,confirmButtonText:"Retire",confirmButtonColor:"#9d3c36"});
-    if (confirmation.isConfirmed) {try {await retire(item.slug);void Swal.fire({icon:"success",title:"Page retired",timer:1600,showConfirmButton:false});}catch(err){void Swal.fire({icon:"error",text:err instanceof Error?err.message:"Retirement failed"});}}
-  }
-  async function duplicateItem(item: StructuredItem) {
-    try {
-      const copy = await duplicate(item.slug);
-      edit(copy);
-      void Swal.fire({ icon:"success", title:"Draft copy created", timer:1400, showConfirmButton:false });
-    } catch (err) { void Swal.fire({ icon:"error", text:err instanceof Error ? err.message : "Unable to duplicate content" }); }
-  }
-  return <><div className="admin-page-head"><div><span>Content</span><h1>{heading}</h1><p>Published pages, drafts and SEO metadata are stored in Supabase.</p></div><button className="admin-primary" type="button" onClick={()=>edit()}>+ New {collection === "offers" ? "offer" : "area"}</button></div>
-    {error ? <p role="alert" className="admin-note">{error}</p> : null}<div className="admin-toolbar"><span>{items.length} active and draft pages · {lastSynced ? "Live sync active" : "Syncing"}</span><button type="button" onClick={()=>void reload()}>Refresh CMS</button></div>
-    <div className="admin-card-grid">{items.map(item=><article className="admin-content-card" key={item.slug}><img src={item.image || "/images/Banner.webp"} alt=""/><div><span>{item.status}</span><h2>{item.title || item.name}</h2><p>{item.intro}</p><small>/{collection === "offers" ? "offers" : "areas-we-serve"}/{item.slug}</small><div className="table-actions"><button type="button" onClick={()=>edit(item)}>Edit</button><button type="button" onClick={()=>void duplicateItem(item)}>Duplicate</button><button className="admin-danger" type="button" onClick={()=>void remove(item)}>Retire</button></div></div></article>)}</div>
-    {draft ? <AdminModal title={`Edit ${heading}`} onClose={()=>{setDraft(null);setEditing(null);}}><form className="admin-form" onSubmit={event=>void submit(event)}>
-      <label>{collection === "offers" ? "Title" : "Area name"}<input required value={collection==="offers" ? draft.title || "" : draft.name || ""} onChange={event=>setDraft({...draft,[collection === "offers" ? "title" : "name"]:event.target.value})}/></label>
-      <label>Slug<input value={draft.slug} onChange={event=>setDraft({...draft,slug:event.target.value})}/></label><label>SEO title<input value={draft.seoTitle} onChange={event=>setDraft({...draft,seoTitle:event.target.value})}/></label>
-      <CmsImageField id={`${collection}-featured-image`} label="Featured image" value={draft.image} onChange={image=>setDraft({...draft,image})}/><label>Intro<textarea rows={3} required value={draft.intro} onChange={event=>setDraft({...draft,intro:event.target.value})}/></label>
-      <label>Body paragraphs (blank line between paragraphs)<textarea rows={6} value={draft.body.join("\n\n")} onChange={event=>setDraft({...draft,body:event.target.value.split(/\n\s*\n/)})}/></label>
-      {collection==="offers" ? <><label>Eyebrow<input value={draft.eyebrow || ""} onChange={event=>setDraft({...draft,eyebrow:event.target.value})}/></label><label>Bullets<textarea rows={4} value={(draft.bullets || []).join("\n")} onChange={event=>setDraft({...draft,bullets:event.target.value.split("\n")})}/></label></> : <><label>Map description<textarea rows={3} value={draft.mapDescription || ""} onChange={event=>setDraft({...draft,mapDescription:event.target.value})}/></label><div className="admin-form-row">{([0,1] as const).map((index)=><label key={index}>{index===0 ? "Latitude" : "Longitude"}<input type="number" step="any" value={draft.coordinates?.[index] ?? 0} onChange={event=>{const c=[...(draft.coordinates || [0,0])] as [number,number];c[index]=Number(event.target.value);setDraft({...draft,coordinates:c});}}/></label>)}</div></>}
-      <label>Status<select value={draft.status || "draft"} onChange={event=>setDraft({...draft,status:event.target.value as "draft"|"published"})}><option value="draft">Draft</option><option value="published" disabled={role==="editor"}>Published</option></select></label>
-      <div className="admin-form-actions"><button type="button" onClick={()=>setDraft(null)}>Cancel</button><button className="admin-primary" type="submit" disabled={busy}>{busy?"Saving…":"Save changes"}</button></div>
-    </form></AdminModal> : null}</>;
+type Kind = Extract<CmsCollection, "offers" | "areas">;
+type Item = { slug: string; title?: string; name?: string; intro: string; image: string; status?: "draft" | "published" | "retired" };
+export default function AdminStructuredCollection({ collection, heading }: { collection: Kind; heading: string }) {
+  const router = useRouter(); const { items, ready, error, reload, duplicate, retire, lastSynced } = useCmsCollection<Item>(collection); const [query, setQuery] = useState(""); const [status, setStatus] = useState("all");
+  const visible = useMemo(() => items.filter((item) => (status === "all" || item.status === status) && `${item.title || item.name} ${item.slug}`.toLowerCase().includes(query.toLowerCase())), [items, query, status]);
+  async function copy(item: Item) { try { const next = await duplicate(item.slug); router.push(`/caautobodyadmin/${collection}/${next.slug}`); } catch (reason) { void Swal.fire({ icon: "error", text: reason instanceof Error ? reason.message : "Unable to duplicate content" }); } }
+  async function remove(item: Item) { const result = await Swal.fire({ icon: "warning", title: `Delete “${item.title || item.name}”?`, text: "The public page will be removed while its record remains available for audit.", showCancelButton: true, confirmButtonText: "Delete", confirmButtonColor: "#963d37", focusCancel: true }); if (result.isConfirmed) { try { await retire(item.slug); } catch (reason) { void Swal.fire({ icon: "error", text: reason instanceof Error ? reason.message : "Unable to delete content" }); } } }
+  const noun = collection === "offers" ? "offer" : "area";
+  return <><div className="admin-page-head"><div><span>Content</span><h1>{heading}</h1><p>Manage public pages, Drafts, imagery, and search metadata from one workspace.</p></div><Link className="admin-primary" href={`/caautobodyadmin/${collection}/new`}>New {noun}</Link></div><AdminStatusTabs value={status} onChange={setStatus} items={items} /><div className="admin-toolbar"><span>{items.length} records · {lastSynced ? "Live sync active" : "Syncing"}</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={`Search ${heading.toLowerCase()}`} aria-label={`Search ${heading.toLowerCase()}`} /><button type="button" onClick={() => void reload()}>Refresh CMS</button></div>{error ? <p role="alert" className="admin-note">{error}</p> : null}{!ready ? <p className="admin-loading">Loading CMS content...</p> : null}{ready && !visible.length ? <div className="admin-empty"><strong>No pages match this view.</strong><p>Change the search or filter, or create a new Draft.</p></div> : null}<div className="admin-card-grid">{visible.map((item) => <article className="admin-content-card" key={item.slug}><img src={item.image || "/images/Banner.webp"} alt="" /><div><span className={`admin-status-badge admin-status-badge--${item.status || "draft"}`}>{item.status || "draft"}</span><h2>{item.title || item.name}</h2><p>{item.intro}</p><small>/{collection === "offers" ? "offers" : "areas-we-serve"}/{item.slug}</small><div className="table-actions"><Link href={`/caautobodyadmin/${collection}/${item.slug}`}>Edit</Link><Link href={`/caautobodyadmin/${collection}/${item.slug}/preview`} target="_blank" rel="noopener noreferrer">Preview</Link><button type="button" onClick={() => void copy(item)}>Duplicate</button><button className="admin-danger" type="button" onClick={() => void remove(item)}>Delete</button></div></div></article>)}</div></>;
 }

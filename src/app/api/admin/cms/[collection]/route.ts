@@ -83,6 +83,9 @@ function validServicePresentation(value: unknown): Record<string, unknown> | nul
   if (presentation.variant !== "editorial" && presentation.variant !== "brand") return null;
   const data = object(presentation.data);
   if (!data || !str(data.title, 300)) return null;
+  // Side-panel images live in content_json, not a new database column. Validate
+  // the optional reference before it can be stored or published.
+  if (!safeImage(normaliseImage(data.rightImage))) return null;
   if (presentation.variant === "editorial") {
     if (!Array.isArray(data.introParagraphs) || !Array.isArray(data.sections) || data.sections.length > 80) return null;
     if (!data.sections.every((section) => {
@@ -152,12 +155,22 @@ async function promoteImage(image: string, admin: NonNullable<Awaited<ReturnType
 async function promoteServicePresentationImages(value: Record<string, unknown>, admin: NonNullable<Awaited<ReturnType<typeof getAdmin>>>) {
   const presentation = object(value);
   const data = object(presentation?.data);
-  if (!presentation || presentation.variant !== "brand" || !data) return value;
+  if (!presentation || !data) return value;
+  if (presentation.variant !== "brand" && presentation.variant !== "editorial") return value;
+  // Promote every new image used by the service editor, including the optional
+  // independently uploaded right-side image. This does not alter public UI bindings.
+  const rightImage = await promoteImage(normaliseImage(data.rightImage), admin);
+  if (presentation.variant === "editorial") return { ...presentation, data: { ...data, rightImage } };
   const media = Array.isArray(data.media) ? await Promise.all(data.media.map(async (item) => {
     const entry = object(item);
     return entry ? { ...entry, image: await promoteImage(normaliseImage(entry.image), admin) } : item;
   })) : [];
-  return { ...presentation, data: { ...data, heroImage: await promoteImage(normaliseImage(data.heroImage), admin), logo: await promoteImage(normaliseImage(data.logo), admin), media } };
+  return { ...presentation, data: {
+    ...data,
+    heroImage: await promoteImage(normaliseImage(data.heroImage), admin),
+    rightImage,
+    logo: await promoteImage(normaliseImage(data.logo), admin), media,
+  } };
 }
 function invalid(message = "Invalid CMS content. Check the title, slug, image URL and content blocks, then try again.") { return NextResponse.json({ error: message }, { status: 400 }); }
 function blogValidationError(input: Record<string, unknown>) {
@@ -217,6 +230,13 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     if (error) return invalid(error);
   }
   const row = toRow(collection, body.item); if (!row) return invalid();
+  const originalId = str(body.originalId || body.item[cfg.key === "slug" ? "slug" : "id"],140);
+  const { data: existing, error: lookupError } = originalId ? await admin.client.from(cfg.table).select("id,status,legacy_key").eq(cfg.key, originalId).maybeSingle() : { data: null, error: null };
+  if (lookupError) return databaseFailure(`${collection}:lookup`, lookupError.code);
+  // Resolve the effective status and role before touching staged media.
+  if (existing && body.item.status === undefined) row.status = existing.status;
+  if (existing && admin.role === "editor" && existing.status !== "draft") return NextResponse.json({ error: "Editors can only modify drafts" }, { status: 403 });
+  if (row.status === "published" && admin.role === "editor") return NextResponse.json({ error: "Publishing requires Publisher or Admin permissions" }, { status: 403 });
   if (row.status === "published") {
     try {
       if (typeof row.image_path === "string") row.image_path = await promoteImage(row.image_path, admin);
@@ -230,13 +250,6 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       }
     } catch (err) { return NextResponse.json({ error: err instanceof Error ? err.message : "Media validation failed" }, { status: 400 }); }
   }
-  if (row.status === "published" && admin.role === "editor") return NextResponse.json({ error: "Publishing requires Publisher or Admin permissions" }, { status: 403 });
-  const originalId = str(body.originalId || body.item[cfg.key === "slug" ? "slug" : "id"],140);
-  const { data: existing, error: lookupError } = originalId ? await admin.client.from(cfg.table).select("id,status,legacy_key").eq(cfg.key, originalId).maybeSingle() : { data: null, error: null };
-  if (lookupError) return databaseFailure(`${collection}:lookup`, lookupError.code);
-  // Legacy screens may omit status. Preserve publication rather than silently unpublishing edits.
-  if (existing && body.item.status === undefined) row.status = existing.status;
-  if (existing && admin.role === "editor" && existing.status !== "draft") return NextResponse.json({ error: "Editors can only modify drafts" }, { status: 403 });
   const values = existing ? Object.fromEntries(Object.entries(row).filter(([name]) => name !== "legacy_key")) : row;
   const action = existing ? admin.client.from(cfg.table).update(values).eq("id", existing.id) : admin.client.from(cfg.table).insert(values);
   const { data, error } = await action.select().single();

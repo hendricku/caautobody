@@ -103,7 +103,7 @@ function SortableBlogBlock({
               <option value="lead">Left rail</option>
             </select>
           </label>
-          <CmsImageField id={`blog-block-image-${block.id}`} label="Article image" value={block.image} disabled={readOnly} onChange={(image) => onUpdate({ image })} />
+          <CmsImageField id={`blog-block-image-${block.id}`} label="Article image" purpose="content" value={block.image} disabled={readOnly} onChange={(image) => onUpdate({ image })} />
           <label>Alt text<input disabled={readOnly} value={block.alt} onChange={(event) => onUpdate({ alt: event.target.value })} /></label>
           <label>Caption<input disabled={readOnly} value={block.caption || ""} onChange={(event) => onUpdate({ caption: event.target.value })} /></label>
         </div>

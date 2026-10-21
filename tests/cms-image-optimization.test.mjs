@@ -38,9 +38,9 @@ test("CMS image optimizer rejects non-image bytes", async () => {
 
 test("all CMS upload entry points accept JPG, PNG and WebP through the shared control", () => {
   const field = readFileSync(new URL("../src/components/Admin/CmsImageField.tsx", import.meta.url), "utf8");
-  const gallery = readFileSync(new URL("../src/app/caautobodyadmin/(protected)/gallery/page.tsx", import.meta.url), "utf8");
+  const galleryEditor = readFileSync(new URL("../src/components/Admin/AdminLibraryEditor.tsx", import.meta.url), "utf8");
   assert.match(field, /image\/jpeg,image\/png,image\/webp/);
   assert.match(field, /automatically optimized to high-quality WebP/);
-  assert.match(gallery, /CmsImageField/);
-  assert.doesNotMatch(gallery, /accept="image\/webp"/);
+  assert.match(galleryEditor, /CmsImageField/);
+  assert.doesNotMatch(galleryEditor, /accept="image\/webp"/);
 });

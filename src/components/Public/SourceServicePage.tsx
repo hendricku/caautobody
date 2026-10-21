@@ -36,7 +36,7 @@ function SourceBlocks({ blocks }: { blocks: ServiceBlock[] }) {
   return <>{output}</>;
 }
 
-export default function SourceServicePage({ service }: { service: ServiceContent }) {
+export default function SourceServicePage({ service, relatedServices: publishedRelated }: { service: ServiceContent; relatedServices?: { slug: string; title: string }[] }) {
   const source = originalServiceCopy[service.slug];
   const imagePositions: Record<string, string> = {
     "spray-painting": "center 52%",
@@ -47,17 +47,17 @@ export default function SourceServicePage({ service }: { service: ServiceContent
     "tesla-approved-repair-centre": "center 52%",
     "services-zeekr-approved-repairer-melbourne": "center 50%",
   };
-  const relatedServices = services
+  const relatedServices = (publishedRelated || services)
     .filter((item) => item.slug !== service.slug && !["byd-approved-repairer-melbourne", "lexus-approved-body-shop-melbourne"].includes(item.slug))
     .slice(0, 3);
 
   return (
     <main className="source-service">
-      <PageHero title={source?.title ?? service.title} image={service.image} intro={source ? cleanSourceText(source.introParagraphs[0]) : service.intro} variant="service" imagePosition={imagePositions[service.slug]} />
+      <PageHero title={service.title || source?.title || ""} image={service.image} intro={service.intro || (source ? cleanSourceText(source.introParagraphs[0]) : "")} variant="service" imagePosition={imagePositions[service.slug]} />
 
-      <section className="source-service__story shell section-pad" aria-label={source?.title ?? service.title}>
+      <section className="source-service__story shell section-pad" aria-label={service.title || source?.title || ""}>
         <article className="source-service__copy hp-reveal">
-          {(source?.introParagraphs.slice(1) ?? service.body).map((paragraph) => <p className="source-service__lead" key={paragraph}>{cleanSourceText(paragraph)}</p>)}
+          {(service.body.some((text) => text.trim()) ? service.body : source?.introParagraphs.slice(1) || []).map((paragraph, index) => <p className="source-service__lead" key={`${index}-${paragraph.slice(0,10)}`}>{cleanSourceText(paragraph)}</p>)}
           {source?.sections.map((section) => (
             <section className="source-service__section" key={section.heading}>
               <h2>{cleanSourceText(section.heading)}</h2>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { CMS_SYNC_EVENT, CMS_SYNC_STORAGE_KEY, readCmsSyncNotice } from "@/lib/cms/cms-sync";
 
 type AuditEvent = {
   id: number;
@@ -39,9 +40,8 @@ export default function AuditPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError("");
+  const load = useCallback(async (silent = false) => {
+    if (!silent) { setLoading(true); setError(""); }
     try {
       const query = new URLSearchParams({ limit: "100" });
       if (table) query.set("table", table);
@@ -51,14 +51,24 @@ export default function AuditPage() {
       if (!response.ok) throw new Error(result.error || "Audit history is unavailable.");
       setItems(result.items || []);
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "Audit history is unavailable.");
-      setItems([]);
+      if (!silent) { setError(reason instanceof Error ? reason.message : "Audit history is unavailable."); setItems([]); }
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, [operation, table]);
 
-  useEffect(() => { void load(); }, [load]);
+  useEffect(() => {
+    void load();
+    const refresh = () => { if (document.visibilityState === "visible") void load(true); };
+    const timer = window.setInterval(refresh, 20_000);
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === CMS_SYNC_STORAGE_KEY && readCmsSyncNotice(event.newValue)) refresh();
+    };
+    window.addEventListener(CMS_SYNC_EVENT, refresh);
+    window.addEventListener("storage", onStorage);
+    document.addEventListener("visibilitychange", refresh);
+    return () => { window.clearInterval(timer); window.removeEventListener(CMS_SYNC_EVENT, refresh); window.removeEventListener("storage", onStorage); document.removeEventListener("visibilitychange", refresh); };
+  }, [load]);
 
   return (
     <>

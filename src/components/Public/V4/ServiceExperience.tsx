@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { media } from "@/lib/media";
 import type { ServiceCarouselItem } from "@/lib/cms/public-content";
 import ArrowForwardRounded from "@mui/icons-material/ArrowForwardRounded";
@@ -25,6 +25,9 @@ const fallbackItems: ServiceCarouselItem[] = [
 export default function ServiceExperience({ items = fallbackItems }: { items?: ServiceCarouselItem[] }) {
   const [index, setIndex] = useState(0);
   const pointerX = useRef<number | null>(null);
+  // Publishing can change the number/order of slides while a visitor's page
+  // is open. Never leave the active index pointing past the last slide.
+  useEffect(() => { setIndex((current) => items.length ? Math.min(current, items.length - 1) : 0); }, [items.length]);
   if (!items.length) return null;
   const move = (delta: number) => setIndex((value) => (value + delta + items.length) % items.length);
 

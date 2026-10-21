@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import type { ServiceContent } from "@/types/content";
+import type { CmsServiceContent } from "@/lib/cms/public-content";
 import type { OriginalServicePage, ServiceBlock, OriginalServiceSection } from "@/lib/originalServiceCopy";
 import { getEditorialServiceCopy } from "@/lib/originalServiceCopy";
 import { services } from "@/lib/siteContent";
@@ -77,8 +77,11 @@ const approvedBrandIntroMarks: Record<string, { src: string; alt: string; width:
   Tesla: { src: "/images/tesla-approved-body-shop.webp", alt: "Tesla Approved Body Shop", width: 620, height: 204 },
 };
 
-function heroPanelFor(service: ServiceContent) {
-  return heroPanelByService[service.slug] ?? service.image;
+function heroPanelFor(service: CmsServiceContent) {
+  // Separate CMS image is explicitly selected by editors; retain the original
+  // panel photograph until a replacement has been published.
+  return (service.presentation?.variant === "editorial" ? service.presentation.data.rightImage : undefined)
+    || heroPanelByService[service.slug] || service.image;
 }
 
 function SectionContent({ section, variant, dark, omitLeadingParagraph = false }: { section: OriginalServiceSection; variant: string; dark: boolean; omitLeadingParagraph?: boolean }) {
@@ -190,7 +193,7 @@ function EditorialSection({ section, index, isZeekr, serviceSlug }: { section: O
   );
 }
 
-export default function EditorialServicePage({ service, copy }: { service: ServiceContent; copy: OriginalServicePage }) {
+export default function EditorialServicePage({ service, copy }: { service: CmsServiceContent; copy: OriginalServicePage }) {
   const isTesla = service.slug === "tesla-approved-repair-centre";
   const isZeekr = service.slug === "services-zeekr-approved-repairer-melbourne";
   const usesApprovedBrandLayout = isTesla || copy.approvedBrandLayout === true;

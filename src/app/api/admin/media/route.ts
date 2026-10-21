@@ -2,12 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "node:crypto";
 import { getAdmin, sameOrigin } from "@/lib/cms/admin-server";
 import { CMS_IMAGE_FORMATS, formatFromStagingPath } from "@/lib/cms/image-reference";
-import { MAX_CMS_IMAGE_BYTES, optimiseCmsImage } from "@/lib/cms/image-optimization";
+import { MAX_CMS_IMAGE_BYTES, MAX_CMS_TRANSFER_BYTES, CMS_IMAGE_PROFILES, optimiseCmsImage, type CmsImagePurpose } from "@/lib/cms/image-optimization";
 import { consumePublicRateLimit } from "@/lib/security/public-rate-limit";
 
 export const runtime = "nodejs";
 
-const MAX_MULTIPART_OVERHEAD_BYTES = 64 * 1024;
+const MAX_MULTIPART_OVERHEAD_BYTES = 128 * 1024;
 
 export async function POST(request: NextRequest) {
   if (!sameOrigin(request)) return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
@@ -19,16 +19,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Image uploads are temporarily unavailable. Please try again." }, { status: 503 });
   }
   const contentLength = Number(request.headers.get("content-length"));
-  if (Number.isFinite(contentLength) && contentLength > MAX_CMS_IMAGE_BYTES + MAX_MULTIPART_OVERHEAD_BYTES) return NextResponse.json({ error: "Choose a JPG, PNG, or WebP image no larger than 5 MB." }, { status: 400 });
+  if (Number.isFinite(contentLength) && contentLength > MAX_CMS_TRANSFER_BYTES + MAX_MULTIPART_OVERHEAD_BYTES) return NextResponse.json({ error: "This upload is too large. Please let the browser optimize it first." }, { status: 400 });
   const form = await request.formData().catch(() => null); const file = form?.get("file");
-  if (!(file instanceof File) || file.size <= 0 || file.size > MAX_CMS_IMAGE_BYTES) return NextResponse.json({ error: "Choose a JPG, PNG, or WebP image no larger than 5 MB." }, { status: 400 });
+  if (!(file instanceof File) || file.size <= 0 || file.size > MAX_CMS_TRANSFER_BYTES) return NextResponse.json({ error: "This upload is too large. Please let the browser optimize it first." }, { status: 400 });
+  const purposeValue = form?.get("purpose");
+  const purpose: CmsImagePurpose = typeof purposeValue === "string" && purposeValue in CMS_IMAGE_PROFILES ? purposeValue as CmsImagePurpose : "content";
   const bytes = Buffer.from(await file.arrayBuffer());
-  const image = await optimiseCmsImage(bytes);
-  if (!image) return NextResponse.json({ error: "Choose a valid JPG, PNG, or WebP image with dimensions up to 4096px." }, { status: 400 });
+  if (bytes.length > MAX_CMS_IMAGE_BYTES) return NextResponse.json({ error: "Image exceeds the safety limit." }, { status: 400 });
+  const image = await optimiseCmsImage(bytes, purpose);
+  if (!image) return NextResponse.json({ error: "Image could not be processed. Use a valid JPG, PNG, WebP, AVIF, or supported HEIC image within safe processing limits." }, { status: 400 });
   const path = admin.user.id + "/" + randomUUID() + ".webp";
   const { error } = await admin.client.storage.from("cms-staging").upload(path, image.bytes, { contentType: CMS_IMAGE_FORMATS.webp.contentType, cacheControl: "0", upsert: false });
   if (error) { console.error("CMS media upload failure", { code: error.name }); return NextResponse.json({ error: "Image upload failed. Please try again." }, { status: 503 }); }
-  return NextResponse.json({ image: `/api/admin/media?path=${encodeURIComponent(path)}` });
+  return NextResponse.json({ image: `/api/admin/media?path=${encodeURIComponent(path)}`, width: image.width, height: image.height, originalBytes: image.originalBytes, optimizedBytes: image.bytes.length, format: "webp" });
 }
 export async function GET(request: NextRequest) {
   const admin = await getAdmin(); if (!admin) return new NextResponse("Unauthorized", { status: 401 });
