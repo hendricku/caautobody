@@ -99,10 +99,11 @@ function SortableBlogBlock({
               disabled={readOnly}
               onChange={(event) => onUpdate({ placement: event.target.value as "lead" | "full" })}
             >
-              <option value="full">Full width</option>
-              <option value="lead">Left rail</option>
+              <option value="full">Wide article image (landscape)</option>
+              <option value="lead">Side image (portrait crop)</option>
             </select>
           </label>
+          <p className="admin-field-help">Choose <strong>Wide article image</strong> for most landscape workshop photos. Use <strong>Side image</strong> only when you want a supporting portrait crop beside the article copy.</p>
           <CmsImageField id={`blog-block-image-${block.id}`} label="Article image" purpose="content" value={block.image} disabled={readOnly} onChange={(image) => onUpdate({ image })} />
           <label>Alt text<input disabled={readOnly} value={block.alt} onChange={(event) => onUpdate({ alt: event.target.value })} /></label>
           <label>Caption<input disabled={readOnly} value={block.caption || ""} onChange={(event) => onUpdate({ caption: event.target.value })} /></label>
