@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ContactPage() {
+  // Only published CMS entries are offered here, matching the public navigation and service slider.
   const serviceOptions = getContactServiceOptions(await getPublishedServices());
 
   return <main className="contact-page">
