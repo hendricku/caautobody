@@ -9,6 +9,7 @@ import "./service-editorial.css";
 import "./premium-refinements.css";
 import "./service-refresh.css";
 import "./page-hero-editorial.css";
+import "./admin-editor.css";
 import AppChrome from "@/components/Layout/AppChrome";
 import GoogleTags from "@/components/Common/GoogleTags";
 import CmsLiveRefresh from "@/components/CmsLiveRefresh";

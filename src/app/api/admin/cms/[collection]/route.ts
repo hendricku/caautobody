@@ -74,6 +74,33 @@ function servicePresentation(value: unknown) {
   if (!content) return { variant: "standard" };
   return Object.fromEntries(Object.entries(content).filter(([key]) => key !== "placement"));
 }
+function validServicePresentation(value: unknown): Record<string, unknown> | null {
+  const presentation = object(value) || { variant: "standard" };
+  let serialized = "";
+  try { serialized = JSON.stringify(presentation); } catch { return null; }
+  if (serialized.length > 200000) return null;
+  if (presentation.variant === "standard") return { variant: "standard" };
+  if (presentation.variant !== "editorial" && presentation.variant !== "brand") return null;
+  const data = object(presentation.data);
+  if (!data || !str(data.title, 300)) return null;
+  if (presentation.variant === "editorial") {
+    if (!Array.isArray(data.introParagraphs) || !Array.isArray(data.sections) || data.sections.length > 80) return null;
+    if (!data.sections.every((section) => {
+      const item = object(section);
+      return Boolean(item && str(item.heading, 300) && Array.isArray(item.blocks) && item.blocks.length <= 120 && item.blocks.every((block) => {
+        const entry = object(block);
+        return Boolean(entry && ["paragraph", "subheading", "bullet"].includes(str(entry.type, 30)) && str(entry.text, 20000));
+      }));
+    })) return null;
+  }
+  if (presentation.variant === "brand") {
+    for (const key of ["pillars", "principles", "capabilities", "process", "faqs", "media"]) if (!Array.isArray(data[key]) || data[key].length > 80) return null;
+    if (!object(data.sections) || !object(data.review)) return null;
+    if (![data.heroImage, data.logo].every((image) => safeImage(normaliseImage(image)))) return null;
+    if (!(data.media as unknown[]).every((item) => safeImage(normaliseImage(object(item)?.image)))) return null;
+  }
+  return { variant: presentation.variant, data };
+}
 function mapRow(collection: Collection, row: Record<string, unknown>) {
   if (collection === "blogs") return { slug: row.slug, title: row.title, date: row.display_date, category: row.category, excerpt: row.excerpt, image: row.image_path, status: row.status, blocks: row.blocks };
   if (collection === "services") return { slug: row.slug, title: row.title, seoTitle: row.seo_title, eyebrow: row.eyebrow, intro: row.intro, body: row.body, image: row.image_path, highlights: row.highlights, contentPending: row.content_pending, presentation: servicePresentation(row.content_json), placement: servicePlacement(row.content_json, row.slug), status: row.status };
@@ -98,7 +125,8 @@ function toRow(collection: Collection, input: Record<string, unknown>): Record<s
   if (collection === "gallery") { if (!id || !image) return null; return { ...basic, legacy_key: id, image_path: image, caption: str(input.caption,500), category: str(input.category,120) }; }
   if (!slugPattern.test(slug)) return null;
   if (collection === "services") {
-    const presentation = input.presentation && typeof input.presentation === "object" && !Array.isArray(input.presentation) && JSON.stringify(input.presentation).length < 200000 ? input.presentation as Record<string, unknown> : { variant: "standard" };
+    const presentation = validServicePresentation(input.presentation);
+    if (!presentation) return null;
     const rawPlacement = object(input.placement) || {};
     const placement = { navigation: Boolean(rawPlacement.navigation), navigationLabel: str(rawPlacement.navigationLabel, 100), navigationSummary: str(rawPlacement.navigationSummary, 240), homeSlider: Boolean(rawPlacement.homeSlider), sliderLabel: str(rawPlacement.sliderLabel, 100), sliderKicker: str(rawPlacement.sliderKicker, 100), sliderCopy: str(rawPlacement.sliderCopy, 600), sliderCta: str(rawPlacement.sliderCta, 100) };
     return { ...basic, content_json: { ...presentation, placement }, legacy_key: `admin-service-${slug}`, slug, title: str(input.title,300), seo_title: str(input.seoTitle,300), eyebrow: str(input.eyebrow,200), intro: str(input.intro,3000), body: arr(input.body), image_path: image, highlights: arr(input.highlights), content_pending: Boolean(input.contentPending) };
@@ -120,6 +148,16 @@ async function promoteImage(image: string, admin: NonNullable<Awaited<ReturnType
   const { error: uploadError } = await admin.client.storage.from("cms-public").upload(publishedPath, file, { contentType: spec.contentType, upsert: false });
   if (uploadError) throw new Error(`Image promotion failed: ${uploadError.message}`);
   return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/cms-public/${publishedPath}`;
+}
+async function promoteServicePresentationImages(value: Record<string, unknown>, admin: NonNullable<Awaited<ReturnType<typeof getAdmin>>>) {
+  const presentation = object(value);
+  const data = object(presentation?.data);
+  if (!presentation || presentation.variant !== "brand" || !data) return value;
+  const media = Array.isArray(data.media) ? await Promise.all(data.media.map(async (item) => {
+    const entry = object(item);
+    return entry ? { ...entry, image: await promoteImage(normaliseImage(entry.image), admin) } : item;
+  })) : [];
+  return { ...presentation, data: { ...data, heroImage: await promoteImage(normaliseImage(data.heroImage), admin), logo: await promoteImage(normaliseImage(data.logo), admin), media } };
 }
 function invalid(message = "Invalid CMS content. Check the title, slug, image URL and content blocks, then try again.") { return NextResponse.json({ error: message }, { status: 400 }); }
 function blogValidationError(input: Record<string, unknown>) {
@@ -182,6 +220,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   if (row.status === "published") {
     try {
       if (typeof row.image_path === "string") row.image_path = await promoteImage(row.image_path, admin);
+      if (collection === "services" && object(row.content_json)) row.content_json = await promoteServicePresentationImages(row.content_json as Record<string, unknown>, admin);
       if (collection === "blogs" && Array.isArray(row.blocks)) {
         const promoted = [];
         for (const block of row.blocks) {

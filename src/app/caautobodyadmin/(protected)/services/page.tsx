@@ -3,8 +3,9 @@ import { FormEvent, useState } from "react";
 import Swal from "sweetalert2";
 import AdminModal from "@/components/Admin/AdminModal";
 import CmsImageField from "@/components/Admin/CmsImageField";
+import ServiceLayoutEditor from "@/components/Admin/ServiceLayoutEditor";
 import { useCmsCollection } from "@/lib/cms/useCmsCollection";
-import type { CmsServiceContent } from "@/lib/cms/public-content";
+import type { CmsServiceContent, ServicePresentation } from "@/lib/cms/public-content";
 const blank: CmsServiceContent = {
   slug: "",
   title: "",
@@ -19,13 +20,13 @@ const blank: CmsServiceContent = {
 };
 export default function AdminServices() {
   const { items, save, retire, duplicate, error, reload, role, lastSynced } = useCmsCollection<CmsServiceContent>("services");
-  const [presentationJson,setPresentationJson] = useState("");
+  const [presentation, setPresentation] = useState<ServicePresentation>({ variant: "standard" });
   const [editing, setEditing] = useState<CmsServiceContent | null>(null);
   const [form, setForm] = useState<CmsServiceContent>(blank);
   const edit = (item?: CmsServiceContent) => {
     const value = item || blank;
     setEditing({ ...value });
-    setPresentationJson(JSON.stringify(value.presentation || {variant:"standard"},null,2));
+    setPresentation(value.presentation || { variant: "standard" });
     setForm({
       ...value,
       body: [...value.body],
@@ -37,8 +38,6 @@ export default function AdminServices() {
     e.preventDefault();
     const slug = form.slug || form.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
     try {
-      const presentation = JSON.parse(presentationJson);
-      if (!presentation || typeof presentation !== "object" || !["standard","editorial","brand"].includes(presentation.variant)) throw new Error("Invalid service layout data");
       await save({ ...form, slug, presentation, body: form.body.filter(Boolean), highlights: form.highlights.filter(Boolean) }, editing?.slug); setEditing(null); void Swal.fire({ icon: "success", title: editing?.slug ? "Service updated" : "Service created", timer: 1700, showConfirmButton: false });
     }
     catch (err) { void Swal.fire({ icon: "error", text: err instanceof Error ? err.message : "Save failed" }); }
@@ -157,7 +156,7 @@ export default function AdminServices() {
                 }
               />
             </label>
-            <label>Approved service layout content (JSON) — editorial and brand pages use this structured copy<textarea rows={8} value={presentationJson} onChange={event=>setPresentationJson(event.target.value)} spellCheck={false}/></label>
+            <ServiceLayoutEditor value={presentation} onChange={setPresentation} />
             <fieldset className="admin-placement">
               <legend>Website placement</legend>
               <p>Published services can appear in the Services menu and homepage slider. Drafts remain private.</p>
@@ -176,7 +175,7 @@ export default function AdminServices() {
               <label>Slider copy<textarea rows={3} value={form.placement.sliderCopy} onChange={(event) => setForm({ ...form, placement: { ...form.placement, sliderCopy: event.target.value } })} placeholder={form.intro || "Short homepage description"} /></label>
               <label>Slider button label<input value={form.placement.sliderCta} onChange={(event) => setForm({ ...form, placement: { ...form.placement, sliderCta: event.target.value } })} placeholder={form.title ? `Explore ${form.title}` : "Explore service"} /></label>
             </fieldset>
-            <p className="admin-note">For existing SEO service pages, edit the structured layout copy above to change the visible page text. The overview fields are also saved for SEO and standard layouts.</p>
+            <p className="admin-note">The page-layout editor changes visible content for Editorial and Brand pages. The overview fields above are also saved for SEO and Standard pages.</p>
             <label>Publication status<select value={form.status || "draft"} onChange={event=>setForm({...form,status:event.target.value as CmsServiceContent["status"]})}><option value="draft">Draft</option><option value="published" disabled={role==="editor"}>Published</option></select></label>
             <div className="admin-form-actions">
               <button type="button" onClick={() => setEditing(null)}>
