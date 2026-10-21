@@ -700,7 +700,7 @@ body.home-v2 .hp-btn--hero-secondary:hover{border-color:#111;color:#fff!importan
 .hp-home-priority .hp-insurance{order:7}
 .hp-home-priority .hp-location{order:8}
 @media(max-width:1020px){
-  .hp-home-priority .hp-accident-strip{top:90px;flex-direction:column;align-items:stretch;gap:14px;padding:16px 18px}
+  .hp-home-priority .hp-accident-strip{flex-direction:column;align-items:stretch;gap:14px;padding:16px 18px}
   .hp-home-priority .hp-accident-strip__actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
   .hp-home-priority .hp-accident-strip__actions .hp-btn{width:100%;min-width:0;justify-content:center}
 }
@@ -736,7 +736,9 @@ body.home-v2 .hp-btn--hero-secondary:hover{border-color:#111;color:#fff!importan
   .hp-logo img{width:108px;height:108px;max-width:none;transform:translateY(-16px)}
 }
 @media(max-width:720px){
-  .hp-home-priority .hp-accident-strip{top:84px;gap:10px;margin-top:14px;margin-bottom:14px;padding:11px 12px}
+  /* Keep the help panel in normal document flow on phones. A relative top
+     offset left a visible blank gap after the hero once sticky behaviour ended. */
+  .hp-home-priority .hp-accident-strip{top:auto;gap:10px;margin-top:14px;margin-bottom:14px;padding:11px 12px}
   .hp-home-priority .hp-accident-strip__lead{gap:12px}
   .hp-home-priority .hp-round-icon{width:40px;height:40px;flex-basis:40px}
   .hp-home-priority .hp-accident-strip__lead strong{font-size:13px;line-height:1.3}
