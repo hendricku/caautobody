@@ -1,0 +1,36 @@
+/* The approved EV brands form a compact repair directory, not a decorative logo row. */
+.hp-approved__brands a,
+.hp-approved__brands span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  color: #fff;
+  font-size: 15px;
+  letter-spacing: .2em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.hp-approved__brands a {
+  border-left: 2px solid var(--hp-gold);
+  padding-left: 16px;
+}
+
+.hp-approved__brands a:hover,
+.hp-approved__brands a:focus-visible {
+  color: var(--hp-gold-2);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+}
+
+.hp-approved__brands span {
+  color: #c7c7c7;
+  letter-spacing: .14em;
+}
+
+@media (max-width: 720px) {
+  .hp-approved__brands { gap: 14px; flex-wrap: wrap; }
+  .hp-approved__brands a,
+  .hp-approved__brands span { min-height: 44px; font-size: 13px; }
+}
