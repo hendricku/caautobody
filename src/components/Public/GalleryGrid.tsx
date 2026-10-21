@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { GalleryContent } from "@/types/content";
@@ -48,9 +49,13 @@ export default function GalleryGrid({ items }: { items: GalleryContent[] }) {
     document.body.style.overflow = "hidden";
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") close();
-      if (event.key === "ArrowLeft") previous();
-      if (event.key === "ArrowRight") next();
+      if (event.key === "Escape") setActiveIndex(null);
+      if (event.key === "ArrowLeft" && visible.length) {
+        setActiveIndex((current) => current === null ? null : (current - 1 + visible.length) % visible.length);
+      }
+      if (event.key === "ArrowRight" && visible.length) {
+        setActiveIndex((current) => current === null ? null : (current + 1) % visible.length);
+      }
     };
 
     window.addEventListener("keydown", onKeyDown);
@@ -94,7 +99,7 @@ export default function GalleryGrid({ items }: { items: GalleryContent[] }) {
             onClick={() => setActiveIndex(index)}
             aria-label={`Open ${item.caption}`}
           >
-            <img src={item.image} alt={item.caption} loading="lazy" decoding="async" />
+            <Image src={item.image} alt={item.caption} loading="lazy" decoding="async"  width={1600} height={1200} unoptimized />
             <span className="gallery-bento-shade" />
             <span className="gallery-bento-copy">
               <small>{item.category}</small>
@@ -148,7 +153,7 @@ export default function GalleryGrid({ items }: { items: GalleryContent[] }) {
               if (delta < 0) next(); else previous();
             }}
           >
-            <img src={active.image} alt={active.caption} />
+            <Image src={active.image} alt={active.caption}  width={1600} height={1200} unoptimized />
             <figcaption>{active.caption}</figcaption>
           </figure>
 

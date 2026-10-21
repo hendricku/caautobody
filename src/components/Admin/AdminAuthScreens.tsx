@@ -1,11 +1,12 @@
 "use client";
+import Image from "next/image";
 
 import { FormEvent, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { media } from "@/lib/media";
 
 function AuthFrame({ title, children, detail }: { title: string; detail: string; children: React.ReactNode }) {
-  return <main className="admin-auth"><section className="admin-auth__panel" aria-labelledby="admin-auth-title"><img src={media.logo} alt="CA Chelsea Autobody" /><div><p>CA Autobody administration</p><h1 id="admin-auth-title">{title}</h1><span>{detail}</span></div>{children}</section></main>;
+  return <main className="admin-auth"><section className="admin-auth__panel" aria-labelledby="admin-auth-title"><Image src={media.logo} alt="CA Chelsea Autobody"  width={640} height={320} unoptimized /><div><p>CA Autobody administration</p><h1 id="admin-auth-title">{title}</h1><span>{detail}</span></div>{children}</section></main>;
 }
 
 export function AdminLogin() {

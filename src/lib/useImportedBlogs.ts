@@ -37,19 +37,20 @@ function mergeLiveBlogs(current: BlogContent[], incoming: BlogContent[]) {
 export function useImportedBlogs() {
   const collection = useLocalCollection<BlogContent>("ca-admin-blogs", seedBlogs);
   const [imported, setImported] = useState(false);
+  const { ready, setItems } = collection;
 
   useEffect(() => {
-    if (!collection.ready) return;
+    if (!ready) return;
     let active = true;
     fetch("/api/blogs")
       .then((response) => response.ok ? response.json() as Promise<BlogContent[]> : Promise.reject(new Error("Import unavailable")))
       .then((incoming) => {
-        if (active) collection.setItems((current) => mergeLiveBlogs(current, incoming));
+        if (active) setItems((current) => mergeLiveBlogs(current, incoming));
       })
       .catch(() => undefined)
       .finally(() => { if (active) setImported(true); });
     return () => { active = false; };
-  }, [collection.ready, collection.setItems]);
+  }, [ready, setItems]);
 
   return { ...collection, imported };
 }

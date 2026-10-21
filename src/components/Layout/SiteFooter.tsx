@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { media } from "@/lib/media";
 import Icon from "@/components/UI/Icon";
@@ -10,7 +11,7 @@ export default function SiteFooter({siteSettings}: {siteSettings: Awaited<Return
     <footer className="hp-footer">
       <div className="hp-shell hp-footer__grid">
         <div className="hp-footer__brand">
-          <img src={media.logo} alt="CA Chelsea Autobody" />
+          <Image src={media.logo} alt="CA Chelsea Autobody"  width={640} height={320} unoptimized />
           <p>Trusted smash repairs, body work and refinishing from Chelsea Heights, Melbourne.</p>
           <a className="hp-footer__phone" href={`tel:${siteSettings.phoneHref}`}>{siteSettings.phone}</a>
         </div>

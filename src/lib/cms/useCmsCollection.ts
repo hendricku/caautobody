@@ -45,7 +45,7 @@ export function useCmsCollection<T extends object>(collection: CmsCollection) {
       window.removeEventListener(CMS_SYNC_EVENT, onCmsChange);
       window.removeEventListener("storage", onStorageChange);
     };
-  }, [reload]);
+  }, [reload, collection]);
   const save = useCallback(async (item: T, originalId?: string) => {
     setError("");
     const response = await fetch(`/api/admin/cms/${collection}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ item, originalId }) });

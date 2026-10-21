@@ -98,7 +98,7 @@ export default function MenuArrangementPage() {
           </li>)}
         </ol>
         {active.length === 0 ? <p className="admin-arrangement__empty">No services selected for this section.</p> : null}
-        <div className="admin-arrangement__available"><h3>Available to add</h3><p>Only published services enabled for this location can be added. Enable a service in its editor's Page Settings first.</p>
+        <div className="admin-arrangement__available"><h3>Available to add</h3><p>Only published services enabled for this location can be added. Enable a service in its editor&apos;s Page Settings first.</p>
           <div className="admin-arrangement__chips">{available.filter((slug) => !active.includes(slug)).map((slug) => <button key={slug} type="button" disabled={!editable} onClick={() => toggle(slug)}>+ {name(slug)}</button>)}
           {available.every((slug) => active.includes(slug)) ? <small>All eligible services are included.</small> : null}</div>
         </div>

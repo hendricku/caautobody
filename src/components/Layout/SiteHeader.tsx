@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -146,7 +147,7 @@ export default function SiteHeader({ siteSettings, serviceNavigation = defaultSe
       }}>
       <div className="hp-header__inner">
         <Link className="hp-logo" href="/" aria-label={`${siteSettings.name} home`}>
-          <img src={media.logo} alt={siteSettings.name} />
+          <Image src={media.logo} alt={siteSettings.name}  width={640} height={320} unoptimized />
         </Link>
 
         <button

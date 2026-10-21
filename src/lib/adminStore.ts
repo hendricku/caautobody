@@ -21,7 +21,7 @@ export function useLocalCollection<T>(key:string, seed:T[], options?: { mergeSee
       }
     }catch{}
     setReady(true);
-  },[key,options?.mergeSeedById,options?.legacyKey,seed]);
+  },[key,options?.mergeSeedById,options?.legacyKey,options?.legacyFilter,seed]);
   useEffect(()=>{
     if(!ready) return;
     window.localStorage.setItem(key,JSON.stringify(items));

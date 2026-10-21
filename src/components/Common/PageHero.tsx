@@ -1,3 +1,4 @@
+import Image from "next/image";
 interface PageHeroProps {
   eyebrow?: string;
   title: string;
@@ -10,7 +11,7 @@ interface PageHeroProps {
 export default function PageHero({ eyebrow, title, image, intro, variant = "default", imagePosition }: PageHeroProps) {
   return (
     <section className={`page-hero page-hero--${variant}`}>
-      <img src={image} alt="" aria-hidden="true" style={imagePosition ? { objectPosition: imagePosition } : undefined} />
+      <Image src={image} alt="" aria-hidden="true" style={imagePosition ? { objectPosition: imagePosition } : undefined}  width={1600} height={900} unoptimized />
       <div className="page-hero__shade" />
       <div className="page-hero__topfade" aria-hidden="true" />
       <div className="page-hero__content shell">

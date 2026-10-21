@@ -1,7 +1,7 @@
+import Image from "next/image";
 import type { Metadata } from "next";
 import Link from "next/link";
 import ActionIcon from "@/components/UI/ActionIcon";
-import { originalServiceCopy } from "@/lib/originalServiceCopy";
 import { getPublishedServices } from "@/lib/cms/public-content";
 import { media } from "@/lib/media";
 
@@ -12,7 +12,7 @@ export default async function ServicesPage() {
   const directoryServices = (await getPublishedServices()).filter((service) => !brandOnlyServiceSlugs.has(service.slug));
   return <main className="ca-services-landing">
     <section className="ca-services-landing__hero" aria-labelledby="services-title">
-      <img src={media.hero.services} alt="" aria-hidden="true" fetchPriority="high" />
+      <Image src={media.hero.services} alt="" aria-hidden="true" fetchPriority="high"  width={1600} height={900} unoptimized />
       <div className="shell ca-services-landing__hero-inner">
         <span className="ca-services-landing__eyebrow">CA CHELSEA AUTOBODY <span>/</span> OUR SERVICES</span>
         <h1 id="services-title">Expert care, for every repair.</h1>
@@ -36,7 +36,7 @@ export default async function ServicesPage() {
           {directoryServices.map((service, index) => {
             const copy = service.presentation?.variant === "editorial" ? service.presentation.data : { title: service.title, introParagraphs: [service.intro] };
             return <Link className={`ca-services-landing__card${index === 0 || index === 5 ? " ca-services-landing__card--wide" : ""}`} href={`/services/${service.slug}`} key={service.slug} aria-label={`Explore ${copy.title}`}>
-              <div className="ca-services-landing__card-media"><img src={service.image} alt="" loading="lazy" /><span className="ca-services-landing__card-index">{String(index+1).padStart(2,"0")} / {String(directoryServices.length).padStart(2,"0")}</span></div>
+              <div className="ca-services-landing__card-media"><Image src={service.image} alt="" loading="lazy"  width={1600} height={900} unoptimized /><span className="ca-services-landing__card-index">{String(index+1).padStart(2,"0")} / {String(directoryServices.length).padStart(2,"0")}</span></div>
               <div className="ca-services-landing__card-copy"><div><span className="ca-services-landing__card-category">REPAIR SERVICES / MELBOURNE</span><h3>{copy.title}</h3><p>{copy.introParagraphs[0]}</p></div><span className="ca-services-landing__card-action">Explore service <ActionIcon external /></span></div>
             </Link>;
           })}

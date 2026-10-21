@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import Button from "@/components/UI/Button";
 import ServiceExperience from "@/components/Public/V4/ServiceExperience";
@@ -41,7 +42,7 @@ export default async function HomeV4({ hero }: { hero: HomeHero }) {
         <div className="hp-brands-wrap">
           <div className="hp-brands hp-shell" aria-label="Vehicle brands serviced by CA Autobody">
             <div className="hp-brand-grid">
-              {vehicleBrandLogos.map(([name, image]) => <div className={`hp-brand-logo${name === "Zeekr" ? " hp-brand-logo--zeekr" : ""}`} key={name}><img src={image} alt={name} /><span>{name}</span></div>)}
+              {vehicleBrandLogos.map(([name, image]) => <div className={`hp-brand-logo${name === "Zeekr" ? " hp-brand-logo--zeekr" : ""}`} key={name}><Image src={image} alt={name}  width={640} height={320} unoptimized /><span>{name}</span></div>)}
             </div>
             <div className="hp-brand-rule"><span /><strong>All makes &amp; models</strong><span /></div>
           </div>
@@ -59,7 +60,7 @@ export default async function HomeV4({ hero }: { hero: HomeHero }) {
             <div className="hp-trust__copy"><strong className="hp-trust__number">10,000+</strong><b>Vehicles repaired</b><p>Thousands of Melbourne drivers trust us every year.</p></div>
           </article>
           <article className="hp-trust__item hp-trust__item--ev">
-            <span className="hp-trust__brand hp-trust__brand--all-makes" aria-hidden="true"><img src="/images/4e9c3412-bc32-4a7c-a9bf-9df059150907.webp" alt="" /></span>
+            <span className="hp-trust__brand hp-trust__brand--all-makes" aria-hidden="true"><Image src="/images/4e9c3412-bc32-4a7c-a9bf-9df059150907.webp" alt=""  width={1600} height={900} unoptimized /></span>
             <div className="hp-trust__copy"><strong>All makes &amp; models</strong><p>Specialist expertise in electric and luxury vehicles.</p></div>
           </article>
           <article className="hp-trust__item">
@@ -90,7 +91,7 @@ export default async function HomeV4({ hero }: { hero: HomeHero }) {
 
       <section className="hp-about hp-section">
         <div className="hp-shell hp-about__grid">
-          <div className="hp-about__image hp-reveal"><img src={media.workshop.exterior} alt="CA Autobody workshop in Chelsea Heights" loading="lazy" /><span className="hp-image-label">Chelsea Heights · Melbourne</span></div>
+          <div className="hp-about__image hp-reveal"><Image src={media.workshop.exterior} alt="CA Autobody workshop in Chelsea Heights" loading="lazy"  width={1600} height={900} unoptimized /><span className="hp-image-label">Chelsea Heights · Melbourne</span></div>
           <div className="hp-about__copy hp-reveal"><span className="hp-eyebrow">Trusted car smash repair in Melbourne</span><h2>Repair work that feels considered from the first call to handover.</h2><p>CA Autobody supports drivers with collision repairs across a wide range of makes and models, combining modern repair methods with practical customer service from our Chelsea Heights facility.</p><p>Whether the vehicle needs panel work, refinishing, EV-aware repairs or help navigating an insurance claim, our team keeps the process clear and focused on getting you safely back on the road.</p><Link className="hp-arrow-link" href="/about">Discover CA Autobody <ActionIcon /></Link></div>
         </div>
       </section>
@@ -99,7 +100,7 @@ export default async function HomeV4({ hero }: { hero: HomeHero }) {
       <section className="hp-approved hp-section hp-section--black">
         <div className="hp-shell hp-approved__grid">
           <div className="hp-approved__copy hp-reveal"><span className="hp-eyebrow hp-eyebrow--light">Electric vehicle repair expertise</span><h2>Specialists in the vehicles of tomorrow.</h2><p>Modern electric vehicles demand repair decisions that respect their construction, safety systems and refinishing requirements. CA Autobody supports Tesla and Zeekr owners with dedicated repair expertise.</p><div className="hp-approved__brands"><span>TESLA</span><span>ZEEKR</span></div><Button href="/services/tesla-approved-repair-centre" variant="gold" arrow>Explore approved repairs</Button></div>
-          <div className="hp-approved__media hp-reveal"><img src={media.home.evRepair} alt="Tesla at the CA Autobody workshop" loading="lazy" /><div className="hp-approved__caption"><span>EV Repair</span><strong>Tesla + Zeekr</strong></div></div>
+          <div className="hp-approved__media hp-reveal"><Image src={media.home.evRepair} alt="Tesla at the CA Autobody workshop" loading="lazy"  width={1600} height={900} unoptimized /><div className="hp-approved__caption"><span>EV Repair</span><strong>Tesla + Zeekr</strong></div></div>
         </div>
       </section>
 
@@ -107,9 +108,9 @@ export default async function HomeV4({ hero }: { hero: HomeHero }) {
         <div className="hp-shell">
           <div className="hp-studio__head hp-reveal"><div><span className="hp-eyebrow">Inside CA Autobody</span><h2>A workshop built for precise, modern repairs.</h2></div><div className="hp-studio__intro"><p>See the facility, refinishing work and repair environment behind the finished result. Clean processes, experienced technicians and the equipment needed for today’s vehicles.</p><Link className="hp-arrow-link" href="/gallery">View the full gallery <ActionIcon /></Link></div></div>
           <div className="hp-studio__grid hp-reveal">
-            <Link className="hp-studio-card hp-studio-card--feature" href="/gallery"><img src={media.workshop.floor} alt="CA Autobody workshop with repaired vehicles" loading="lazy" /><span className="hp-studio-card__shade" /><span className="hp-studio-card__meta"><small>01 · Workshop</small><strong>Built around quality repair work.</strong><b>Explore the facility <ActionIcon /></b></span></Link>
-            <Link className="hp-studio-card" href="/gallery"><img src={media.workshop.paintMixing} alt="CA Autobody paint technician preparing a vehicle finish" loading="lazy" /><span className="hp-studio-card__shade" /><span className="hp-studio-card__meta"><small>02 · Refinishing</small><strong>Precision colour and finish.</strong></span></Link>
-            <Link className="hp-studio-card" href="/gallery"><img src={media.workshop.exteriorWide} alt="CA Autobody Chelsea Heights facility" loading="lazy" /><span className="hp-studio-card__shade" /><span className="hp-studio-card__meta"><small>03 · Chelsea Heights</small><strong>Your local repair facility.</strong></span></Link>
+            <Link className="hp-studio-card hp-studio-card--feature" href="/gallery"><Image src={media.workshop.floor} alt="CA Autobody workshop with repaired vehicles" loading="lazy"  width={1600} height={900} unoptimized /><span className="hp-studio-card__shade" /><span className="hp-studio-card__meta"><small>01 · Workshop</small><strong>Built around quality repair work.</strong><b>Explore the facility <ActionIcon /></b></span></Link>
+            <Link className="hp-studio-card" href="/gallery"><Image src={media.workshop.paintMixing} alt="CA Autobody paint technician preparing a vehicle finish" loading="lazy"  width={1600} height={900} unoptimized /><span className="hp-studio-card__shade" /><span className="hp-studio-card__meta"><small>02 · Refinishing</small><strong>Precision colour and finish.</strong></span></Link>
+            <Link className="hp-studio-card" href="/gallery"><Image src={media.workshop.exteriorWide} alt="CA Autobody Chelsea Heights facility" loading="lazy"  width={1600} height={900} unoptimized /><span className="hp-studio-card__shade" /><span className="hp-studio-card__meta"><small>03 · Chelsea Heights</small><strong>Your local repair facility.</strong></span></Link>
           </div>
         </div>
       </section>

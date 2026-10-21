@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -68,7 +69,7 @@ export default function ServiceExperience({ items = fallbackItems }: { items?: S
       >
         {items.map((item, itemIndex) => (
           <article className={`hp-service-panel ${itemIndex === index ? "is-active" : ""}`} key={item.label}>
-            <img src={item.image} alt={`${item.title} at CA Autobody`} loading="lazy" />
+            <Image src={item.image} alt={`${item.title} at CA Autobody`} loading="lazy"  width={1600} height={900} unoptimized />
             <div className="hp-service-panel__overlay">
               <span>{String(itemIndex + 1).padStart(2, "0")} / {item.kicker.replace(/^\d+\s*\/\s*/, "")}</span><h3>{item.title}</h3><p>{item.copy}</p>
               <div className="hp-service-panel__actions">

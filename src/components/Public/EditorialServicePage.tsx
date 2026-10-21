@@ -211,7 +211,7 @@ export default function EditorialServicePage({ service, copy }: { service: CmsSe
   return (
     <main className={`ca-service${isTesla ? " ca-service--tesla" : ""}${isZeekr ? " ca-service--zeekr" : ""}${usesApprovedBrandLayout ? " ca-service--approved-brand" : ""}`}>
       <section className="ca-service__hero" aria-labelledby="service-heading">
-        <div className="ca-service__hero-background" aria-hidden="true"><img src={service.image} alt="" /></div>
+        <div className="ca-service__hero-background" aria-hidden="true"><Image src={service.image} alt=""  width={1600} height={900} unoptimized /></div>
         <div className="shell ca-service__hero-grid">
           <div className="ca-service__hero-info">
             <ServiceBreadcrumbs current={sourceText(copy.category)} className="ca-service__crumbs" />
@@ -225,7 +225,7 @@ export default function EditorialServicePage({ service, copy }: { service: CmsSe
             </div>
           </div>
           <div className="ca-service__hero-media" aria-hidden="true">
-            <img src={heroPanelFor(service)} alt="" fetchPriority="high" />
+            <Image src={heroPanelFor(service)} alt="" fetchPriority="high"  width={1600} height={900} unoptimized />
           </div>
         </div>
       </section>
@@ -271,7 +271,7 @@ export default function EditorialServicePage({ service, copy }: { service: CmsSe
             <div className="ca-service__contact-detail"><span>VISIT THE WORKSHOP</span><strong>7 Ashley Park Drive<br />Chelsea Heights, VIC 3196</strong></div>
           </div>
           <div className="ca-service__contact-photo">
-            <img src={media.workshop.floor} alt="CA Chelsea Autobody workshop" loading="lazy" />
+            <Image src={media.workshop.floor} alt="CA Chelsea Autobody workshop" loading="lazy"  width={1600} height={900} unoptimized />
             <div className="ca-service__contact-card">
               <p>READY TO GET STARTED?</p>
               <h3>Speak with our repair team.</h3>

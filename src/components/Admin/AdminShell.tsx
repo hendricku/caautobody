@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -112,7 +113,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   return <div className={`admin-root ${collapsed ? "admin-root--collapsed" : ""}`}>
     <aside className={`admin-sidebar ${menuOpen ? "open" : ""}`} aria-label="CMS navigation">
       <div className="admin-brand">
-        <img src={media.logo} alt="CA Chelsea Autobody" />
+        <Image src={media.logo} alt="CA Chelsea Autobody"  width={640} height={320} unoptimized />
         <span>Website Admin<small>Content workspace</small></span>
         <button className="admin-sidebar__toggle" type="button" onClick={() => setCollapsed((value) => !value)} aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}>{collapsed ? <ChevronRightRounded fontSize="small" /> : <ChevronLeftRounded fontSize="small" />}</button>
       </div>

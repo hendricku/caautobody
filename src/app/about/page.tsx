@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Button from "@/components/UI/Button";
 import type { Metadata } from "next";
 import PageHero from "@/components/Common/PageHero";
@@ -50,7 +51,7 @@ export default function AboutPage() {
       </section>
 
       <section className="about-workshop hp-reveal" aria-label="CA Autobody workshop">
-        <img src={media.workshop.floor} alt="CA Chelsea Autobody workshop in Chelsea Heights" />
+        <Image src={media.workshop.floor} alt="CA Chelsea Autobody workshop in Chelsea Heights"  width={1600} height={900} unoptimized />
       </section>
 
       <section className="about-assurances" aria-label="CA Autobody service assurances">

@@ -1,3 +1,4 @@
+import Image from "next/image";
 type ImageItem = { image: string; alt: string; label?: string };
 
 export default function BrandRepairMedia({ items }: { items: ImageItem[] }) {
@@ -9,7 +10,7 @@ export default function BrandRepairMedia({ items }: { items: ImageItem[] }) {
 
   return <section className="brand-media brand-media--folio" aria-label="Workshop and repair imagery">
     <figure className="brand-media__feature">
-      <img src={featured.image} alt={featured.alt} />
+      <Image src={featured.image} alt={featured.alt}  width={1600} height={900} unoptimized />
       <figcaption>
         <span>Workshop view</span>
         <p>{featured.alt}</p>
@@ -17,7 +18,7 @@ export default function BrandRepairMedia({ items }: { items: ImageItem[] }) {
     </figure>
     <div className="brand-media__supporting">
       {supporting.map((item) => <figure key={item.image}>
-        <img src={item.image} alt={item.alt} />
+        <Image src={item.image} alt={item.alt}  width={1600} height={900} unoptimized />
         <figcaption>
           <span>{item.label}</span>
           <p>{item.alt}</p>

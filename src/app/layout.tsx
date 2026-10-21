@@ -34,7 +34,6 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
       </head>
       <body className="home-v2">
         <GoogleTags />
