@@ -7,7 +7,7 @@ export type EnquiryAttachment = { filename: string; content: Buffer; contentType
 type EnquiryEmail = {
   enquiryId: string;
   enquiryType: "contact" | "brand-assessment";
-  brand?: "BYD" | "Lexus";
+  brand?: string;
   name: string;
   phone: string;
   email?: string;

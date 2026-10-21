@@ -114,12 +114,15 @@ function staticPresentation(slug: string): ServicePresentation {
   return { variant: "standard" };
 }
 
-function presentation(value: unknown, slug: string): ServicePresentation {
+// CMS migrations deliberately kept legacy brand copy in code. Both the public
+// renderer and the admin editor use this resolver, so older records remain
+// editable without silently writing a migration over their original row.
+export function resolveServicePresentation(value: unknown, slug: string): ServicePresentation {
   const content = record(value);
   const variant = content?.variant;
   const data = record(content?.data);
-  if (variant === "editorial" && data) return { variant, data: data as unknown as OriginalServicePage };
-  if (variant === "brand" && data) return { variant, data: data as unknown as BrandRepairContent };
+  if (variant === "editorial" && data && typeof data.title === "string") return { variant, data: data as unknown as OriginalServicePage };
+  if (variant === "brand" && data && typeof data.title === "string") return { variant, data: data as unknown as BrandRepairContent };
   if (variant === "standard") return { variant };
   return staticPresentation(slug);
 }
@@ -136,7 +139,7 @@ export function mapService(row: CmsRow): CmsServiceContent {
     image: asString(row.image_path),
     highlights: asStringArray(row.highlights),
     contentPending: Boolean(row.content_pending),
-    presentation: presentation(row.content_json, slug),
+    presentation: resolveServicePresentation(row.content_json, slug),
     placement: placement(row.content_json, slug),
   };
 }

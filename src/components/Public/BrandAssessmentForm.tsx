@@ -4,7 +4,7 @@ import { FormEvent, useState } from "react";
 import { trackAnalyticsEvent } from "@/lib/analytics/client";
 
 type BrandAssessmentFormProps = {
-  brand: "BYD" | "Lexus";
+  brand: string;
   cta: string;
   assessmentNote: string;
 };

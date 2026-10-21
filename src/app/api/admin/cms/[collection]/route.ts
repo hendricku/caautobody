@@ -5,6 +5,7 @@ import { getAdmin, sameOrigin } from "@/lib/cms/admin-server";
 import { copySlug, duplicateInput, type DuplicateCollection } from "@/lib/cms/content-duplicate";
 import { CMS_IMAGE_FORMATS, formatFromStagingPath, isSafeCmsImageReference, normaliseCmsImageReference, stagingPathFromReference } from "@/lib/cms/image-reference";
 import { consumePublicRateLimit } from "@/lib/security/public-rate-limit";
+import { resolveServicePresentation } from "@/lib/cms/public-content";
 
 const allowed = {
   blogs: { table: "cms_blog_posts", key: "slug", path: "/blog" },
@@ -69,10 +70,10 @@ function servicePlacement(value: unknown, slug: unknown) {
     sliderCta: str(configured?.sliderCta, 100),
   };
 }
-function servicePresentation(value: unknown) {
+function servicePresentation(value: unknown, slug: unknown) {
   const content = object(value);
-  if (!content) return { variant: "standard" };
-  return Object.fromEntries(Object.entries(content).filter(([key]) => key !== "placement"));
+  const withoutPlacement = content ? Object.fromEntries(Object.entries(content).filter(([key]) => key !== "placement")) : undefined;
+  return resolveServicePresentation(withoutPlacement, str(slug, 120));
 }
 function validServicePresentation(value: unknown): Record<string, unknown> | null {
   const presentation = object(value) || { variant: "standard" };
@@ -97,6 +98,7 @@ function validServicePresentation(value: unknown): Record<string, unknown> | nul
     })) return null;
   }
   if (presentation.variant === "brand") {
+    if (!str(data.brand, 80) || typeof data.brand !== "string" || data.brand.trim().length > 80) return null;
     for (const key of ["pillars", "principles", "capabilities", "process", "faqs", "media"]) if (!Array.isArray(data[key]) || data[key].length > 80) return null;
     if (!object(data.sections) || !object(data.review)) return null;
     if (![data.heroImage, data.logo].every((image) => safeImage(normaliseImage(image)))) return null;
@@ -106,7 +108,7 @@ function validServicePresentation(value: unknown): Record<string, unknown> | nul
 }
 function mapRow(collection: Collection, row: Record<string, unknown>) {
   if (collection === "blogs") return { slug: row.slug, title: row.title, date: row.display_date, category: row.category, excerpt: row.excerpt, image: row.image_path, status: row.status, blocks: row.blocks };
-  if (collection === "services") return { slug: row.slug, title: row.title, seoTitle: row.seo_title, eyebrow: row.eyebrow, intro: row.intro, body: row.body, image: row.image_path, highlights: row.highlights, contentPending: row.content_pending, presentation: servicePresentation(row.content_json), placement: servicePlacement(row.content_json, row.slug), status: row.status };
+  if (collection === "services") return { slug: row.slug, title: row.title, seoTitle: row.seo_title, eyebrow: row.eyebrow, intro: row.intro, body: row.body, image: row.image_path, highlights: row.highlights, contentPending: row.content_pending, presentation: servicePresentation(row.content_json, row.slug), placement: servicePlacement(row.content_json, row.slug), status: row.status };
   if (collection === "faqs") return { id: row.legacy_key, category: row.category, question: row.question, answer: row.answer, visible: row.is_visible, status: row.status };
   if (collection === "gallery") return { id: row.legacy_key, image: row.image_path, caption: row.caption, category: row.category, status: row.status };
   if (collection === "offers") return { slug: row.slug, title: row.title, seoTitle: row.seo_title, eyebrow: row.eyebrow, intro: row.intro, body: row.body, image: row.image_path, bullets: row.bullets, status: row.status };
@@ -223,6 +225,12 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   const cfg = config(collection); if (!cfg) return invalid();
   if (!sameOrigin(request)) return NextResponse.json({ error: "Invalid request origin" }, { status: 403 });
   const admin = await getAdmin(); if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const permitted = await consumePublicRateLimit({ request, scope: "cms-save", limit: 60, windowSeconds: 60, identity: admin.user.id, identityOnly: true });
+    if (!permitted) return NextResponse.json({ error: "Too many save requests. Please wait a minute and try again." }, { status: 429 });
+  } catch {
+    return NextResponse.json({ error: "The CMS is temporarily unavailable. Please try again." }, { status: 503 });
+  }
   const body = await request.json().catch(() => null);
   if (!body || typeof body !== "object" || !body.item || typeof body.item !== "object") return invalid();
   if (collection === "blogs") {
@@ -318,6 +326,12 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
   if (!sameOrigin(request)) return NextResponse.json({ error: "Invalid request origin" }, { status: 403 });
   const admin = await getAdmin(); if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (admin.role === "editor") return NextResponse.json({ error: "Only publishers can retire content" }, { status: 403 });
+  try {
+    const permitted = await consumePublicRateLimit({ request, scope: "cms-retire", limit: 20, windowSeconds: 60, identity: admin.user.id, identityOnly: true });
+    if (!permitted) return NextResponse.json({ error: "Too many delete requests. Please wait a minute and try again." }, { status: 429 });
+  } catch {
+    return NextResponse.json({ error: "The CMS is temporarily unavailable. Please try again." }, { status: 503 });
+  }
   const body = await request.json().catch(() => null);
   const id = str(body?.id,140); if (!id) return invalid();
   const { data, error } = await admin.client.from(cfg.table).update({ status: "retired" }).eq(cfg.key,id).select("id").maybeSingle();

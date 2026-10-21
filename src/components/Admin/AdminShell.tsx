@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type ElementType } from "react";
 import ArticleOutlined from "@mui/icons-material/ArticleOutlined";
 import BuildOutlined from "@mui/icons-material/BuildOutlined";
+import LocalShippingOutlined from "@mui/icons-material/LocalShippingOutlined";
 import ChevronLeftRounded from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRounded from "@mui/icons-material/ChevronRightRounded";
 import CollectionsOutlined from "@mui/icons-material/CollectionsOutlined";
@@ -37,7 +38,7 @@ type Viewer = { email: string; role: string };
 
 const navigation: readonly NavigationGroup[] = [
   { label: "Workspace", links: [["Dashboard", "/caautobodyadmin/dashboard", DashboardRounded]] },
-  { label: "Content", links: [["Blogs", "/caautobodyadmin/blogs", ArticleOutlined], ["Services", "/caautobodyadmin/services", BuildOutlined], ["Menu arrangement", "/caautobodyadmin/menu-arrangement", ReorderRounded], ["Offers", "/caautobodyadmin/offers", LocalOfferOutlined], ["Areas we serve", "/caautobodyadmin/areas", MapOutlined], ["Gallery", "/caautobodyadmin/gallery", CollectionsOutlined], ["FAQ", "/caautobodyadmin/faq", QuizOutlined]] },
+  { label: "Content", links: [["Blogs", "/caautobodyadmin/blogs", ArticleOutlined], ["Services", "/caautobodyadmin/services", BuildOutlined], ["Brands", "/caautobodyadmin/brands", LocalShippingOutlined], ["Menu arrangement", "/caautobodyadmin/menu-arrangement", ReorderRounded], ["Offers", "/caautobodyadmin/offers", LocalOfferOutlined], ["Areas we serve", "/caautobodyadmin/areas", MapOutlined], ["Gallery", "/caautobodyadmin/gallery", CollectionsOutlined], ["FAQ", "/caautobodyadmin/faq", QuizOutlined]] },
   { label: "Operations", links: [["Contact management", "/caautobodyadmin/contacts", ContactMailOutlined], ["Analytics", "/caautobodyadmin/analytics", AnalyticsOutlined], ["Audit log", "/caautobodyadmin/audit", HistoryOutlined]] },
   { label: "Administration", links: [["Team & access", "/caautobodyadmin/team", GroupOutlined], ["Settings", "/caautobodyadmin/settings", SettingsOutlined], ["Notes & guide", "/caautobodyadmin/guide", MenuBookOutlined]] },
 ];
@@ -60,9 +61,9 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   const activeItem = activeGroup?.links.find(([, href]) => isActive(pathname, href));
   const unreadCount = notifications.filter((item) => item.status === "new").length;
   const initials = viewer?.email ? viewer.email.slice(0, 2).toUpperCase() : "CA";
-  const newPage = (["blogs", "services", "offers", "areas", "gallery", "faq"] as const)
+  const newPage = (["blogs", "services", "brands", "offers", "areas", "gallery", "faq"] as const)
     .find((section) => pathname === `/caautobodyadmin/${section}`);
-  const newLabels: Record<string, string> = { blogs: "New article", services: "New service", offers: "New offer", areas: "New area", gallery: "New image", faq: "New FAQ" };
+  const newLabels: Record<string, string> = { blogs: "New article", services: "New service", brands: "New brand page", offers: "New offer", areas: "New area", gallery: "New image", faq: "New FAQ" };
 
   useEffect(() => {
     const closeOnEscape = (event: KeyboardEvent) => {

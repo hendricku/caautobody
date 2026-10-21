@@ -18,7 +18,9 @@ const valuesSchema = z.object({
   suburb: z.string().trim().max(160),
   service: z.string().trim().min(1).max(160),
   message: z.string().trim().max(10000),
-  brand: z.enum(["BYD", "Lexus"]).optional(),
+  // Brand pages are CMS-managed. This is still strictly bounded server-side,
+  // while allowing a newly approved manufacturer to use the same secure form.
+  brand: z.string().trim().min(1).max(80).optional(),
   vehicle: z.string().trim().max(160),
   claimStatus: z.string().trim().max(80),
   company: z.string().max(0),

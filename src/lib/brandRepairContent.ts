@@ -1,7 +1,10 @@
 import { media } from "@/lib/media";
 
 export type BrandRepairContent = {
-  brand: "BYD" | "Lexus";
+  // Future manufacturer pages use the same structured presentation. The brand
+  // name remains content, rather than a database enum that would need a schema
+  // migration whenever the business adds an approved repair partner.
+  brand: string;
   seoDescription: string;
   eyebrow: string;
   title: string;

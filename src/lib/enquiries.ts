@@ -11,7 +11,7 @@ export type ContactEnquiry = {
   message: string;
   status: EnquiryStatus;
   createdAt: string;
-  brand?: "BYD" | "Lexus";
+  brand?: string;
   vehicle?: string;
   claimStatus?: string;
   attachments?: string[];
