@@ -7,10 +7,11 @@ const styles = read("src/app/blog-article.css");
 const editor = read("src/app/caautobodyadmin/(protected)/blogs/[slug]/page.tsx");
 const defaults = read("src/lib/blogContent.ts");
 
-test("blog articles use one aligned editorial column with a readable copy measure", () => {
-  assert.match(styles, /\.article-body__content\{width:100%;max-width:760px;margin:0\}/);
-  assert.match(styles, /\.article-body\{width:min\(1120px,calc\(100vw - 96px\)\)/);
-  assert.match(styles, /\.article-body__layout\.has-rail\{display:grid;grid-template-columns:280px minmax\(0,760px\)/);
+test("blog articles use one wider editorial frame with a readable copy measure", () => {
+  assert.match(styles, /\.article-body__content\{width:100%;max-width:900px;margin:0\}/);
+  assert.match(styles, /\.article-body\{width:min\(1280px,calc\(100vw - 96px\)\)/);
+  assert.match(styles, /\.article-hero__content\{position:relative;z-index:2;width:min\(1280px,calc\(100vw - 96px\)\)/);
+  assert.match(styles, /\.article-body__layout\.has-rail\{display:grid;grid-template-columns:300px minmax\(0,900px\)/);
   assert.match(styles, /\.article-body__layout:not\(\.has-rail\) \.article-body__content\{margin-inline:0\}/);
   assert.match(styles, /\.article-body__layout:not\(\.has-rail\) \.article-body__image\{width:100%;margin-inline:0;transform:none\}/);
   assert.match(styles, /\.article-body__image img\{display:block;width:100%;aspect-ratio:16\/9;object-fit:cover\}/);
