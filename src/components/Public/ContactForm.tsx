@@ -17,11 +17,13 @@ export default function ContactForm({ suburbs, serviceOptions }: { suburbs: stri
   const [suburbListOpen, setSuburbListOpen] = useState(false);
   const [activeSuburbIndex, setActiveSuburbIndex] = useState(0);
   const suburbInput = useRef<HTMLInputElement>(null);
+  // Prefix matching keeps a 341-suburb list fast and predictable for visitors.
   const matchingSuburbs = useMemo(() => {
     const query = suburbQuery.trim().toLocaleLowerCase("en-AU");
     return query ? suburbs.filter((suburb) => suburb.toLocaleLowerCase("en-AU").startsWith(query)) : suburbs;
   }, [suburbQuery, suburbs]);
   const suburbOptions = useMemo(() => [...matchingSuburbs, otherSuburb], [matchingSuburbs]);
+  // These arrive from published CMS services only, so drafts never become public form choices.
   const serviceGroups = useMemo(() => ({
     services: serviceOptions.filter((option) => option.group === "Services"),
     brands: serviceOptions.filter((option) => option.group === "Brand repairs"),
