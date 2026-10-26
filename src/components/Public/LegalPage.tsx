@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Icon from "@/components/UI/Icon";
 
 export type LegalSection = {
   id: string;
@@ -32,18 +31,14 @@ export default function LegalPage({ title, eyebrow, description, sections, count
           <a href="tel:+61397727411">03 9772 7411</a>
         </aside>
         <article className="ca-legal__article" aria-label={`${title} details`}>
-          {sections.map((section, index) => (
-            <details id={section.id} key={section.id} className="ca-legal__section" open={index === 0}>
-              <summary>
-                <span className="ca-legal__section-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-                <span className="ca-legal__section-title">{section.title}</span>
-                <span className="ca-legal__section-toggle" aria-hidden="true"><Icon name="add" /></span>
-              </summary>
+          {sections.map((section) => (
+            <section id={section.id} key={section.id} className="ca-legal__section" aria-labelledby={`${section.id}-heading`}>
+              <h2 id={`${section.id}-heading`}>{section.title}</h2>
               <div className="ca-legal__section-content">
                 {section.paragraphs?.map((paragraph, paragraphIndex) => <p key={paragraphIndex}>{paragraph}</p>)}
                 {section.points?.length ? <ul>{section.points.map((point, pointIndex) => <li key={pointIndex}>{point}</li>)}</ul> : null}
               </div>
-            </details>
+            </section>
           ))}
         </article>
       </div>

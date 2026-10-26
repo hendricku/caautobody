@@ -79,54 +79,39 @@
 .ca-visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 .faq-accordion__heading .faq-accordion__original-intro{margin-top:17px}
 
-/* Legal pages and site information. */
+/* Legal pages: one quiet, complete document. All policy text is visible without interaction. */
 .ca-legal{background:#fff;color:#171613}
 .ca-legal__hero{background:#171613;color:#fff;padding:clamp(116px,14vw,200px) 0 clamp(72px,8vw,110px);position:relative;overflow:hidden}
 .ca-legal__hero:after{content:"";position:absolute;right:-12%;top:-90%;width:65%;height:280%;border-left:1px solid rgba(198,152,76,.19);transform:rotate(24deg);pointer-events:none}
 .ca-legal__eyebrow{font-size:11px;font-weight:800;letter-spacing:.2em;color:#c99a52;text-transform:uppercase}
 .ca-legal__hero h1{font-size:clamp(48px,6vw,86px);line-height:1.05;letter-spacing:-.055em;margin:23px 0}
 .ca-legal__hero p{font-size:16px;line-height:1.8;color:#d8d2c9;max-width:600px}
-.ca-legal__body{display:grid;grid-template-columns:minmax(200px,.34fr) minmax(0,1fr);gap:clamp(55px,9vw,145px);padding:clamp(72px,8vw,130px) 0}
-.ca-legal__aside{position:sticky;top:120px;align-self:start;border-top:1px solid #dfd7cc;padding-top:23px;font-size:12px}
-.ca-legal__aside strong{display:block;letter-spacing:.14em;font-size:10px;color:#936b32;margin-bottom:20px}
-.ca-legal__aside a{display:block;color:#5d564e;padding:12px 0;border-bottom:1px solid #eee8e0}
+.ca-legal__body{display:grid;grid-template-columns:minmax(185px,.26fr) minmax(0,900px);justify-content:space-between;gap:clamp(42px,7vw,108px);padding-block:clamp(58px,6vw,94px)}
+.ca-legal__aside{position:sticky;top:108px;align-self:start;border-top:1px solid #dfd7cc;padding-top:18px;font-size:12px}
+.ca-legal__aside strong{display:block;margin-bottom:20px;color:#936b32;font-size:10px;letter-spacing:.14em}
+.ca-legal__aside p{margin:0 0 17px;color:#5d564e;font-size:13px;line-height:1.65}
+.ca-legal__aside a{display:block;padding:12px 0;border-bottom:1px solid #eee8e0;color:#5d564e;font-size:12px}
 .ca-legal__aside a:hover{color:#9b6d2b}
-.ca-legal__article{max-width:820px}
-.ca-legal__article section{scroll-margin-top:115px;border-top:1px solid #d5cec4;padding:32px 0 46px}
-.ca-legal__article section:first-child{border-top:0;padding-top:0}
-.ca-legal__article h2{font-size:clamp(24px,2.5vw,35px);line-height:1.2;letter-spacing:-.035em;margin:0 0 18px}
-.ca-legal__article p,.ca-legal__article li{font-size:15px;line-height:1.9;color:#514c45}
-.ca-legal__article p{margin:0 0 16px}
-.ca-legal__article ul{padding-left:21px}
+.ca-legal__article{width:100%;max-width:900px}
+.ca-legal__section{scroll-margin-top:115px;border-top:1px solid #d5cec4;padding:clamp(30px,3vw,42px) 0 clamp(38px,4vw,56px)}
+.ca-legal__section:first-child{border-top:0;padding-top:0}
+.ca-legal__section:last-child{border-bottom:1px solid #d5cec4}
+.ca-legal__section h2{margin:0 0 18px;color:#191714;font-size:clamp(24px,2.5vw,35px);letter-spacing:-.035em;line-height:1.2}
+.ca-legal__section-content{max-width:760px}
+.ca-legal__section-content p,.ca-legal__section-content li{color:#514c45;font-size:15px;line-height:1.82}
+.ca-legal__section-content p{margin:0 0 16px}.ca-legal__section-content p:last-child{margin-bottom:0}
+.ca-legal__section-content ul{margin:18px 0 0;padding-left:21px}
 .ca-legal__article a{color:#855f2b;text-decoration:underline;text-underline-offset:3px}
 .ca-legal__end{padding:43px 0;background:#eee8dd}
-.ca-legal__end-inner{display:flex;justify-content:space-between;gap:24px;align-items:center}
-.ca-legal__end h2{font-size:clamp(25px,3vw,40px);margin:0}
-.ca-legal__end a{font-size:12px;font-weight:800;border-bottom:1px solid #846c48;padding-bottom:7px}
+.ca-legal__end-inner{display:flex;align-items:center;justify-content:space-between;gap:24px}
+.ca-legal__end h2{margin:0;font-size:clamp(25px,3vw,40px)}
+.ca-legal__end a{border-bottom:1px solid #846c48;padding-bottom:7px;font-size:12px;font-weight:800}
 .hp-footer__legal{display:flex;gap:clamp(16px,2.8vw,40px);align-items:center;flex-wrap:wrap}
 .hp-footer__legal a{color:#c3bbaf;font-size:11px;transition:color .2s}
 .hp-footer__legal a:hover{color:#e5b976}
-@media(max-width:820px){.ca-legal__body{grid-template-columns:1fr;gap:38px}.ca-legal__aside{position:static}.ca-legal__end-inner{align-items:flex-start;flex-direction:column}.hp-footer__legal{gap:14px 22px}}
+@media(max-width:1020px){.ca-legal__body{grid-template-columns:1fr;gap:38px}.ca-legal__aside{position:static;max-width:560px}.ca-legal__article{max-width:860px}.ca-legal__end-inner{align-items:flex-start;flex-direction:column}.hp-footer__legal{gap:14px 22px}}
 @media(prefers-reduced-motion:reduce){.ca-service .ca-service__hero-media>img{transition:none}}
 
-/* Legal pages stay brief to scan while retaining the complete policy text. */
-.ca-legal__body{grid-template-columns:minmax(185px,.26fr) minmax(0,1fr);gap:clamp(42px,7vw,108px);padding-block:clamp(58px,6vw,94px)}
-.ca-legal__aside{top:108px;padding-top:18px}
-.ca-legal__aside p{margin:0 0 17px;color:#5d564e;font-size:13px;line-height:1.65}
-.ca-legal__aside a{font-size:12px}
-.ca-legal__article{max-width:900px}
-.ca-legal__section{border-top:1px solid #d5cec4}
-.ca-legal__section:last-child{border-bottom:1px solid #d5cec4}
-.ca-legal__section summary{display:grid;grid-template-columns:34px minmax(0,1fr) 30px;align-items:center;gap:15px;min-height:72px;padding:17px 0;cursor:pointer;list-style:none;color:#191714}
-.ca-legal__section summary::-webkit-details-marker{display:none}
-.ca-legal__section-index{color:#936b32;font-size:10px;font-weight:800;letter-spacing:.12em}
-.ca-legal__section-title{font-size:clamp(17px,1.55vw,22px);font-weight:700;letter-spacing:-.03em;line-height:1.25}
-.ca-legal__section-toggle{display:grid;place-items:center;width:28px;height:28px;border:1px solid #af9060;color:#805c28;font-size:20px;font-weight:400;line-height:1;transition:transform .2s}
-.ca-legal__section[open] .ca-legal__section-toggle{transform:rotate(45deg)}
-.ca-legal__section-content{max-width:760px;padding:0 50px 28px 49px}
-.ca-legal__section-content p,.ca-legal__section-content li{font-size:14px;line-height:1.78}
-.ca-legal__section-content p:last-child{margin-bottom:0}
-.ca-legal__section-content ul{margin:18px 0 0;padding-left:19px}
 
 /* Shown only in the compact drawer; desktop retains its editorial introduction link. */
 .hp-mobile-submenu-start{display:none}
@@ -164,8 +149,7 @@
   .ca-legal__hero h1{font-size:clamp(40px,10vw,54px);margin:14px 0}
   .ca-legal__body{padding-block:46px 62px;gap:30px}
   .ca-legal__aside{border:0;padding:0}
-  .ca-legal__section summary{grid-template-columns:28px minmax(0,1fr) 28px;gap:11px;min-height:64px;padding-block:14px}
-  .ca-legal__section-content{padding:0 0 23px}
+  .ca-legal__section{padding-block:28px 38px}
   .ca-legal__section-content p,.ca-legal__section-content li{font-size:14px;line-height:1.72}
 }
 
