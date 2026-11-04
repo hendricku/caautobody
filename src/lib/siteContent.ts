@@ -1,6 +1,7 @@
 import type { BlogContent, FAQContent, GalleryContent, LocationContent, OfferContent, ServiceContent } from "@/types/content";
 import { originalServiceCopy } from "@/lib/originalServiceCopy";
 import { insurerLogos, media, vehicleBrandLogos } from "@/lib/media";
+import { specialistBrandContent } from "@/lib/specialistBrandContent";
 
 export const site = {
   name: "CA Chelsea Autobody",
@@ -9,6 +10,27 @@ export const site = {
   email: "info@caautobody.com.au",
   address: "7 Ashley Park Drive, Chelsea Heights, VIC 3196",
 };
+
+// The database migration publishes these pages in production. Keeping the
+// same records in the local fallback means previews and local development do
+// not lose the four new Brand routes when Supabase environment variables are
+// unavailable.
+const specialistBrandPageDetails: Record<string, Pick<ServiceContent, "title" | "seoTitle">> = {
+  "prestige-vehicle-repairs": { title: "Prestige Vehicle Repairs", seoTitle: "Prestige Vehicle Repairs | CA Autobody Melbourne" },
+  "fleet-vehicle-repairs": { title: "Fleet Vehicle Repairs", seoTitle: "Fleet Vehicle Repairs | CA Autobody Melbourne" },
+  "commercial-vehicle-repairs": { title: "Commercial Vehicle Repairs", seoTitle: "Commercial Vehicle Repairs | CA Autobody Melbourne" },
+  "electric-vehicle-repairs": { title: "Electric Vehicle Repairs", seoTitle: "Electric Vehicle Repairs | CA Autobody Melbourne" },
+};
+
+const specialistBrandServices: ServiceContent[] = Object.entries(specialistBrandContent).map(([slug, content]) => ({
+  slug,
+  ...specialistBrandPageDetails[slug],
+  eyebrow: content.eyebrow,
+  intro: content.intro.split("\n\n")[0] || "",
+  body: content.intro.split("\n\n").filter(Boolean),
+  image: content.heroImage,
+  highlights: content.pillars.map((pillar) => pillar.title),
+}));
 
 export const services: ServiceContent[] = [
   {
@@ -130,7 +152,8 @@ export const services: ServiceContent[] = [
     ],
     image: media.brandRepair.lexusHero,
     highlights: ["Approved Lexus Repairer", "Genuine OEM Lexus parts", "ADAS, structural and precision refinishing capability", "Claim assistance, towing and loan vehicle options"]
-  }
+  },
+  ...specialistBrandServices,
 ];
 
 const locationMapData: Record<string, Pick<LocationContent, "coordinates" | "mapDescription">> = {

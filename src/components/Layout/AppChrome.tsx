@@ -14,7 +14,9 @@ type ServiceNavigation = Awaited<ReturnType<typeof getPublishedServiceNavigation
 export default function AppChrome({ children, siteSettings, serviceNavigation }: { children: React.ReactNode; siteSettings: Settings; serviceNavigation: ServiceNavigation }) {
   const pathname = usePathname();
   const admin = pathname.startsWith("/caautobodyadmin");
-  if (admin) return <>{children}</>;
+  // Paid-ads landing pages have their own focused header and footer.
+  const isAdsLandingPage = pathname.startsWith("/offers/");
+  if (admin || isAdsLandingPage) return <>{children}</>;
 
   const showClosingCTA = pathname !== "/thank-you";
 

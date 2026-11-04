@@ -211,27 +211,24 @@ export default function SiteHeader({ siteSettings, serviceNavigation = defaultSe
           <div {...groupProps("brands")}>
             <button className="hp-nav__link hp-nav__trigger" type="button" aria-expanded={openGroup === "brands"} aria-controls="hp-mega-brands hp-mobile-brands" onClick={() => toggleGroup("brands")}>Brands {chevron}</button>
             <div className="hp-mobile-brand-links" id="hp-mobile-brands" aria-label="Brand repair services" aria-hidden={openGroup !== "brands"}>
-              <Link href="/services/tesla-approved-repair-centre">Tesla Repair</Link>
-              <Link href="/services/services-zeekr-approved-repairer-melbourne">Zeekr Repair</Link>
-              <Link href="/services/byd-approved-repairer-melbourne">BYD Repair</Link>
-              <Link href="/services/lexus-approved-body-shop-melbourne">Lexus Repair</Link>
+              <section><p>Approved repairers</p><Link href="/services/tesla-approved-repair-centre">Tesla Repair</Link><Link href="/services/services-zeekr-approved-repairer-melbourne">Zeekr Repair</Link><Link href="/services/byd-approved-repairer-melbourne">BYD Repair</Link><Link href="/services/lexus-approved-body-shop-melbourne">Lexus Repair</Link></section>
+              <section><p>Specialist vehicle repairs</p><Link href="/services/prestige-vehicle-repairs">Prestige Vehicles</Link><Link href="/services/fleet-vehicle-repairs">Fleet Vehicles</Link><Link href="/services/commercial-vehicle-repairs">Commercial Vehicles</Link><Link href="/services/electric-vehicle-repairs">Electric Vehicles</Link></section>
             </div>
             <div className="hp-mega hp-mega--brands" id="hp-mega-brands" aria-hidden={openGroup !== "brands"}>
-              <div className="hp-mega__tray">
-                <div className="hp-brand-features">
-                  <Link className="hp-brand-feature" href="/services/tesla-approved-repair-centre">
-                <span className="hp-kicker">Approved Repairer</span><strong>Tesla</strong><small>Specialist collision repair for Tesla vehicles.</small><b>Explore Tesla repair <ActionIcon /></b>
-              </Link>
-              <Link className="hp-brand-feature" href="/services/services-zeekr-approved-repairer-melbourne">
-                <span className="hp-kicker">Approved Repairer</span><strong>Zeekr</strong><small>Repair support for modern electric vehicle construction.</small><b>Explore Zeekr repair <ActionIcon /></b>
-              </Link>
-              <Link className="hp-brand-feature" href="/services/byd-approved-repairer-melbourne">
-                <span className="hp-kicker">Approved Repairer</span><strong>BYD</strong><small>Approved collision repair support for BYD vehicles.</small><b>Explore BYD repair <ActionIcon /></b>
-              </Link>
-              <Link className="hp-brand-feature" href="/services/lexus-approved-body-shop-melbourne">
-                <span className="hp-kicker">Approved Repairer</span><strong>Lexus</strong><small>Approved collision repair support for Lexus vehicles.</small><b>Explore Lexus repair <ActionIcon /></b>
-              </Link>
-                </div>
+              <div className="hp-mega__tray hp-mega__tray--brands">
+                <div className="hp-mega__intro hp-mega__intro--brands"><span className="hp-kicker">Vehicle repair expertise</span><h2>Care for every vehicle.</h2><p>Explore our approved repairers and specialist vehicle services.</p><Link href="/services">Explore repair services <ActionIcon /></Link></div>
+                <div className="hp-brand-directory"><section className="hp-brand-directory__group"><p>Approved repairers</p><div>
+                  <Link href="/services/tesla-approved-repair-centre"><strong>Tesla</strong><span>Approved body shop repairs</span><ActionIcon /></Link>
+                  <Link href="/services/services-zeekr-approved-repairer-melbourne"><strong>Zeekr</strong><span>Authorised EV repair support</span><ActionIcon /></Link>
+                  <Link href="/services/byd-approved-repairer-melbourne"><strong>BYD</strong><span>Approved collision repairs</span><ActionIcon /></Link>
+                  <Link href="/services/lexus-approved-body-shop-melbourne"><strong>Lexus</strong><span>Approved body shop repairs</span><ActionIcon /></Link>
+                </div></section>
+                <section className="hp-brand-directory__group"><p>Specialist vehicle repairs</p><div>
+                  <Link href="/services/prestige-vehicle-repairs"><strong>Prestige</strong><span>Exceptional vehicles, exceptional care</span><ActionIcon /></Link>
+                  <Link href="/services/fleet-vehicle-repairs"><strong>Fleet</strong><span>Repair support that keeps business moving</span><ActionIcon /></Link>
+                  <Link href="/services/commercial-vehicle-repairs"><strong>Commercial</strong><span>Capability for bigger vehicles</span><ActionIcon /></Link>
+                  <Link href="/services/electric-vehicle-repairs"><strong>Electric vehicles</strong><span>Specialist knowledge for modern EVs</span><ActionIcon /></Link>
+                </div></section></div>
                 <div className="hp-brand-list"><span>All makes &amp; models <i aria-hidden="true">·</i> Prestige brands</span><p>Porsche · BMW · Volkswagen · Audi · Mercedes-Benz · Subaru · Honda · Ford · Mazda · Hyundai · Kia and more.</p></div>
               </div>
             </div>

@@ -1,11 +1,12 @@
 import { createClient } from "@supabase/supabase-js";
 import { cache } from "react";
 import { brandRepairContent, type BrandRepairContent } from "@/lib/brandRepairContent";
+import { youtubeVideoId } from "@/lib/homepage-video";
 import { getEditorialServiceCopy, type OriginalServicePage } from "@/lib/originalServiceCopy";
 import { blogs, faqs, gallery, locations, offers, services } from "@/lib/siteContent";
 import { media } from "@/lib/media";
 import { asServiceArrangement, orderByPreference, SERVICE_ARRANGEMENT_KEY } from "@/lib/cms/service-arrangement";
-import type { BlogContent, FAQContent, GalleryContent, LocationContent, OfferContent, ServiceContent } from "@/types/content";
+import type { BlogContent, FAQContent, GalleryContent, LocationContent, OfferContent, OfferSection, ServiceContent } from "@/types/content";
 
 type PublicationStatus = "draft" | "published" | "retired";
 
@@ -59,6 +60,10 @@ const carouselDefaults: Record<string, Omit<ServiceCarouselItem, "href">> = {
   "services-zeekr-approved-repairer-melbourne": { label: "Zeekr Repair", kicker: "Zeekr", title: "Zeekr Repair", image: media.heroPanels.zeekr, copy: "Approved repair support for Zeekr vehicles, with careful assessment, accurate colour matching and modern EV repair procedures.", cta: "Explore Zeekr Repair" },
   "byd-approved-repairer-melbourne": { label: "BYD Repair", kicker: "BYD", title: "BYD Repair", image: media.brandRepair.bydHero, copy: "Approved repair support for BYD vehicles, with EV-aware assessment, genuine parts planning and manufacturer-aligned procedures.", cta: "Explore BYD Repair" },
   "lexus-approved-body-shop-melbourne": { label: "Lexus Repair", kicker: "Lexus", title: "Lexus Repair", image: media.brandRepair.lexusHero, copy: "Approved Lexus collision repair with careful body accuracy, refinishing and genuine parts planning.", cta: "Explore Lexus Repair" },
+  "prestige-vehicle-repairs": { label: "Prestige Vehicles", kicker: "Specialist Repairs", title: "Prestige Vehicle Repairs", image: "/images/prestige.webp", copy: "Exceptional vehicles receive exceptional care, quality workmanship and factory-aligned repair procedures.", cta: "Explore Prestige Repairs" },
+  "fleet-vehicle-repairs": { label: "Fleet Vehicles", kicker: "Business Repair Support", title: "Fleet Vehicle Repairs", image: "/images/fleet.webp", copy: "A streamlined repair process, clear communication and dedicated service to minimise downtime.", cta: "Explore Fleet Repairs" },
+  "commercial-vehicle-repairs": { label: "Commercial Vehicles", kicker: "Specialist Facilities", title: "Commercial Vehicle Repairs", image: "/images/Commercial.webp", copy: "Purpose-built repair capability for larger commercial vehicles, high-roof vans and light commercial vehicles.", cta: "Explore Commercial Repairs" },
+  "electric-vehicle-repairs": { label: "Electric Vehicles", kicker: "EV Repair Expertise", title: "Electric Vehicle Repairs", image: "/images/electric%20vehicles.webp", copy: "Specialist EV knowledge and advanced technology for a wide range of makes and models.", cta: "Explore EV Repairs" },
   "prestige-brands": { label: "Prestige Brands", kicker: "Approved Expertise", title: "Prestige Brands", image: media.workshop.exteriorWide, copy: "Explore the services we offer for all prestige brands in all makes and models", cta: "All Services" },
   "panel-beating": { label: "Panel Beating", kicker: "Body Repair", title: "Panel Beating", image: media.service.panelBeating, copy: "Precision panel restoration for cosmetic damage through to more involved collision repairs.", cta: "Explore Panel Beating" },
   "spray-painting": { label: "Spray Painting", kicker: "Refinishing", title: "Spray Painting", image: media.service.sprayPainting, copy: "Professional refinishing with careful preparation, colour matching and controlled application.", cta: "Explore Spray Painting" },
@@ -158,7 +163,20 @@ export function mapOffer(row: CmsRow): OfferContent {
   return {
     slug: asString(row.slug), title: asString(row.title), seoTitle: asString(row.seo_title), eyebrow: asString(row.eyebrow),
     intro: asString(row.intro), body: asStringArray(row.body), image: asString(row.image_path), bullets: asStringArray(row.bullets),
+    sections: offerSections(row.content_json),
   };
+}
+
+function offerSections(value: unknown): OfferSection[] | undefined {
+  const raw = record(value)?.sections;
+  if (!Array.isArray(raw)) return undefined;
+  const sections = raw.filter((entry): entry is Record<string, unknown> => Boolean(record(entry))).map((entry, index) => ({
+    id: asString(entry.id, `section-${index}`),
+    type: (["editorial", "steps", "faq", "cta"] as const).includes(entry.type as "editorial" | "steps" | "faq" | "cta") ? entry.type as OfferSection["type"] : "editorial",
+    eyebrow: asString(entry.eyebrow), title: asString(entry.title), copy: asString(entry.copy), image: asString(entry.image), imageAlt: asString(entry.imageAlt),
+    items: Array.isArray(entry.items) ? entry.items.slice(0, 20).map((item) => { const value = record(item); return { title: asString(value?.title), copy: asString(value?.copy) }; }).filter((item) => item.title) : [],
+  })).filter((section) => section.title);
+  return sections.length ? sections : undefined;
 }
 
 function mapBlog(row: CmsRow): BlogContent {
@@ -213,6 +231,18 @@ export const getPublishedServiceNavigation = cache(async (): Promise<ServiceNavi
     .map((service) => ({ slug: service.slug, label: service.placement.navigationLabel || service.title, summary: service.placement.navigationSummary || service.intro }));
 });
 
+const editorialHeroPanels: Record<string, string> = {
+  "accident-assistance": media.heroPanels.accident,
+  "panel-beating": media.heroPanels.panelBeating,
+  "paintless-dent-removal": media.heroPanels.paintlessDent,
+  "replacement-vehicles": media.heroPanels.replacementVehicles,
+  "spray-painting": media.heroPanels.sprayPainting,
+  "tesla-approved-repair-centre": media.heroPanels.tesla,
+  "services-zeekr-approved-repairer-melbourne": media.heroPanels.zeekr,
+  "byd-approved-repairer-melbourne": media.heroPanels.byd,
+  "lexus-approved-body-shop-melbourne": media.heroPanels.lexus,
+};
+
 export const getPublishedServiceCarousel = cache(async (): Promise<ServiceCarouselItem[]> => {
   const [published, arrangement] = await Promise.all([getPublishedServices(), getPublishedServiceArrangement()]);
   const order = Object.keys(carouselDefaults);
@@ -224,7 +254,11 @@ export const getPublishedServiceCarousel = cache(async (): Promise<ServiceCarous
         label: service.placement.sliderLabel || fallback?.label || service.title,
         kicker: service.placement.sliderKicker || fallback?.kicker || service.eyebrow || "CA Autobody service",
         title: service.title || fallback?.title || "",
-        image: service.image || fallback?.image || "",
+        image: service.presentation?.variant === "brand"
+          ? service.presentation.data.rightImage || (service.presentation.data.brand === "BYD" ? media.heroPanels.byd : service.presentation.data.brand === "Lexus" ? media.heroPanels.lexus : service.presentation.data.heroImage) || service.image || fallback?.image || ""
+          : service.presentation?.variant === "editorial"
+            ? service.presentation.data.rightImage || editorialHeroPanels[service.slug] || service.image || fallback?.image || ""
+            : service.image || fallback?.image || "",
         copy: service.placement.sliderCopy || fallback?.copy || service.intro,
         href: `/services/${service.slug}`,
         cta: service.placement.sliderCta || fallback?.cta || `Explore ${service.title}`,
@@ -233,7 +267,7 @@ export const getPublishedServiceCarousel = cache(async (): Promise<ServiceCarous
     });
   // Keep the existing Prestige directory slide until a published service with
   // that slug exists. A future CMS entry then replaces this static fallback.
-  if (!configured.some((item) => item.href === "/services/prestige-brands") &&
+  if (!configured.some((item) => item.href === "/services/prestige-brands" || item.href === "/services/prestige-vehicle-repairs") &&
       (!arrangement || arrangement.slider.includes("prestige-brands"))) {
     const prestige = carouselDefaults["prestige-brands"];
     configured.push({ ...prestige, href: "/services", sourceIndex: 4 });
@@ -301,7 +335,27 @@ export const getPublishedHomeHero = cache(async () => {
   };
 });
 
-export const getPublishedServiceBySlug = cache(async (slug: string) => (await getPublishedServices()).find((item) => item.slug === slug));
+export const getPublishedHomeVideo = cache(async () => {
+  const client = publicClient();
+  if (!client) return "";
+  const { data, error } = await client.from("cms_page_sections").select("content").eq("page_key", "home").eq("section_key", "about-video").eq("status", "published").maybeSingle();
+  return error ? "" : youtubeVideoId(record(data?.content)?.videoId) || "";
+});
+
+export const getPublishedServiceBySlug = cache(async (slug: string) => {
+  const published = (await getPublishedServices()).find((item) => item.slug === slug);
+  if (published) return published;
+
+  // The four specialist Brand pages are seeded by a migration in production.
+  // Retain a development-only fallback so their routes can be reviewed locally
+  // before that migration is applied. Production never uses this path, keeping
+  // the database publication status authoritative for public visibility.
+  if (process.env.NODE_ENV !== "development" || !brandRepairContent[slug]) return undefined;
+  const fallback = services.find((service) => service.slug === slug);
+  return fallback
+    ? { ...fallback, presentation: staticPresentation(slug), placement: placement(undefined, slug) }
+    : undefined;
+});
 export const getPublishedLocationBySlug = cache(async (slug: string) => (await getPublishedLocations()).find((item) => item.slug === slug));
 export const getPublishedOfferBySlug = cache(async (slug: string) => (await getPublishedOffers()).find((item) => item.slug === slug));
 export const getPublishedBlogBySlug = cache(async (slug: string) => (await getPublishedBlogs()).find((item) => item.slug === slug));

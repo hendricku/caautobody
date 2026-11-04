@@ -1,0 +1,119 @@
+/* Final offer overrides kept separate so paid ads stay aligned with the public site. */
+.ads-section--faq{background:#e5ded1;color:var(--ink)}
+.ads-section--faq .ads-section-heading>span{color:#544d44}
+.ads-section--faq .ads-section-heading{margin-bottom:clamp(28px,4vw,48px)}
+body:has(.ads-page){background:#0b0b0b}
+
+/* Keep the FAQ as one readable editorial column instead of splitting its label
+   and headline across the width of the page. */
+.ads-section--faq .ads-faq .ads-section-heading{
+  display:block;
+  max-width:760px;
+  padding-bottom:28px;
+}
+
+.ads-section--faq .ads-faq .ads-section-heading h2{
+  max-width:680px;
+  font-size:clamp(2.25rem,4vw,4rem);
+}
+
+/* The contact card is information, not a CTA. Reset the global offer-link
+   button treatment so its email sits flush with the other contact details. */
+.ads-final aside a{
+  display:block;
+  min-height:0;
+  margin:0 0 21px;
+  padding:0;
+  border:0;
+  color:#fff;
+  font-size:14px;
+  font-weight:700;
+  line-height:1.45;
+  text-align:left;
+  transform:none!important;
+}
+
+.ads-final aside a:hover{
+  color:var(--gold-2);
+  text-decoration:underline;
+}
+
+/* A compact editorial proof rail gives the hero room to breathe. It is a
+   supporting summary, not a second hero or a boxed feature grid. */
+.ads-proof-section{
+  background:#f2ede5;
+  border-bottom:1px solid var(--line);
+}
+
+.ads-proof-section .ads-shell{
+  padding-block:clamp(24px,3vw,42px);
+}
+
+.ads-proof-section .ads-proof{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:0;
+}
+
+.ads-proof-section .ads-proof article{
+  min-height:72px;
+  padding:4px clamp(18px,2.5vw,40px);
+  border-left:1px solid #cfc5b6;
+}
+
+.ads-proof-section .ads-proof article:first-child{
+  padding-left:0;
+  border-left:0;
+}
+
+.ads-proof-section .ads-proof article:last-child{
+  padding-right:0;
+}
+
+.ads-proof-section .ads-proof strong{
+  display:block;
+  margin-bottom:8px;
+  color:#946a2a;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.14em;
+}
+
+.ads-proof-section .ads-proof p{
+  max-width:225px;
+  margin:0;
+  color:#59534b;
+  font-size:13px;
+  line-height:1.5;
+}
+
+@media (max-width: 900px){
+  .ads-proof-section .ads-proof{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    row-gap:22px;
+  }
+
+  .ads-proof-section .ads-proof article:nth-child(3){
+    padding-left:0;
+    border-left:0;
+  }
+}
+
+@media (max-width: 600px){
+  .ads-proof-section .ads-proof{
+    grid-template-columns:1fr;
+    row-gap:0;
+  }
+
+  .ads-proof-section .ads-proof article,
+  .ads-proof-section .ads-proof article:nth-child(3){
+    min-height:0;
+    padding:18px 0;
+    border-top:1px solid #d9d0c3;
+    border-left:0;
+  }
+
+  .ads-proof-section .ads-proof article:first-child{
+    border-top:0;
+  }
+}

@@ -5,10 +5,12 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import CmsImageField from "@/components/Admin/CmsImageField";
+import OfferSectionBuilder from "@/components/Admin/OfferSectionBuilder";
 import { useCmsCollection, type CmsCollection } from "@/lib/cms/useCmsCollection";
+import type { OfferSection } from "@/types/content";
 
 type Kind = Extract<CmsCollection, "offers" | "areas">;
-type Item = { slug: string; title?: string; name?: string; seoTitle: string; eyebrow?: string; intro: string; body: string[]; image: string; bullets?: string[]; coordinates?: [number, number]; mapDescription?: string; status?: "draft" | "published" | "retired" };
+type Item = { slug: string; title?: string; name?: string; seoTitle: string; eyebrow?: string; intro: string; body: string[]; image: string; bullets?: string[]; sections?: OfferSection[]; coordinates?: [number, number]; mapDescription?: string; status?: "draft" | "published" | "retired" };
 const blank = (): Item => ({ slug: "", title: "", name: "", seoTitle: "", eyebrow: "", intro: "", image: "", body: [], bullets: [], coordinates: [0, 0], mapDescription: "", status: "draft" });
 const label = (kind: Kind) => kind === "offers" ? "Offer" : "Area";
 const slugFrom = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -28,7 +30,7 @@ export default function AdminStructuredEditor({ collection, slug }: { collection
   useEffect(() => {
     if (!loaded && (record || (!slug && ready))) {
       const next = record || blank();
-      setForm({ ...next, body: [...next.body], bullets: [...(next.bullets || [])], coordinates: [...(next.coordinates || [0, 0])] as [number, number] });
+      setForm({ ...next, body: [...next.body], bullets: [...(next.bullets || [])], sections: [...(next.sections || [])], coordinates: [...(next.coordinates || [0, 0])] as [number, number] });
       setLoaded(true);
     }
   }, [loaded, ready, record, slug]);
@@ -80,6 +82,7 @@ export default function AdminStructuredEditor({ collection, slug }: { collection
         <label>Body paragraphs <small>Use a blank line between paragraphs.</small><textarea rows={8} value={form.body.join("\n\n")} onChange={(event) => setForm({ ...form, body: event.target.value.split(/\n\s*\n/) })} /></label>
         {collection === "offers" ? <><label>Section label<input value={form.eyebrow || ""} onChange={(event) => setForm({ ...form, eyebrow: event.target.value })} /></label><label>Key points <small>One per line.</small><textarea rows={5} value={(form.bullets || []).join("\n")} onChange={(event) => setForm({ ...form, bullets: event.target.value.split("\n") })} /></label></> : <><label>Map description<textarea rows={4} value={form.mapDescription || ""} onChange={(event) => setForm({ ...form, mapDescription: event.target.value })} /></label><div className="admin-form-row"><label>Latitude<input type="number" step="any" value={form.coordinates?.[0] ?? 0} onChange={(event) => setForm({ ...form, coordinates: [Number(event.target.value), form.coordinates?.[1] ?? 0] })} /></label><label>Longitude<input type="number" step="any" value={form.coordinates?.[1] ?? 0} onChange={(event) => setForm({ ...form, coordinates: [form.coordinates?.[0] ?? 0, Number(event.target.value)] })} /></label></div></>}
       </section>
+      {collection === "offers" ? <OfferSectionBuilder value={form.sections || []} onChange={(sections) => { setDirty(true); setForm({ ...form, sections }); }} /> : null}
     </div><aside className="admin-editor__aside"><section className="admin-editor__panel"><h2>Publish</h2><p>{canPublish ? "Save a Draft while work is in progress. Publish only when the page is approved." : "Your role can save drafts. A Publisher or Admin can make the page public."}</p><div className="admin-editor__actions"><button className="admin-editor__secondary" type="button" disabled={busy} onClick={preview}>{form.status === "published" ? "Preview published page" : "Preview draft"}</button><button className="admin-editor__secondary" type="button" disabled={busy} onClick={() => void persist("draft")}>{busy ? "Saving..." : "Save draft"}</button>{canPublish ? <button className="admin-primary" type="button" disabled={busy} onClick={() => void persist("published")}>{busy ? "Publishing..." : form.status === "published" ? `Update ${label(collection).toLowerCase()}` : `Publish ${label(collection).toLowerCase()}`}</button> : null}<Link className="admin-editor__secondary" href={`/caautobodyadmin/${collection}`}>Cancel</Link></div></section>
       <section className="admin-editor__panel"><h2>Featured image</h2><CmsImageField id={`${collection}-featured-image`} label="Featured image" purpose="featured" value={form.image} onChange={(image) => { setDirty(true); setForm({ ...form, image }); }} /></section>
       <section className="admin-editor__panel"><h2>Page settings</h2><label>URL slug<input value={form.slug} onChange={(event) => setForm({ ...form, slug: event.target.value })} placeholder="Created from title" /></label><label>SEO title<input value={form.seoTitle} onChange={(event) => setForm({ ...form, seoTitle: event.target.value })} /></label></section>

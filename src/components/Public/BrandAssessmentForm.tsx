@@ -7,12 +7,15 @@ type BrandAssessmentFormProps = {
   brand: string;
   cta: string;
   assessmentNote: string;
+  formId?: string;
+  heading?: string;
+  intro?: string;
 };
 
 const MAX_FILE_SIZE = 8 * 1024 * 1024;
 const acceptedTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"]);
 
-export default function BrandAssessmentForm({ brand, cta, assessmentNote }: BrandAssessmentFormProps) {
+export default function BrandAssessmentForm({ brand, cta, assessmentNote, formId, heading = "Tell Us What Happened", intro = "A short assessment helps us triage safety, claim and repair requirements." }: BrandAssessmentFormProps) {
   const [photoNames, setPhotoNames] = useState(["", "", ""]);
   const [error, setError] = useState("");
   const [sent, setSent] = useState(false);
@@ -49,8 +52,8 @@ export default function BrandAssessmentForm({ brand, cta, assessmentNote }: Bran
 
   if (sent) return <div className="brand-assessment-form brand-assessment-form--success" role="status"><h2>Assessment request received.</h2><p>Thank you. The CA Autobody team will review your details and contact you shortly.</p><button type="button" onClick={() => setSent(false)}>Send another request</button></div>;
 
-  return <form className="brand-assessment-form" onSubmit={submit}>
-    <div className="brand-assessment-form__heading"><h2>Tell Us What Happened</h2><p>A short assessment helps us triage safety, claim and repair requirements.</p></div>
+  return <form id={formId} className="brand-assessment-form" onSubmit={submit}>
+    <div className="brand-assessment-form__heading"><h2>{heading}</h2><p>{intro}</p></div>
     <div className="brand-assessment-form__fields">
       <label>Full name<input required name="name" autoComplete="name" placeholder="First and last name" /></label>
       <label>Mobile<input required name="phone" autoComplete="tel" inputMode="tel" placeholder="04__ ___ ___" /></label>

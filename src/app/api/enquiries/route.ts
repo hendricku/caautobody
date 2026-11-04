@@ -9,9 +9,17 @@ export const runtime = "nodejs";
 
 const maxFileSize = 8 * 1024 * 1024;
 const maxTotalFileSize = 20 * 1024 * 1024;
+const paidOfferSlugs = new Set([
+  "lexus-approved-body-shop-melbourne",
+  "fleet-and-commercial-repairs",
+  "byd-approved-repairer-melbourne",
+  "not-at-fault-accident-repairs",
+  "tesla-approved-body-shop-melbourne",
+  "zeekr-authorised-repairer-melbourne",
+]);
 const valuesSchema = z.object({
   submissionId: z.string().uuid(),
-  enquiryType: z.enum(["contact", "brand-assessment"]),
+  enquiryType: z.enum(["contact", "brand-assessment", "landing-assessment"]),
   name: z.string().trim().min(1).max(160),
   phone: z.string().trim().min(5).max(80),
   email: z.string().trim().email().max(254).or(z.literal("")),
@@ -21,12 +29,17 @@ const valuesSchema = z.object({
   // Brand pages are CMS-managed. This is still strictly bounded server-side,
   // while allowing a newly approved manufacturer to use the same secure form.
   brand: z.string().trim().min(1).max(80).optional(),
+  landingPage: z.string().trim().min(1).max(160).optional(),
+  companyName: z.string().trim().max(160),
+  fleetSize: z.string().trim().max(80),
   vehicle: z.string().trim().max(160),
   claimStatus: z.string().trim().max(80),
+  accidentDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).or(z.literal("")),
   company: z.string().max(0),
 }).strict().superRefine((value, context) => {
   if (value.enquiryType === "contact" && (!value.email || !value.message)) context.addIssue({ code: "custom", message: "Contact details are incomplete" });
   if (value.enquiryType === "brand-assessment" && !value.brand) context.addIssue({ code: "custom", message: "Brand assessment details are incomplete" });
+  if (value.enquiryType === "landing-assessment" && (!value.landingPage || !paidOfferSlugs.has(value.landingPage))) context.addIssue({ code: "custom", message: "Assessment details are incomplete" });
 });
 
 type Upload = { filename: string; content: Buffer; contentType: string };
@@ -73,8 +86,8 @@ export async function POST(request: NextRequest) {
   if (!form) return NextResponse.json({ error: "Invalid submission" }, { status: 400 });
   const parsed = valuesSchema.safeParse({
     submissionId: formValue(form, "submissionId"), enquiryType: formValue(form, "enquiryType"), name: formValue(form, "name"), phone: formValue(form, "phone"), email: formValue(form, "email"),
-    suburb: formValue(form, "suburb"), service: formValue(form, "service"), message: formValue(form, "message"), brand: formValue(form, "brand") || undefined,
-    vehicle: formValue(form, "vehicle"), claimStatus: formValue(form, "claimStatus"), company: formValue(form, "company"),
+    suburb: formValue(form, "suburb"), service: formValue(form, "service"), message: formValue(form, "message"), brand: formValue(form, "brand") || undefined, landingPage: formValue(form, "landingPage") || undefined,
+    vehicle: formValue(form, "vehicle"), claimStatus: formValue(form, "claimStatus"), accidentDate: formValue(form, "accidentDate"), companyName: formValue(form, "companyName"), fleetSize: formValue(form, "fleetSize"), company: formValue(form, "company"),
   });
   if (!parsed.success) return NextResponse.json({ error: "Please check the required fields and try again." }, { status: 400 });
   const uploads = await uploadsFrom(form);
@@ -95,7 +108,7 @@ export async function POST(request: NextRequest) {
       if (!allowed) return NextResponse.json({ error: "Too many submissions. Please wait a few minutes or call us." }, { status: 429 });
       const inserted = await database.from("cms_enquiries").insert({
         client_submission_id: values.submissionId, enquiry_type: values.enquiryType, brand: values.brand || null, full_name: values.name, phone: values.phone, email: values.email, suburb: values.suburb,
-        service: values.service, vehicle: values.vehicle, claim_status: values.claimStatus, message: values.message, attachment_names: uploads.map((file) => file.filename),
+        service: values.service, vehicle: values.vehicle, claim_status: values.claimStatus, accident_date: values.accidentDate || null, message: values.message, attachment_names: uploads.map((file) => file.filename), landing_page: values.landingPage || null, company_name: values.companyName || null, fleet_size: values.fleetSize || null,
       }).select("id,delivery_status").single();
       if (inserted.error && inserted.error.code !== "23505") return NextResponse.json({ error: "Submissions are temporarily unavailable. Please call us instead." }, { status: 503 });
       if (inserted.error) {
@@ -109,7 +122,7 @@ export async function POST(request: NextRequest) {
     try {
       await sendEnquiryEmail({
         enquiryId: enquiry.id, enquiryType: values.enquiryType, brand: values.brand, name: values.name, phone: values.phone, email: values.email || undefined,
-        suburb: values.suburb || undefined, service: values.service, vehicle: values.vehicle || undefined, claimStatus: values.claimStatus || undefined,
+        suburb: values.suburb || undefined, service: values.service, vehicle: values.vehicle || undefined, claimStatus: values.claimStatus || undefined, accidentDate: values.accidentDate || undefined, companyName: values.companyName || undefined, fleetSize: values.fleetSize || undefined,
         message: values.message || undefined, attachments: uploads,
       });
       await database.from("cms_enquiries").update({ delivery_status: "sent", updated_at: new Date().toISOString() }).eq("id", enquiry.id);

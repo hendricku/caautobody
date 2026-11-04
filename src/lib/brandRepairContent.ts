@@ -1,6 +1,8 @@
 import { media } from "@/lib/media";
+import { specialistBrandContent } from "@/lib/specialistBrandContent";
 
 export type BrandRepairContent = {
+  template?: "approved-repairer" | "specialist-vehicle";
   // Future manufacturer pages use the same structured presentation. The brand
   // name remains content, rather than a database enum that would need a schema
   // migration whenever the business adds an approved repair partner.
@@ -14,6 +16,8 @@ export type BrandRepairContent = {
   logo: string;
   assessmentCta: string;
   contactCta: string;
+  serviceGuideHeading?: string;
+  serviceGuideCopy?: string;
   serviceGuide: string[];
   approvalPoints: string[];
   approvalTitle: string;
@@ -55,6 +59,11 @@ export type BrandRepairContent = {
     finalCopy: string;
   };
 };
+
+export function resolveBrandPageTemplate(content: BrandRepairContent): "approved-repairer" | "specialist-vehicle" {
+  if (content.template === "approved-repairer" || content.template === "specialist-vehicle") return content.template;
+  return ["Prestige", "Fleet", "Commercial", "Electric Vehicles"].includes(content.brand) ? "specialist-vehicle" : "approved-repairer";
+}
 
 const sharedSections = {
   assessmentEyebrow: "Tell us what happened",
@@ -206,4 +215,5 @@ export const brandRepairContent: Record<string, BrandRepairContent> = {
     ],
     sections: { ...sharedSections, principlesEyebrow: "Wide range of services", principlesTitle: "Complete collision repair for Lexus owners.", capabilityEyebrow: "Lexus approved repairer", capabilityTitle: "Our capabilities", capabilityIntro: "Every repair follows the approved process, from assessment through to final checks.", supportEyebrow: "Why choose CA Autobody?", finalEyebrow: "CA Autobody", finalTitle: "Let’s talk about your Lexus.", finalCopy: "Talk directly with our team about an assessment, repair options and your insurance claim." },
   },
+  ...specialistBrandContent,
 };

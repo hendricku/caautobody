@@ -98,6 +98,7 @@ function validServicePresentation(value: unknown): Record<string, unknown> | nul
     })) return null;
   }
   if (presentation.variant === "brand") {
+    if (data.template !== undefined && data.template !== "approved-repairer" && data.template !== "specialist-vehicle") return null;
     if (!str(data.brand, 80) || typeof data.brand !== "string" || data.brand.trim().length > 80) return null;
     for (const key of ["pillars", "principles", "capabilities", "process", "faqs", "media"]) if (!Array.isArray(data[key]) || data[key].length > 80) return null;
     if (!object(data.sections) || !object(data.review)) return null;
@@ -106,12 +107,38 @@ function validServicePresentation(value: unknown): Record<string, unknown> | nul
   }
   return { variant: presentation.variant, data };
 }
+function offerSections(value: unknown): Record<string, unknown>[] | null {
+  if (value === undefined) return [];
+  if (!Array.isArray(value) || value.length > 30) return null;
+  const seen = new Set<string>();
+  const result: Record<string, unknown>[] = [];
+  for (const [index, raw] of value.entries()) {
+    const section = object(raw);
+    if (!section) return null;
+    const type = str(section.type, 30);
+    const id = str(section.id, 100) || `section-${index}`;
+    const title = str(section.title, 300);
+    if (!(["editorial", "steps", "faq", "cta"] as const).includes(type as "editorial" | "steps" | "faq" | "cta") || !title || seen.has(id)) return null;
+    const image = normaliseImage(section.image);
+    if (!safeImage(image)) return null;
+    const rawItems = section.items === undefined ? [] : section.items;
+    if (!Array.isArray(rawItems) || rawItems.length > 20) return null;
+    const items = rawItems.map((item) => {
+      const value = object(item);
+      return value ? { title: str(value.title, 300), copy: str(value.copy, 3000) } : null;
+    });
+    if (items.some((item) => !item?.title)) return null;
+    seen.add(id);
+    result.push({ id, type, eyebrow: str(section.eyebrow, 200), title, copy: str(section.copy, 6000), image, imageAlt: str(section.imageAlt, 500), items });
+  }
+  return result;
+}
 function mapRow(collection: Collection, row: Record<string, unknown>) {
   if (collection === "blogs") return { slug: row.slug, title: row.title, date: row.display_date, category: row.category, excerpt: row.excerpt, image: row.image_path, status: row.status, blocks: row.blocks };
   if (collection === "services") return { slug: row.slug, title: row.title, seoTitle: row.seo_title, eyebrow: row.eyebrow, intro: row.intro, body: row.body, image: row.image_path, highlights: row.highlights, contentPending: row.content_pending, presentation: servicePresentation(row.content_json, row.slug), placement: servicePlacement(row.content_json, row.slug), status: row.status };
   if (collection === "faqs") return { id: row.legacy_key, category: row.category, question: row.question, answer: row.answer, visible: row.is_visible, status: row.status };
   if (collection === "gallery") return { id: row.legacy_key, image: row.image_path, caption: row.caption, category: row.category, status: row.status };
-  if (collection === "offers") return { slug: row.slug, title: row.title, seoTitle: row.seo_title, eyebrow: row.eyebrow, intro: row.intro, body: row.body, image: row.image_path, bullets: row.bullets, status: row.status };
+  if (collection === "offers") return { slug: row.slug, title: row.title, seoTitle: row.seo_title, eyebrow: row.eyebrow, intro: row.intro, body: row.body, image: row.image_path, bullets: row.bullets, sections: object(row.content_json)?.sections || [], status: row.status };
   return { slug: row.slug, name: row.name, seoTitle: row.seo_title, intro: row.intro, body: row.body, image: row.image_path, coordinates: row.coordinates, mapDescription: row.map_description, status: row.status };
 }
 function toRow(collection: Collection, input: Record<string, unknown>): Record<string, unknown> | null {
@@ -136,7 +163,7 @@ function toRow(collection: Collection, input: Record<string, unknown>): Record<s
     const placement = { navigation: Boolean(rawPlacement.navigation), navigationLabel: str(rawPlacement.navigationLabel, 100), navigationSummary: str(rawPlacement.navigationSummary, 240), homeSlider: Boolean(rawPlacement.homeSlider), sliderLabel: str(rawPlacement.sliderLabel, 100), sliderKicker: str(rawPlacement.sliderKicker, 100), sliderCopy: str(rawPlacement.sliderCopy, 600), sliderCta: str(rawPlacement.sliderCta, 100) };
     return { ...basic, content_json: { ...presentation, placement }, legacy_key: `admin-service-${slug}`, slug, title: str(input.title,300), seo_title: str(input.seoTitle,300), eyebrow: str(input.eyebrow,200), intro: str(input.intro,3000), body: arr(input.body), image_path: image, highlights: arr(input.highlights), content_pending: Boolean(input.contentPending) };
   }
-  if (collection === "offers") return { ...basic, legacy_key: `admin-offer-${slug}`, slug, title: str(input.title,300), seo_title: str(input.seoTitle,300), eyebrow: str(input.eyebrow,200), intro: str(input.intro,3000), body: arr(input.body), image_path: image, bullets: arr(input.bullets) };
+  if (collection === "offers") { const sections = offerSections(input.sections); if (!sections) return null; return { ...basic, legacy_key: `admin-offer-${slug}`, slug, title: str(input.title,300), seo_title: str(input.seoTitle,300), eyebrow: str(input.eyebrow,200), intro: str(input.intro,3000), body: arr(input.body), image_path: image, bullets: arr(input.bullets), content_json: { sections } }; }
   return { ...basic, legacy_key: `admin-area-${slug}`, slug, name: str(input.name,300), seo_title: str(input.seoTitle,300), intro: str(input.intro,3000), body: arr(input.body), image_path: image, coordinates: Array.isArray(input.coordinates) && input.coordinates.length === 2 && input.coordinates.every((n) => typeof n === "number" && Number.isFinite(n)) ? input.coordinates : [0,0], map_description: str(input.mapDescription,3000) };
 }
 async function promoteImage(image: string, admin: NonNullable<Awaited<ReturnType<typeof getAdmin>>>): Promise<string> {
@@ -173,6 +200,17 @@ async function promoteServicePresentationImages(value: Record<string, unknown>, 
     rightImage,
     logo: await promoteImage(normaliseImage(data.logo), admin), media,
   } };
+}
+async function promoteOfferSectionImages(value: Record<string, unknown>, admin: NonNullable<Awaited<ReturnType<typeof getAdmin>>>) {
+  const sections = Array.isArray(value.sections) ? value.sections : [];
+  const promoted = [];
+  for (const entry of sections) {
+    const section = object(entry);
+    if (!section) continue;
+    const image = typeof section.image === "string" ? await promoteImage(section.image, admin) : "";
+    promoted.push({ ...section, image });
+  }
+  return { ...value, sections: promoted };
 }
 function invalid(message = "Invalid CMS content. Check the title, slug, image URL and content blocks, then try again.") { return NextResponse.json({ error: message }, { status: 400 }); }
 function blogValidationError(input: Record<string, unknown>) {
@@ -248,7 +286,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   if (row.status === "published") {
     try {
       if (typeof row.image_path === "string") row.image_path = await promoteImage(row.image_path, admin);
-      if (collection === "services" && object(row.content_json)) row.content_json = await promoteServicePresentationImages(row.content_json as Record<string, unknown>, admin);
+        if (collection === "services" && object(row.content_json)) row.content_json = await promoteServicePresentationImages(row.content_json as Record<string, unknown>, admin);
+        if (collection === "offers" && object(row.content_json)) row.content_json = await promoteOfferSectionImages(row.content_json as Record<string, unknown>, admin);
       if (collection === "blogs" && Array.isArray(row.blocks)) {
         const promoted = [];
         for (const block of row.blocks) {

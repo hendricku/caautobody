@@ -1,5 +1,5 @@
 export type EnquiryStatus = "new" | "in-progress" | "resolved" | "archived";
-export type EnquiryType = "contact" | "brand-assessment";
+export type EnquiryType = "contact" | "brand-assessment" | "landing-assessment";
 
 export type ContactEnquiry = {
   id: string;
@@ -14,7 +14,11 @@ export type ContactEnquiry = {
   brand?: string;
   vehicle?: string;
   claimStatus?: string;
+  accidentDate?: string;
   attachments?: string[];
   enquiryType: EnquiryType;
   deliveryStatus?: "pending" | "sent" | "failed";
+  companyName?: string;
+  fleetSize?: string;
+  landingPage?: string;
 };

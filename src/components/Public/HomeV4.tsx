@@ -11,6 +11,7 @@ import PhoneRounded from "@mui/icons-material/PhoneRounded";
 import StarRounded from "@mui/icons-material/StarRounded";
 import ActionIcon from "@/components/UI/ActionIcon";
 import { getPublishedServiceCarousel } from "@/lib/cms/public-content";
+import HomepageVideo from "@/components/Public/HomepageVideo";
 
 type HomeHero = {
   eyebrow: string;
@@ -19,7 +20,7 @@ type HomeHero = {
   description: string;
 };
 
-export default async function HomeV4({ hero }: { hero: HomeHero }) {
+export default async function HomeV4({ hero, videoId = "" }: { hero: HomeHero; videoId?: string }) {
   const serviceCarousel = await getPublishedServiceCarousel();
   return (
     <main className="v4-home">
@@ -71,16 +72,10 @@ export default async function HomeV4({ hero }: { hero: HomeHero }) {
       </section>
 
       <div className="hp-home-priority">
-      <section className="hp-services hp-section hp-section--warm" id="services">
-        <div className="hp-shell">
-          <div className="hp-services__heading hp-reveal"><div><span className="hp-eyebrow">Our repair services</span><h2>Specialist care for the damage you can see — and the details you can’t.</h2></div><p>Choose a service to explore how CA Autobody can help. Each repair path is handled with the same focus on workmanship, communication and finish.</p></div>
-          <ServiceExperience items={serviceCarousel} />
-        </div>
-      </section>
 
       <section className="hp-why hp-section hp-section--black dark-context-surface dark-context-surface--why" id="why-choose">
         <div className="hp-shell">
-          <div className="hp-section-title hp-section-title--center hp-reveal"><div className="hp-title-rule"><span /><h2>Why choose CA Autobody?</h2><span /></div><p className="hp-values">Experience <i>/</i> Quality <i>/</i> Trust <i>/</i> Community</p><p className="hp-why__intro">With over 30 years of experience, VACC approval and a commitment to quality in every repair, we’re the smash repairer Melbourne drivers trust. From expert workmanship to clear customer care, we’re here to get you back on the road with confidence.</p></div>
+          <div className="hp-section-title hp-section-title--center hp-reveal"><div className="hp-title-rule"><span /><h2>Why choose CA Autobody?</h2><span /></div><p className="hp-values">Experience <i>/</i> Quality <i>/</i> Trust <i>/</i> Community</p><p className="hp-why__intro">We take pride in quality workmanship, pay attention to every detail and go the extra mile to meet your expectations. From your first enquiry to the day you collect your vehicle, our team is here to make the repair process easier, keep you informed and get you back on the road with confidence.</p></div>
         </div>
       </section>
 
@@ -91,15 +86,22 @@ export default async function HomeV4({ hero }: { hero: HomeHero }) {
 
       <section className="hp-about hp-section">
         <div className="hp-shell hp-about__grid">
-          <div className="hp-about__image hp-reveal"><Image src={media.workshop.exterior} alt="CA Autobody workshop in Chelsea Heights" loading="lazy"  width={1600} height={900} unoptimized /><span className="hp-image-label">Chelsea Heights · Melbourne</span></div>
+          <div className="hp-about__image hp-reveal"><HomepageVideo videoId={videoId} /></div>
           <div className="hp-about__copy hp-reveal"><span className="hp-eyebrow">Trusted car smash repair in Melbourne</span><h2>Repair work that feels considered from the first call to handover.</h2><p>CA Autobody supports drivers with collision repairs across a wide range of makes and models, combining modern repair methods with practical customer service from our Chelsea Heights facility.</p><p>Whether the vehicle needs panel work, refinishing, EV-aware repairs or help navigating an insurance claim, our team keeps the process clear and focused on getting you safely back on the road.</p><Link className="hp-arrow-link" href="/about">Discover CA Autobody <ActionIcon /></Link></div>
+        </div>
+      </section>
+
+      <section className="hp-services hp-section hp-section--warm" id="services">
+        <div className="hp-shell">
+          <div className="hp-services__heading hp-reveal"><div><span className="hp-eyebrow">Our repair services</span><h2>Specialist care for the damage you can see — and the details you can’t.</h2></div><p>Choose a service to explore how CA Autobody can help. Each repair path is handled with the same focus on workmanship, communication and finish.</p></div>
+          <ServiceExperience items={serviceCarousel} />
         </div>
       </section>
 
 
       <section className="hp-approved hp-section hp-section--black">
         <div className="hp-shell hp-approved__grid">
-          <div className="hp-approved__copy hp-reveal"><span className="hp-eyebrow hp-eyebrow--light">Electric vehicle repair expertise</span><h2>Specialists in the vehicles of tomorrow.</h2><p>Modern electric vehicles demand repair decisions that respect their construction, safety systems and refinishing requirements. CA Autobody supports Tesla, Zeekr, BYD and other EV owners with dedicated repair expertise.</p>{/* Only brands with dedicated service pages are linked; Other EVs is intentionally informational. */}<div className="hp-approved__brands" aria-label="EV repair pages"><Link href="/services/tesla-approved-repair-centre">Tesla</Link><Link href="/services/services-zeekr-approved-repairer-melbourne">Zeekr</Link><Link href="/services/byd-approved-repairer-melbourne">BYD</Link><span>Other EVs</span></div><Button href="/contact" variant="gold" arrow>Book a repair assessment</Button></div>
+          <div className="hp-approved__copy hp-reveal"><span className="hp-eyebrow hp-eyebrow--light">Electric vehicle repair expertise</span><h2>Specialists in the vehicles of tomorrow.</h2><p>Modern electric vehicles demand repair decisions that respect their construction, safety systems and refinishing requirements. CA Autobody supports Tesla, Zeekr, BYD and other EV owners with dedicated repair expertise.</p><div className="hp-approved__brands" aria-label="EV repair pages"><Link href="/services/tesla-approved-repair-centre">Tesla</Link><Link href="/services/services-zeekr-approved-repairer-melbourne">Zeekr</Link><Link href="/services/byd-approved-repairer-melbourne">BYD</Link><Link href="/services/electric-vehicle-repairs">Other EVs</Link></div><Button href="/contact" variant="gold" arrow>Book a repair assessment</Button></div>
           <div className="hp-approved__media hp-reveal"><Image src={media.home.evRepair} alt="Tesla at the CA Autobody workshop" loading="lazy"  width={1600} height={900} unoptimized /><div className="hp-approved__caption"><span>EV Repair</span><strong>Tesla + Zeekr</strong></div></div>
         </div>
       </section>

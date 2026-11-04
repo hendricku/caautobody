@@ -9,16 +9,16 @@ export async function GET() {
   if (admin.role === "editor") return NextResponse.json({ error: "Publisher or Admin role required" }, { status: 403 });
   const { data, error } = await admin.client
     .from("cms_enquiries")
-    .select("id,enquiry_type,brand,full_name,phone,email,suburb,service,vehicle,claim_status,message,attachment_names,status,delivery_status,created_at")
+    .select("id,enquiry_type,brand,full_name,phone,email,suburb,service,vehicle,claim_status,accident_date,message,attachment_names,status,delivery_status,created_at,landing_page,company_name,fleet_size")
     .neq("status", "archived")
     .order("created_at", { ascending: false })
     .limit(250);
   if (error) return NextResponse.json({ error: "Enquiries are currently unavailable" }, { status: 503 });
   const items = (data || []).map((row) => ({
     id: row.id, name: row.full_name, phone: row.phone, email: row.email, suburb: row.suburb, service: row.service, message: row.message,
-    status: row.status, createdAt: row.created_at, brand: row.brand || undefined, vehicle: row.vehicle || undefined, claimStatus: row.claim_status || undefined,
+    status: row.status, createdAt: row.created_at, brand: row.brand || undefined, vehicle: row.vehicle || undefined, claimStatus: row.claim_status || undefined, accidentDate: row.accident_date || undefined,
     attachments: Array.isArray(row.attachment_names) ? row.attachment_names.filter((name): name is string => typeof name === "string") : [],
-    enquiryType: row.enquiry_type, deliveryStatus: row.delivery_status,
+    enquiryType: row.enquiry_type, deliveryStatus: row.delivery_status, landingPage: row.landing_page || undefined, companyName: row.company_name || undefined, fleetSize: row.fleet_size || undefined,
   }));
   return NextResponse.json({ items }, { headers: { "Cache-Control": "no-store" } });
 }

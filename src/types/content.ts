@@ -36,7 +36,20 @@ export interface OfferContent {
   body: string[];
   image: string;
   bullets: string[];
+  /** Ordered, CMS-managed presentation blocks. Legacy fields remain the fallback. */
+  sections?: OfferSection[];
 }
+
+export type OfferSection = {
+  id: string;
+  type: "editorial" | "steps" | "faq" | "cta";
+  eyebrow?: string;
+  title: string;
+  copy?: string;
+  image?: string;
+  imageAlt?: string;
+  items?: Array<{ title: string; copy: string }>;
+};
 
 export interface BlogContent {
   slug: string;

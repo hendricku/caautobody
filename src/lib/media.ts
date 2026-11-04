@@ -28,7 +28,8 @@ export const media = {
     tesla: "/images/IMG-20260726-WA0010.webp",
     byd: "/images/bydmodel.webp",
     lexus: "/images/lexusmodel.webp",
-    zeekr: "/images/Zeekr Covered Plates.webp",
+    // Client-supplied replacement image for the Zeekr repair page and slider.
+    zeekr: "/images/Zeekr.webp",
   },
   service: {
     accident: "/images/ACCIDENT-ASSISTANCE-1.webp",
@@ -48,9 +49,10 @@ export const media = {
     tesla: "/images/tesla-repair.webp",
     teslaCentre: "/images/tesla-repair-centre.webp",
     teslaRoad: "/images/tesla-road.webp",
-    zeekr: "/images/Chelsea-Auto-Body-009.webp",
+    zeekr: "/images/Zeekr.webp",
   },
   brandRepair: {
+    zeekrHero: "/images/Zeekr.webp",
     bydHero: "/images/close-up-of-electric-car-charging-ecology-transpo-2026-03-10-03-08-40-utc.webp",
     bydPanel: "/images/car-mechanic-working-to-remove-dent-in-workshop-2026-01-09-07-14-08-utc.webp",
     lexusHero: "/images/mechanic-inspects-auto-body-damage-in-automotive-s-2026-01-07-06-40-31-utc.webp",

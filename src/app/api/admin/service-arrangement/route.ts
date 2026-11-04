@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { getAdmin, sameOrigin } from "@/lib/cms/admin-server";
-import { asServiceArrangement, PRESTIGE_SLIDE, SERVICE_ARRANGEMENT_KEY } from "@/lib/cms/service-arrangement";
+import { asServiceArrangement, SERVICE_ARRANGEMENT_KEY } from "@/lib/cms/service-arrangement";
 
 export const dynamic = "force-dynamic";
 const noStore = { "Cache-Control": "no-store" };
 const defaultMenu = ["accident-assistance", "panel-beating", "spray-painting", "paintless-dent-removal", "replacement-vehicles"];
-const defaultSlider = ["tesla-approved-repair-centre", "services-zeekr-approved-repairer-melbourne", "byd-approved-repairer-melbourne", "lexus-approved-body-shop-melbourne", PRESTIGE_SLIDE, "panel-beating", "spray-painting", "replacement-vehicles", "paintless-dent-removal", "accident-assistance"];
+const defaultSlider = ["tesla-approved-repair-centre", "services-zeekr-approved-repairer-melbourne", "byd-approved-repairer-melbourne", "lexus-approved-body-shop-melbourne", "prestige-vehicle-repairs", "fleet-vehicle-repairs", "commercial-vehicle-repairs", "electric-vehicle-repairs", "panel-beating", "spray-painting", "replacement-vehicles", "paintless-dent-removal", "accident-assistance"];
 
 export async function GET() {
   const admin = await getAdmin();
@@ -26,7 +26,7 @@ export async function GET() {
   });
   // Service placement flags remain authoritative. Arrangement controls the
   // order and optional visibility among items already enabled in each module.
-  const rows = [...eligible, { slug: PRESTIGE_SLIDE, title: "Prestige Brands (directory link)", menu: false, slider: true }];
+  const rows = eligible;
   const savedOrder = asServiceArrangement(saved.data?.value);
   const available = (area: "menu" | "slider") => rows.filter((row) => row[area]).map((row) => row.slug);
   const arrangement = { menu: savedOrder?.menu || defaultMenu, slider: savedOrder?.slider || defaultSlider };
@@ -64,7 +64,7 @@ export async function PUT(request: NextRequest) {
     });
   }
   if (value.menu.some((slug) => !defaults.get(slug)?.menu) ||
-      value.slider.some((slug) => slug !== PRESTIGE_SLIDE && !defaults.get(slug)?.slider)) {
+      value.slider.some((slug) => !defaults.get(slug)?.slider)) {
     return NextResponse.json({ error: "A selected service is no longer published or enabled. Reload the arrangement." }, { status: 409 });
   }
   const { data: current, error: readError } = await admin.client.from("cms_site_settings")

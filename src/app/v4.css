@@ -693,9 +693,12 @@ body.home-v2 .hp-btn--hero-secondary:hover{border-color:#111;color:#fff!importan
 .hp-home-priority{display:flex;flex-direction:column}
 .hp-home-priority .hp-why{order:1}
 .hp-home-priority .hp-accident-strip{position:relative;align-self:center;order:2;box-shadow:0 14px 30px rgba(30,25,18,.1)}
-.hp-home-priority .hp-services{order:3}
-.hp-home-priority .hp-approved{order:4}
-.hp-home-priority .hp-about{order:5}
+.hp-home-priority .hp-about{order:3;background:#0b0b0b;color:#fff}
+.hp-home-priority .hp-about__copy p{color:#d6d1c9}
+.hp-home-priority .hp-about__copy .hp-arrow-link{color:#fff;border-color:#c4a46c}
+.hp-home-priority .hp-about__copy .hp-arrow-link:focus-visible{outline:2px solid #d5ae63;outline-offset:5px}
+.hp-home-priority .hp-services{order:4}
+.hp-home-priority .hp-approved{order:5}
 .hp-home-priority .hp-studio{order:6}
 .hp-home-priority .hp-insurance{order:7}
 .hp-home-priority .hp-location{order:8}
@@ -779,3 +782,46 @@ body.home-v2 .hp-btn--hero-secondary:hover{border-color:#111;color:#fff!importan
 @media(max-width:1020px){.hp-brand-logo--zeekr{min-height:70px}.hp-brand-logo--zeekr img{max-width:76px;max-height:64px}}
 @media(max-width:720px){.hp-brand-logo--zeekr{min-height:62px}.hp-brand-logo--zeekr img{max-width:66px;max-height:56px}}
 @media(max-width:420px){.hp-brand-logo--zeekr{min-height:56px}.hp-brand-logo--zeekr img{max-width:58px;max-height:50px}}
+
+/* The expanded Brands directory stays intentionally compact: two clear groups
+   make eight specialist destinations legible without turning the menu into a wall of cards. */
+.hp-mega--brands{min-height:0}
+.hp-mega__tray--brands{display:grid;grid-template-columns:minmax(270px,.72fr) minmax(0,1.28fr)}
+.hp-mega__intro--brands{padding:34px 38px;border-right:1px solid #292929}
+.hp-mega__tray--brands>.hp-brand-list{display:none}
+.hp-brand-directory{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.hp-brand-directory__group{padding:30px 30px 24px;border-right:1px solid #292929}
+.hp-brand-directory__group:last-child{border-right:0}
+.hp-brand-directory__group>p,.hp-mobile-brand-links p{margin:0 0 14px;color:var(--hp-gold-2);font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.hp-brand-directory__group>div{display:grid}
+.hp-brand-directory__group a{position:relative;display:grid;grid-template-columns:1fr auto;gap:2px 14px;padding:12px 24px 12px 0;border-top:1px solid #292929;transition:color .2s ease,padding .2s ease}
+.hp-brand-directory__group a:last-child{border-bottom:1px solid #292929}
+.hp-brand-directory__group strong{font-size:15px;line-height:1.25}
+.hp-brand-directory__group span{grid-column:1;color:#939393;font-size:11px;line-height:1.45}
+.hp-brand-directory__group .ui-action-icon{grid-column:2;grid-row:1 / span 2;align-self:center;color:var(--hp-gold)}
+.hp-brand-directory__group a:hover{padding-left:10px;color:var(--hp-gold-2)}
+.hp-mobile-brand-links{display:none}
+@media(max-width:1020px){
+  .hp-mega__tray--brands{display:block}.hp-mega__intro--brands{padding:0 0 20px;border-right:0;border-bottom:1px solid #292929}.hp-mega--brands{display:none}.hp-nav__group.is-open>.hp-mega--brands{display:none}.hp-mobile-brand-links{display:none;padding:12px 0 6px}.hp-nav__group.is-open>.hp-mobile-brand-links{display:grid;gap:20px}.hp-mobile-brand-links section{display:grid}.hp-mobile-brand-links a{padding:14px 0;border-top:1px solid #292929;font-size:14px}.hp-mobile-brand-links a:last-child{border-bottom:1px solid #292929}
+}
+
+/* A compact directory keeps the two distinct repair categories easy to scan. */
+@media (min-width:1021px){
+  .hp-mega--brands .hp-mega__tray--brands{width:min(1320px,calc(100vw - 112px));grid-template-columns:minmax(240px,.7fr) minmax(0,1.6fr);padding:18px 0}
+  .hp-mega__intro--brands{padding:28px 50px 30px 0;border-color:#c5bbaa}
+  .hp-mega__intro--brands h2{max-width:250px;font-size:clamp(25px,2.1vw,32px);line-height:1.1}
+  .hp-mega__intro--brands p{max-width:275px;font-size:13px}
+  .hp-brand-directory__group{padding:28px clamp(22px,3vw,45px);border-color:#c5bbaa}
+  .hp-brand-directory__group>p{margin-bottom:18px;color:#8a6428}
+  .hp-brand-directory__group a{min-height:50px;padding:15px 30px 15px 0;border-color:#c5bbaa}
+  .hp-brand-directory__group a:last-child{border-color:#c5bbaa}
+  .hp-brand-directory__group strong{font-size:15px}
+  .hp-brand-directory__group span{display:none}
+  .hp-brand-directory__group .ui-action-icon{grid-row:1}
+  .hp-brand-directory__group a:hover{padding-left:6px;color:#77591f}
+  .hp-mega__tray--brands>.hp-brand-list{display:block;grid-column:2;padding:15px 0 12px clamp(22px,3vw,45px);border:0;border-top:1px solid #c5bbaa}
+  .hp-brand-list span{font-size:10px;letter-spacing:.1em}
+  .hp-brand-list p{margin:7px 0 0;font-size:12px;line-height:1.5}
+}
+.hp-mobile-brand-links a{min-height:48px}
+.hp-brand-directory__group a:focus-visible,.hp-mobile-brand-links a:focus-visible{outline:2px solid #a67525;outline-offset:3px}
