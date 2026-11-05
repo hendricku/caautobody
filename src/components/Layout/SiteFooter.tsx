@@ -4,16 +4,21 @@ import { media } from "@/lib/media";
 import Icon from "@/components/UI/Icon";
 
 const areas = ["Aspendale", "Braeside", "Carrum", "Chelsea", "Cheltenham", "Edithvale", "Mentone", "Mordialloc", "Parkdale", "Sandhurst"];
+const brands = [
+  ["Tesla", "tesla-approved-repair-centre"], ["Zeekr", "services-zeekr-approved-repairer-melbourne"],
+  ["BYD", "byd-approved-repairer-melbourne"], ["Lexus", "lexus-approved-body-shop-melbourne"],
+  ["Prestige vehicles", "prestige-vehicle-repairs"], ["Fleet vehicles", "fleet-vehicle-repairs"],
+  ["Commercial vehicles", "commercial-vehicle-repairs"], ["Electric vehicles", "electric-vehicle-repairs"],
+] as const;
 
 import type { getPublicSiteSettings } from "@/lib/cms/public-content";
-export default function SiteFooter({siteSettings}: {siteSettings: Awaited<ReturnType<typeof getPublicSiteSettings>>}) {
+export default function SiteFooter({siteSettings, publishedServiceSlugs}: {siteSettings: Awaited<ReturnType<typeof getPublicSiteSettings>>; publishedServiceSlugs: string[]}) {
   return (
     <footer className="hp-footer">
       <div className="hp-shell hp-footer__grid">
         <div className="hp-footer__brand">
           <Image src={media.logo} alt="CA Chelsea Autobody"  width={640} height={320} unoptimized />
           <p>Trusted smash repairs, body work and refinishing from Chelsea Heights, Melbourne.</p>
-          <a className="hp-footer__phone" href={`tel:${siteSettings.phoneHref}`}>{siteSettings.phone}</a>
         </div>
 
         <nav className="hp-footer__nav" aria-label="Footer information">
@@ -37,8 +42,13 @@ export default function SiteFooter({siteSettings}: {siteSettings: Awaited<Return
           <Link href="/services/spray-painting">Spray Painting</Link>
         </nav>
 
+        <nav className="hp-footer__brands" aria-label="Brands and specialist repairs">
+          <h3>Brands &amp; specialist repairs</h3>
+          <div>{brands.filter(([, slug]) => publishedServiceSlugs.includes(slug)).map(([label, slug]) => <Link key={slug} href={`/services/${slug}`}>{label}</Link>)}</div>
+        </nav>
+
         <nav className="hp-footer__areas" aria-label="Areas CA Autobody serves">
-          <h3>All Service Areas</h3>
+          <h3>Nearby service areas</h3>
           {areas.map((area) => <Link key={area} href={`/areas-we-serve/${area.toLowerCase()}`}>{area}</Link>)}
         </nav>
 

@@ -244,16 +244,7 @@ export default function ServiceAreaMap({ locations, variant = "directory" }: Ser
             <h2 id="service-area-map-title">Local Support, Melbourne-Wide</h2>
             <p className="service-area-map__intro">We service all Melbourne suburbs, with tow truck assistance available to get your vehicle to our Chelsea workshop for repairs.</p>
             <div className="service-area-map__nearby-head">
-              <h3>Our Nearby Service Areas ({locations.length})</h3>
-              <button
-                className={`service-area-map__all ${selectedSlug === null ? "is-active" : ""}`}
-                type="button"
-                onClick={() => focusArea(null)}
-                onMouseEnter={() => setHoveredSlug(null)}
-                aria-pressed={selectedSlug === null}
-              >
-                <span>Show all</span><b>{locations.length}</b>
-              </button>
+              <h3>Nearby suburbs</h3>
             </div>
 
             <ul className="service-area-map__areas" aria-label="Our nearby service areas">
@@ -313,9 +304,31 @@ export default function ServiceAreaMap({ locations, variant = "directory" }: Ser
               <a href="https://www.google.com/maps/search/?api=1&query=CA+Autobody+Chelsea+Heights" target="_blank" rel="noopener noreferrer">Open CA Autobody in Google Maps <ActionIcon external /></a>
             </div>
           ) : null}
-          <a className="service-area-map__directions" href="https://www.google.com/maps/search/?api=1&query=7+Ashley+Park+Drive+Chelsea+Heights+VIC+3196" target="_blank" rel="noopener noreferrer">Get directions <ActionIcon external /></a>
+          {isSingleArea ? <a className="service-area-map__directions" href="https://www.google.com/maps/dir/?api=1&destination=7+Ashley+Park+Drive+Chelsea+Heights+VIC+3196" target="_blank" rel="noopener noreferrer">Get directions <ActionIcon external /></a> :
+            <div className="service-area-map__actions">
+              <a className="service-area-map__directions" href="https://www.google.com/maps/dir/?api=1&destination=7+Ashley+Park+Drive+Chelsea+Heights+VIC+3196" target="_blank" rel="noopener noreferrer">Get directions <ActionIcon external /></a>
+              <Link className="service-area-map__tow" href="/contact">Arrange a tow <ActionIcon /></Link>
+            </div>}
         </div>
       </div>
+      {!isSingleArea ? <section className="hp-shell service-area-route" aria-labelledby="service-area-route-title">
+        <div className="service-area-route__intro">
+          <span className="hp-eyebrow">Your Local Repair Route</span>
+          <h2 id="service-area-route-title">CA Autobody | A Melbourne-wide service</h2>
+          <p>Wherever you are in Melbourne, CA Autobody is here to help. From Chelsea Heights to surrounding suburbs and beyond, we&apos;re committed to making your vehicle repair journey as convenient as possible.</p>
+          <h3>Can&apos;t make it to our workshop? We&apos;ll come to you!</h3>
+          <p>With our tow truck service, we can arrange to collect your vehicle from wherever you are in Melbourne and bring it to our Chelsea Heights workshop for repairs.</p>
+          <p className="service-area-route__closing">Your vehicle, our care. Wherever you are in Melbourne, we&apos;ve got you covered.</p>
+        </div>
+        <div className="service-area-route__details">
+          <h3>Map and directions</h3>
+          <dl>
+            <div><dt>Find Your Route:</dt><dd>Get directions from your current location to our Chelsea Heights workshop.</dd></div>
+            <div><dt>Need a Tow?</dt><dd>Let us help arrange vehicle collection with our tow truck service.</dd></div>
+            <div><dt>Melbourne-wide Coverage:</dt><dd>Supporting customers across Melbourne&apos;s suburbs.</dd></div>
+          </dl>
+        </div>
+      </section> : null}
     </section>
   );
 }

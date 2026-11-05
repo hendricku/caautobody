@@ -16,7 +16,7 @@ import "./offer-refresh.css";
 import AppChrome from "@/components/Layout/AppChrome";
 import GoogleTags from "@/components/Common/GoogleTags";
 import CmsLiveRefresh from "@/components/CmsLiveRefresh";
-import { getPublicSiteSettings, getPublishedServiceNavigation } from "@/lib/cms/public-content";
+import { getPublicSiteSettings, getPublishedServiceNavigation, getPublishedServices } from "@/lib/cms/public-content";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://caautobody.com.au"),
@@ -31,7 +31,7 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const [siteSettings, serviceNavigation] = await Promise.all([getPublicSiteSettings(), getPublishedServiceNavigation()]);
+  const [siteSettings, serviceNavigation, publishedServices] = await Promise.all([getPublicSiteSettings(), getPublishedServiceNavigation(), getPublishedServices()]);
   return (
     <html lang="en">
       <head>
@@ -41,7 +41,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <body className="home-v2">
         <GoogleTags />
         <CmsLiveRefresh />
-        <AppChrome siteSettings={siteSettings} serviceNavigation={serviceNavigation}>{children}</AppChrome>
+        <AppChrome siteSettings={siteSettings} serviceNavigation={serviceNavigation} publishedServiceSlugs={publishedServices.map((service) => service.slug)}>{children}</AppChrome>
       </body>
     </html>
   );

@@ -11,7 +11,7 @@ import type { getPublicSiteSettings, getPublishedServiceNavigation } from "@/lib
 
 type Settings = Awaited<ReturnType<typeof getPublicSiteSettings>>;
 type ServiceNavigation = Awaited<ReturnType<typeof getPublishedServiceNavigation>>;
-export default function AppChrome({ children, siteSettings, serviceNavigation }: { children: React.ReactNode; siteSettings: Settings; serviceNavigation: ServiceNavigation }) {
+export default function AppChrome({ children, siteSettings, serviceNavigation, publishedServiceSlugs }: { children: React.ReactNode; siteSettings: Settings; serviceNavigation: ServiceNavigation; publishedServiceSlugs: string[] }) {
   const pathname = usePathname();
   const admin = pathname.startsWith("/caautobodyadmin");
   // Paid-ads landing pages have their own focused header and footer.
@@ -26,7 +26,7 @@ export default function AppChrome({ children, siteSettings, serviceNavigation }:
       <SiteHeader siteSettings={siteSettings} serviceNavigation={serviceNavigation} />
       <div id="main-content">{children}</div>
       {showClosingCTA ? <InnerFinalCTA /> : null}
-      <SiteFooter siteSettings={siteSettings} />
+      <SiteFooter siteSettings={siteSettings} publishedServiceSlugs={publishedServiceSlugs} />
       <QuickActions />
       <RevealObserver />
     </>
