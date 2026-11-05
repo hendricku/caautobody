@@ -57,7 +57,9 @@ export async function getAdmin() {
   if (error || !claims?.sub) return null;
   const { data: role, error: roleError } = await client.rpc("cms_staff_role");
   if (roleError || !["admin", "editor", "publisher"].includes(role)) return null;
-  return { client, user: { id: claims.sub, email: typeof claims.email === "string" ? claims.email : undefined }, role: role as AdminRole };
+  const { data: membership, error: membershipError } = await client.from("cms_admin_members").select("modules").eq("user_id", claims.sub).maybeSingle();
+  if ((membershipError || !membership) && role !== "admin") return null;
+  return { client, user: { id: claims.sub, email: typeof claims.email === "string" ? claims.email : undefined }, role: role as AdminRole, modules: role === "admin" ? null : (membership?.modules as string[] | null ?? null) };
 }
 
 export function sameOrigin(request: Request) {

@@ -39,7 +39,7 @@ const valuesSchema = z.object({
 }).strict().superRefine((value, context) => {
   if (value.enquiryType === "contact" && (!value.email || !value.message)) context.addIssue({ code: "custom", message: "Contact details are incomplete" });
   if (value.enquiryType === "brand-assessment" && !value.brand) context.addIssue({ code: "custom", message: "Brand assessment details are incomplete" });
-  if (value.enquiryType === "landing-assessment" && (!value.landingPage || !paidOfferSlugs.has(value.landingPage))) context.addIssue({ code: "custom", message: "Assessment details are incomplete" });
+  if (value.enquiryType === "landing-assessment" && (!value.landingPage || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value.landingPage))) context.addIssue({ code: "custom", message: "Assessment details are incomplete" });
 });
 
 type Upload = { filename: string; content: Buffer; contentType: string };
@@ -97,6 +97,13 @@ export async function POST(request: NextRequest) {
     assertEmailConfiguration();
     const database = serviceClient();
     const values = parsed.data;
+    // The original landing pages are built in; new CMS offers must be published
+    // before their assessment forms can accept public submissions.
+    if (values.enquiryType === "landing-assessment" && values.landingPage && !paidOfferSlugs.has(values.landingPage)) {
+      const { data: offer, error: offerError } = await database.from("cms_offers").select("slug").eq("slug", values.landingPage).eq("status", "published").maybeSingle();
+      if (offerError) return NextResponse.json({ error: "Submissions are temporarily unavailable. Please call us instead." }, { status: 503 });
+      if (!offer) return NextResponse.json({ error: "This assessment is unavailable." }, { status: 400 });
+    }
     const findSubmission = () => database.from("cms_enquiries").select("id,delivery_status").eq("client_submission_id", values.submissionId).maybeSingle();
     const { data: existing, error: lookupError } = await findSubmission();
     if (lookupError) return NextResponse.json({ error: "Submissions are temporarily unavailable. Please call us instead." }, { status: 503 });

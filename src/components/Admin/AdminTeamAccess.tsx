@@ -8,11 +8,18 @@ import type { TeamAction, TeamMember } from "@/lib/cms/team-management";
 
 const dates = new Intl.DateTimeFormat("en-AU", { dateStyle: "medium" });
 const roleLabels = { admin: "Administrator", editor: "Editor", publisher: "Publisher" };
+const availableModules = [
+  ["blogs", "Blogs"], ["services", "Services"], ["brands", "Brands"], ["offers", "Offers"],
+  ["areas", "Service areas"], ["gallery", "Gallery"], ["faq", "FAQs"],
+  ["contacts", "Contact management"], ["settings", "Settings and menu arrangement"],
+] as const;
 
 export default function AdminTeamAccess() {
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [viewerId, setViewerId] = useState("");
   const [email, setEmail] = useState("");
+  const [limited, setLimited] = useState(true);
+  const [modules, setModules] = useState<string[]>([]);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [loading, setLoading] = useState(true);
@@ -41,13 +48,13 @@ export default function AdminTeamAccess() {
       const response = await fetch("/api/admin/members", {
         method: action === "add" ? "POST" : action === "delete" ? "DELETE" : "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(action === "add" ? { email } : action === "delete" ? { userId: member?.user_id } : { userId: member?.user_id, action }),
+        body: JSON.stringify(action === "add" ? { email, ...(limited ? { modules } : {}) } : action === "delete" ? { userId: member?.user_id } : { userId: member?.user_id, action }),
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "This change could not be saved.");
-      if (action === "add") setEmail("");
+      if (action === "add") { setEmail(""); setModules([]); }
       await load();
-      await Swal.fire({ icon: "success", title: ({ add: "Administrator added", deactivate: "Access deactivated", reactivate: "Access restored", delete: "Member removed" })[action],
+      await Swal.fire({ icon: "success", title: ({ add: "Team member added", deactivate: "Access deactivated", reactivate: "Access restored", delete: "Member removed" })[action],
         text: action === "add" ? "They can now sign in with their email and request a one-time code." : action === "reactivate" ? "This person must request a new sign-in code to access the dashboard." : undefined,
         confirmButtonColor: "#8a6428" });
     } catch (reason) { await Swal.fire({ icon: "error", title: "Change not saved", text: reason instanceof Error ? reason.message : "Please try again.", confirmButtonColor: "#8a6428" }); }
@@ -56,8 +63,54 @@ export default function AdminTeamAccess() {
 
   async function add(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const confirmation = await Swal.fire({ icon: "question", title: "Add an administrator?", text: `${email.trim()} will be able to manage website content and team access.`, showCancelButton: true, confirmButtonText: "Add administrator", confirmButtonColor: "#8a6428" });
+    if (limited && !modules.length) { await Swal.fire({ icon: "warning", title: "Choose at least one module" }); return; }
+    const confirmation = await Swal.fire({ icon: "question", title: "Add this team member?", text: limited ? `${email.trim()} will have access only to the selected modules.` : `${email.trim()} will have full access, including team management.`, showCancelButton: true, confirmButtonText: "Add member", confirmButtonColor: "#8a6428" });
     if (confirmation.isConfirmed) await mutate("add");
+  }
+
+  async function editAccess(member: TeamMember) {
+    const selected = member.role === "admin" || member.modules == null ? availableModules.map(([key]) => key) : member.modules;
+    const result = await Swal.fire({
+      title: "Edit access",
+      html: `<div class="admin-access__intro">Choose what <strong id="team-member-email"></strong> can manage in the dashboard.</div>
+        <fieldset class="admin-access__roles"><legend>Access level</legend>
+          <label class="admin-access__role"><input type="radio" name="team-access-level" value="limited" ${member.role !== "admin" ? "checked" : ""}><span><strong>Selected modules</strong><small>Manage and publish content in the selected areas.</small></span></label>
+          <label class="admin-access__role"><input type="radio" name="team-access-level" value="full" ${member.role === "admin" ? "checked" : ""}><span><strong>Full administrator</strong><small>Manage all modules, settings and team access.</small></span></label>
+        </fieldset>
+        <fieldset class="admin-access__modules"><legend>Allowed modules</legend><p>Choose at least one area for this team member.</p>
+          <div class="admin-access__grid">${availableModules.map(([key, label]) => `<label class="admin-access__module"><input type="checkbox" name="team-module" value="${key}" ${selected.includes(key) ? "checked" : ""}><span>${label}</span></label>`).join("")}</div>
+        </fieldset>`,
+      customClass: { popup: "admin-access", title: "admin-access__title", htmlContainer: "admin-access__body", actions: "admin-access__actions", confirmButton: "admin-access__save", cancelButton: "admin-access__cancel" },
+      buttonsStyling: false, showCancelButton: true, reverseButtons: true, confirmButtonText: "Save access",
+      didOpen: (popup) => {
+        const emailNode = popup.querySelector("#team-member-email");
+        if (emailNode) emailNode.textContent = member.email;
+        const syncLevel = () => {
+          const full = popup.querySelector<HTMLInputElement>('input[name="team-access-level"]:checked')?.value === "full";
+          const group = popup.querySelector<HTMLFieldSetElement>(".admin-access__modules");
+          if (group) { group.disabled = full; group.classList.toggle("is-disabled", full); }
+        };
+        popup.querySelectorAll<HTMLInputElement>('input[name="team-access-level"]').forEach((input) => input.addEventListener("change", syncLevel));
+        syncLevel();
+      },
+      preConfirm: () => {
+        const popup = Swal.getPopup();
+        if (popup?.querySelector<HTMLInputElement>('input[name="team-access-level"]:checked')?.value === "full") return { modules: null };
+        const values = Array.from(popup?.querySelectorAll<HTMLInputElement>('input[name="team-module"]:checked') || []).map((item) => item.value);
+        if (!values.length) { Swal.showValidationMessage("Choose at least one module."); return false; }
+        return { modules: values };
+      },
+    });
+    if (!result.isConfirmed) return;
+    setBusy(true);
+    try {
+      const response = await fetch("/api/admin/members", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ userId: member.user_id, modules: result.value.modules }) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Access could not be saved.");
+      await load();
+      await Swal.fire({ icon: "success", title: "Access updated", confirmButtonColor: "#8a6428" });
+    } catch (reason) { await Swal.fire({ icon: "error", title: "Access not saved", text: reason instanceof Error ? reason.message : "Please try again." }); }
+    finally { setBusy(false); }
   }
 
   async function change(action: Exclude<TeamAction, "add">, member: TeamMember) {
@@ -73,8 +126,11 @@ export default function AdminTeamAccess() {
   return <div className="admin-team">
     <div className="admin-page-head"><div><h1>Team &amp; access</h1><p>Manage who can access your website dashboard.</p></div></div>
     <section className="admin-panel admin-team__add" aria-labelledby="add-admin-heading">
-      <div><PersonAddOutlined aria-hidden="true" /><h2 id="add-admin-heading">Add an administrator</h2><p>Administrators can manage all website content and team access. Add someone you trust.</p></div>
-      <form onSubmit={(event) => void add(event)}><label htmlFor="admin-team-email">Email address</label><div><input id="admin-team-email" type="email" autoComplete="email" maxLength={254} placeholder="name@company.com" value={email} onChange={(event) => setEmail(event.target.value)} required disabled={disabled} aria-describedby="admin-team-login-note" /><button type="submit" className="admin-primary" disabled={disabled}>{busy ? "Saving..." : "Add admin"}</button></div><p id="admin-team-login-note">They can sign in using an email code. No password needed.</p></form>
+      <div><PersonAddOutlined aria-hidden="true" /><h2 id="add-admin-heading">Add a team member</h2><p>Choose the areas this person can manage. Full administrators can also manage team access.</p></div>
+      <form onSubmit={(event) => void add(event)}><label htmlFor="admin-team-email">Email address</label><div><input id="admin-team-email" type="email" autoComplete="email" maxLength={254} placeholder="name@company.com" value={email} onChange={(event) => setEmail(event.target.value)} required disabled={disabled} aria-describedby="admin-team-login-note" /><button type="submit" className="admin-primary" disabled={disabled}>{busy ? "Saving..." : "Add member"}</button></div><p id="admin-team-login-note">They can sign in using an email code. No password needed.</p>
+      <label htmlFor="team-access-type">Access level</label><select id="team-access-type" value={limited ? "limited" : "full"} onChange={(event) => setLimited(event.target.value === "limited")}><option value="limited">Selected modules</option><option value="full">Full administrator access</option></select>
+      {limited ? <fieldset className="admin-team__modules"><legend>Modules this person can manage</legend>{availableModules.map(([key, label]) => <label key={key}><input type="checkbox" checked={modules.includes(key)} onChange={(event) => setModules((current) => event.target.checked ? [...current, key] : current.filter((item) => item !== key))} />{label}</label>)}</fieldset> : <p>Full access includes team management and all modules.</p>}
+      </form>
     </section>
     <section className="admin-panel admin-team__directory" aria-labelledby="team-directory-heading" aria-busy={loading}>
       <div className="panel-head"><div><h2 id="team-directory-heading">Team members</h2><p>{members.filter((member) => member.active).length} active · {members.filter((member) => !member.active).length} inactive</p></div><button type="button" className="admin-team__refresh" onClick={() => void load()} disabled={busy || loading}><RefreshRounded fontSize="small" />Refresh</button></div>
@@ -83,9 +139,9 @@ export default function AdminTeamAccess() {
       {loading ? <p className="admin-note" role="status">Loading team members...</p> : null}
       {!loading && !error ? <><table className="admin-team__table"><thead><tr><th scope="col">Member</th><th scope="col">Role</th><th scope="col">Status</th><th scope="col">Last sign-in</th><th scope="col">Actions</th></tr></thead><tbody>{visible.map((member) => <tr key={member.user_id}>
         <td data-label="Member"><strong>{member.email}</strong>{member.user_id === viewerId ? <span className="admin-team__you">You</span> : null}<small>Added {dates.format(new Date(member.created_at))}</small></td>
-        <td data-label="Role">{roleLabels[member.role]}</td><td data-label="Status"><span className={`admin-team__status ${member.active ? "is-active" : ""}`}>{member.active ? "Active" : "Inactive"}</span></td>
+        <td data-label="Role">{member.modules ? "Selected modules" : roleLabels[member.role]}{member.modules ? <small>{member.modules.map((key) => availableModules.find(([name]) => name === key)?.[1] || key).join(", ")}</small> : null}</td><td data-label="Status"><span className={`admin-team__status ${member.active ? "is-active" : ""}`}>{member.active ? "Active" : "Inactive"}</span></td>
         <td data-label="Last sign-in">{member.last_sign_in_at ? <time dateTime={member.last_sign_in_at}>{dates.format(new Date(member.last_sign_in_at))}</time> : "Not yet signed in"}</td>
-        <td data-label="Actions">{member.user_id === viewerId ? <span className="admin-team__own">Your account</span> : <div className="admin-team__actions"><button type="button" disabled={disabled} onClick={() => void change(member.active ? "deactivate" : "reactivate", member)} aria-label={`${member.active ? "Deactivate" : "Reactivate"} ${member.email}`}>{member.active ? "Deactivate" : "Reactivate"}</button><button type="button" className="is-destructive" disabled={disabled} onClick={() => void change("delete", member)} aria-label={`Remove ${member.email}`}>Remove</button></div>}</td>
+        <td data-label="Actions">{member.user_id === viewerId ? <span className="admin-team__own">Your account</span> : <div className="admin-team__actions"><button type="button" disabled={disabled} onClick={() => void editAccess(member)}>Edit access</button><button type="button" disabled={disabled} onClick={() => void change(member.active ? "deactivate" : "reactivate", member)} aria-label={`${member.active ? "Deactivate" : "Reactivate"} ${member.email}`}>{member.active ? "Deactivate" : "Reactivate"}</button><button type="button" className="is-destructive" disabled={disabled} onClick={() => void change("delete", member)} aria-label={`Remove ${member.email}`}>Remove</button></div>}</td>
       </tr>)}</tbody></table>{!visible.length ? <p className="admin-note">{members.length ? "No team members match your filters." : "No team members found."}</p> : null}</> : null}
     </section>
     <p className="admin-team__footnote">Deactivated accounts can be restored. Removing a member keeps their website content and audit history.</p>

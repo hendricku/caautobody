@@ -28,7 +28,8 @@ export default async function AdminDashboard() {
   if (!admin) redirect("/caautobodyadmin/login");
 
   // Keep the existing live Supabase counts and role source. No new reporting logic.
-  const stats = await Promise.all(libraries.map(async (library) => {
+  const canAccess = (module: string) => admin.modules === null || admin.modules.includes(module);
+  const stats = await Promise.all(libraries.filter((library) => canAccess(library.href)).map(async (library) => {
     const [published, drafts] = await Promise.all([
       admin.client.from(library.table).select("id", { head: true, count: "exact" }).eq("status", "published"),
       admin.client.from(library.table).select("id", { head: true, count: "exact" }).eq("status", "draft"),
@@ -48,7 +49,7 @@ export default async function AdminDashboard() {
         <div className="admin-dashboard-v2__hero-meta"><span><CheckCircleOutlineRounded fontSize="small" /> Content management</span><span><LockOutlined fontSize="small" /> Role: <strong>{admin.role}</strong></span></div>
       </div>
       <div className="admin-dashboard-v2__hero-actions">
-        <Link className="admin-dashboard-v2__outline" href="/caautobodyadmin/blogs/new"><AddRounded fontSize="small" /> New article</Link>
+        {canAccess("blogs") ? <Link className="admin-dashboard-v2__outline" href="/caautobodyadmin/blogs/new"><AddRounded fontSize="small" /> New article</Link> : null}
         <Link className="admin-dashboard-v2__site-link" href="/" target="_blank" rel="noopener noreferrer">View live website <ArrowOutwardRounded fontSize="small" /></Link>
       </div>
     </header>
@@ -77,14 +78,14 @@ export default async function AdminDashboard() {
       </section>
       <aside className="admin-dashboard-v2__rail">
         <section className="admin-panel admin-dashboard-v2__snapshot">
-          <div className="admin-dashboard-v2__panel-head"><div><span>03 / STATUS</span><h2>Publishing snapshot</h2><p>Across all six content libraries</p></div></div>
+          <div className="admin-dashboard-v2__panel-head"><div><span>03 / STATUS</span><h2>Publishing snapshot</h2><p>Across your available content libraries</p></div></div>
           <div className="admin-dashboard-v2__snapshot-numbers"><div><strong>{publishedTotal ?? "—"}</strong><span>Published</span></div><div><strong>{draftTotal ?? "—"}</strong><span>Drafts</span></div></div>
           <div className="admin-dashboard-v2__snapshot-note"><CheckCircleOutlineRounded fontSize="small" /><span>Records and publishing permissions are managed securely by the existing CMS.</span></div>
         </section>
         <section className="admin-panel admin-dashboard-v2__tools">
           <div className="admin-dashboard-v2__panel-head"><div><span>04 / RESOURCES</span><h2>Workspace tools</h2></div></div>
-          <Link href="/caautobodyadmin/analytics">Site analytics <ArrowOutwardRounded fontSize="small" /></Link>
-          <Link href="/caautobodyadmin/contacts">Contact management <ArrowOutwardRounded fontSize="small" /></Link>
+          {admin.role === "admin" ? <Link href="/caautobodyadmin/analytics">Site analytics <ArrowOutwardRounded fontSize="small" /></Link> : null}
+          {canAccess("contacts") ? <Link href="/caautobodyadmin/contacts">Contact management <ArrowOutwardRounded fontSize="small" /></Link> : null}
           <Link href="/caautobodyadmin/guide">Admin user guide <ArrowOutwardRounded fontSize="small" /></Link>
         </section>
       </aside>

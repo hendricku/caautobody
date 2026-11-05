@@ -34,7 +34,7 @@ import { media } from "@/lib/media";
 
 type NavigationEntry = readonly [label: string, href: string, Icon: ElementType<{ fontSize?: "small" }>];
 type NavigationGroup = { label: string; links: readonly NavigationEntry[] };
-type Viewer = { email: string; role: string };
+type Viewer = { email: string; role: string; modules: string[] | null };
 
 const navigation: readonly NavigationGroup[] = [
   { label: "Workspace", links: [["Dashboard", "/caautobodyadmin/dashboard", DashboardRounded]] },
@@ -45,6 +45,15 @@ const navigation: readonly NavigationGroup[] = [
 
 function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
+}
+function allowedNavigation(viewer: Viewer | null, href: string) {
+  if (!viewer) return false;
+  const section = href.split("/")[2];
+  if (section === "dashboard" || section === "guide") return true;
+  if (viewer.role === "admin") return true;
+  if (["team", "analytics", "audit"].includes(section)) return false;
+  const key = section === "menu-arrangement" ? "settings" : section;
+  return viewer.modules === null || viewer.modules.includes(key);
 }
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {
@@ -118,7 +127,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         <span>Website Admin<small>Content workspace</small></span>
         <button className="admin-sidebar__toggle" type="button" onClick={() => setCollapsed((value) => !value)} aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}>{collapsed ? <ChevronRightRounded fontSize="small" /> : <ChevronLeftRounded fontSize="small" />}</button>
       </div>
-      <nav>{navigation.map((group) => <section className="admin-sidebar__group" key={group.label} aria-label={group.label}>
+      <nav>{navigation.map((group) => ({ ...group, links: group.links.filter(([, href]) => allowedNavigation(viewer, href)) })).filter((group) => group.links.length).map((group) => <section className="admin-sidebar__group" key={group.label} aria-label={group.label}>
         <span className="admin-sidebar__group-label">{group.label}</span>
         {group.links.map(([label, href, Icon]) => <Link key={href} href={href} className={isActive(pathname, href) ? "active" : ""} onClick={() => setMenuOpen(false)} title={collapsed ? label : undefined} aria-current={isActive(pathname, href) ? "page" : undefined}><Icon fontSize="small" /><span>{label}</span></Link>)}
       </section>)}</nav>
@@ -135,11 +144,11 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         <button type="button" className="admin-menu" onClick={() => setMenuOpen((value) => !value)} aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen}><MenuRounded fontSize="small" /></button>
         <div className="admin-topbar__context"><nav aria-label="Breadcrumb" className="admin-breadcrumbs"><span>CA Autobody</span><span>{activeGroup?.label || "Workspace"}</span></nav><b>{activeItem?.[0] || "Website Admin"}</b></div>
         <div className="admin-topbar__actions">
-          {newPage ? <Link className="admin-topbar__add" href={`/caautobodyadmin/${newPage}/new`}><AddRounded fontSize="small" />{newLabels[newPage]}</Link> : null}
-          <div className="admin-notifications">
+          {newPage && allowedNavigation(viewer, `/caautobodyadmin/${newPage}`) ? <Link className="admin-topbar__add" href={`/caautobodyadmin/${newPage}/new`}><AddRounded fontSize="small" />{newLabels[newPage]}</Link> : null}
+          {allowedNavigation(viewer, "/caautobodyadmin/contacts") ? <div className="admin-notifications">
             <button className="admin-icon-button" type="button" onClick={() => { setNotificationsOpen((value) => !value); setProfileOpen(false); }} aria-label={`Notifications${unreadCount ? `, ${unreadCount} unread` : ""}`} aria-expanded={notificationsOpen}><NotificationsNoneRounded fontSize="small" />{unreadCount ? <b>{unreadCount > 9 ? "9+" : unreadCount}</b> : null}</button>
             {notificationsOpen ? <div className="admin-notifications__panel"><header><strong>New enquiries</strong><small>Customer activity</small></header>{notifications.length ? notifications.slice(0, 4).map((item) => <Link key={item.id} href="/caautobodyadmin/contacts" onClick={() => setNotificationsOpen(false)}><span><b>{item.name}</b><small>{item.service}</small></span><time>{item.status}</time></Link>) : <p>No contact notifications yet.</p>}<Link className="admin-notifications__all" href="/caautobodyadmin/contacts" onClick={() => setNotificationsOpen(false)}>Open contact management</Link></div> : null}
-          </div>
+          </div> : null}
 
         </div>
       </header>

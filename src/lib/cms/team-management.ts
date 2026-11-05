@@ -8,6 +8,7 @@ export type TeamMember = {
   active: boolean;
   created_at: string;
   last_sign_in_at: string | null;
+  modules?: string[] | null;
 };
 
 export class TeamError extends Error {
@@ -27,10 +28,12 @@ export function teamDatabaseError(code?: string): TeamError {
 export async function manageTeamMember(
   caller: SupabaseClient,
   identities: SupabaseClient,
-  input: { action: TeamAction; email?: string; userId?: string },
+  input: { action: TeamAction; email?: string; userId?: string; modules?: string[] },
 ): Promise<void> {
-  const parameters = { p_action: input.action, p_email: input.email || null, p_user_id: input.userId || null };
-  const first = await caller.rpc("cms_manage_team_member", parameters);
+  const limited = input.action === "add" && input.modules;
+  const rpc = limited ? "cms_add_limited_member" : "cms_manage_team_member";
+  const parameters = limited ? { p_email: input.email, p_modules: input.modules } : { p_action: input.action, p_email: input.email || null, p_user_id: input.userId || null };
+  const first = await caller.rpc(rpc, parameters);
   if (first.error) throw teamDatabaseError(first.error.code);
   if (!first.data?.identity_required) return;
   if (input.action !== "add" || !input.email) throw teamDatabaseError();
@@ -42,7 +45,7 @@ export async function manageTeamMember(
   }
   // A failed membership transaction leaves no CMS privileges. Retrying safely reuses
   // the identity; never delete an identity another concurrent request may have reused.
-  const completed = await caller.rpc("cms_manage_team_member", parameters);
+  const completed = await caller.rpc(rpc, parameters);
   if (completed.error) throw teamDatabaseError(completed.error.code);
   if (completed.data?.identity_required) throw teamDatabaseError();
 }

@@ -3,7 +3,7 @@ import { getAdmin, sameOrigin } from "@/lib/cms/admin-server";
 import { serviceClient } from "@/lib/cms/service-client";
 import { consumePublicRateLimit } from "@/lib/security/public-rate-limit";
 import { manageTeamMember, TeamError, teamDatabaseError } from "@/lib/cms/team-management";
-import { addAdminSchema, changeMemberSchema, removeMemberSchema } from "@/lib/cms/team-validation";
+import { addAdminSchema, changeMemberSchema, removeMemberSchema, updateModulesSchema } from "@/lib/cms/team-validation";
 
 export const runtime = "nodejs";
 const privateHeaders = { "Cache-Control": "private, no-store" };
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     const admin = await administrator(request, true);
     const input = addAdminSchema.safeParse(await body(request));
     if (!input.success) return json({ error: "Enter a valid email address." }, 400);
-    await manageTeamMember(admin.client, serviceClient(), { action: "add", email: input.data.email });
+    await manageTeamMember(admin.client, serviceClient(), { action: "add", email: input.data.email, ...(input.data.modules ? { modules: input.data.modules } : {}) });
     return json({ ok: true }, 201);
   } catch (error) { return failure(error); }
 }
@@ -64,7 +64,14 @@ export async function POST(request: NextRequest) {
 export async function PATCH(request: NextRequest) {
   try {
     const admin = await administrator(request, true);
-    const input = changeMemberSchema.safeParse(await body(request));
+    const raw = await body(request);
+    const permissions = updateModulesSchema.safeParse(raw);
+    if (permissions.success) {
+      const { error } = await admin.client.rpc("cms_set_member_modules", { p_user_id: permissions.data.userId, p_modules: permissions.data.modules });
+      if (error) throw teamDatabaseError(error.code);
+      return json({ ok: true });
+    }
+    const input = changeMemberSchema.safeParse(raw);
     if (!input.success) return json({ error: "Select a valid member and action." }, 400);
     await manageTeamMember(admin.client, serviceClient(), input.data);
     return json({ ok: true });
