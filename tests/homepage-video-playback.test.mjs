@@ -107,3 +107,45 @@ test("YouTube video loops and remains playing after leaving the section", async 
     delete globalThis.IS_REACT_ACT_ENVIRONMENT;
   }
 });
+
+test("mobile audio control appears in the header without interrupting playback", async () => {
+  const dom = new JSDOM("<!doctype html><div id='homepage-audio-slot'></div><div id='root'></div>", { url: "https://example.com", pretendToBeVisual: true });
+  const oldWindow = globalThis.window;
+  const oldDocument = globalThis.document;
+  const oldObserver = globalThis.IntersectionObserver;
+  globalThis.window = dom.window;
+  globalThis.document = dom.window.document;
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  let change;
+  const mobile = { matches: true, addEventListener: (_event, callback) => { change = callback; }, removeEventListener: () => {} };
+  dom.window.matchMedia = (query) => query.includes("max-width") ? mobile : { matches: false };
+  let observe;
+  globalThis.IntersectionObserver = class { constructor(callback) { observe = callback; } observe() {} disconnect() {} };
+  let plays = 0;
+  let pauses = 0;
+  dom.window.HTMLMediaElement.prototype.play = function () { plays++; this.dispatchEvent(new dom.window.Event("play")); return Promise.resolve(); };
+  dom.window.HTMLMediaElement.prototype.pause = function () { pauses++; this.dispatchEvent(new dom.window.Event("pause")); };
+  const root = createRoot(document.getElementById("root"));
+  try {
+    await act(async () => { root.render(React.createElement(HomepageVideo, { videoId: "" })); });
+    assert.ok(document.querySelector("#homepage-audio-slot .homepage-video-controls__trigger"));
+    await act(async () => { document.querySelector(".homepage-video-controls__trigger").click(); });
+    assert.equal(document.querySelector("#homepage-audio-menu").hidden, false);
+    await act(async () => { observe([{ isIntersecting: true, intersectionRatio: .8 }]); });
+    assert.equal(plays, 1);
+    await act(async () => { mobile.matches = false; change(); });
+    assert.equal(document.querySelector("#homepage-audio-slot .homepage-video-controls"), null);
+    assert.ok(document.querySelector("body > .homepage-video-controls"));
+    assert.equal(pauses, 0);
+    await act(async () => { mobile.matches = true; change(); });
+    assert.ok(document.querySelector("#homepage-audio-slot .homepage-video-controls"));
+    assert.equal(plays, 1);
+  } finally {
+    await act(async () => root.unmount());
+    dom.window.close();
+    globalThis.window = oldWindow;
+    globalThis.document = oldDocument;
+    globalThis.IntersectionObserver = oldObserver;
+    delete globalThis.IS_REACT_ACT_ENVIRONMENT;
+  }
+});

@@ -5,7 +5,17 @@ import { createPortal } from "react-dom";
 function FloatingControls({ playing, muted, onPlay, onMute, ready = true }: { playing: boolean; muted: boolean; onPlay: () => void; onMute: () => void; ready?: boolean }) {
   const [open, setOpen] = useState(false);
   const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
-  useEffect(() => { setPortalTarget(document.body); }, []);
+  useEffect(() => {
+    const mobile = window.matchMedia("(max-width: 1020px)");
+    const syncTarget = () => setPortalTarget(mobile.matches ? document.getElementById("homepage-audio-slot") || document.body : document.body);
+    syncTarget();
+    if (mobile.addEventListener) mobile.addEventListener("change", syncTarget);
+    else mobile.addListener?.(syncTarget);
+    return () => {
+      if (mobile.removeEventListener) mobile.removeEventListener("change", syncTarget);
+      else mobile.removeListener?.(syncTarget);
+    };
+  }, []);
   if (!portalTarget) return null;
   return createPortal(<div className="homepage-video-controls" onMouseEnter={() => { if (window.matchMedia("(hover: hover)").matches) setOpen(true); }} onMouseLeave={() => setOpen(false)}
     onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false); }}

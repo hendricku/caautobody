@@ -140,7 +140,7 @@ export default function SiteHeader({ siteSettings, serviceNavigation = defaultSe
   const active = (href: string) => href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
-    <header ref={headerRef} className={`hp-header ${scrollY > 18 ? "is-scrolled" : ""} ${scrollY > 88 ? "is-compact" : ""}`}
+    <header ref={headerRef} className={`hp-header ${pathname === "/" ? "hp-header--home" : ""} ${scrollY > 18 ? "is-scrolled" : ""} ${scrollY > 88 ? "is-compact" : ""}`}
       onPointerDownCapture={() => { inputMode.current = "pointer"; }}
       onClickCapture={(event) => {
         if ((event.target as Element).closest("a")) closeNavigation();
@@ -149,6 +149,8 @@ export default function SiteHeader({ siteSettings, serviceNavigation = defaultSe
         <Link className="hp-logo" href="/" aria-label={`${siteSettings.name} home`}>
           <Image src={media.logo} alt={siteSettings.name}  width={640} height={320} unoptimized />
         </Link>
+
+        {pathname === "/" ? <div id="homepage-audio-slot" className="hp-header__audio-slot" /> : null}
 
         <button
           className="hp-menu-toggle"

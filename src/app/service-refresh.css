@@ -136,9 +136,21 @@
 .homepage-video-controls .homepage-video-controls__menu button:disabled{opacity:.55;cursor:wait}
 .homepage-video-controls .homepage-video-controls__menu .homepage-video-controls__close{min-width:40px;padding:8px;font-size:16px}
 .homepage-video-controls button:focus-visible{outline:2px solid #bd862f;outline-offset:3px}
-body.hp-menu-open .homepage-video-controls{opacity:0;pointer-events:none}
+body.hp-menu-open > .homepage-video-controls{opacity:0;pointer-events:none}
+.hp-header__audio-slot{display:none}
 @media(max-width:1020px){.homepage-video-controls{top:auto;right:190px;bottom:16px}.homepage-video-controls .homepage-video-controls__menu{top:auto;right:0;bottom:100%}}
 @media(max-width:720px){.homepage-video-controls{right:12px;bottom:92px}}
+@media(max-width:1020px){
+  .hp-header--home .hp-header__inner{grid-template-columns:minmax(0,1fr) auto auto auto;gap:clamp(4px,1.7vw,10px)}
+  .hp-header__audio-slot{display:block;position:relative;z-index:102}
+  .hp-header__audio-slot .homepage-video-controls{position:relative;inset:auto;z-index:auto}
+  .hp-header__audio-slot .homepage-video-controls__trigger{width:46px;height:46px;border:1px solid rgba(255,255,255,.24);background:rgba(5,5,5,.34);color:#fff}
+  .hp-header__audio-slot .homepage-video-controls__trigger:hover,.hp-header__audio-slot .homepage-video-controls__trigger[aria-expanded="true"]{background:#171614;border-color:#d5ae63;color:#e5bd78}
+  .hp-header__audio-slot .homepage-video-controls__menu{top:100%;right:-104px;bottom:auto;display:grid;grid-template-columns:1fr 1fr;gap:8px;width:min(260px,calc(100vw - 24px));padding:14px}
+  .hp-header__audio-slot .homepage-video-controls__menu span{grid-column:1 / -1;padding:0 36px 4px 0}
+  .hp-header__audio-slot .homepage-video-controls__menu .homepage-video-controls__close{position:absolute;top:6px;right:6px;min-width:36px;min-height:36px;border:0}
+}
+@media(max-width:420px){.hp-header__audio-slot .homepage-video-controls__trigger{width:44px;height:44px}.hp-header__audio-slot .homepage-video-controls__menu{right:-96px}}
 
 /* A roomy footer keeps the workshop's brands and local links easy to scan. */
 .hp-footer .hp-footer__grid{grid-template-columns:minmax(190px,1.25fr) minmax(105px,.7fr) minmax(150px,.95fr) minmax(180px,1.1fr) minmax(190px,1fr);gap:42px clamp(22px,2.5vw,45px);padding-top:72px;padding-bottom:58px}
