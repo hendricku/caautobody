@@ -43,7 +43,7 @@ export const specialistBrandContent: Record<string, BrandRepairContent> = {
     ],
     principles: [
       { title: "30+ Years of Experience", copy: "Bringing decades of experience in vehicle repairs." },
-      { title: "VACC Approved", copy: "Repairs approached with VACC industry standards in mind." },
+      { title: "OEM- Approved", copy: "A commitment to safety, quality and industry standards." },
       { title: "Experienced Technicians", copy: "A team committed to quality workmanship and attention to detail." },
       { title: "Modern Repair Technology", copy: "Investment in equipment and technology to support precise repairs." },
       { title: "Lifetime Warranty on Repairs", copy: "Added confidence in the quality of our repair work." },
@@ -67,7 +67,6 @@ export const specialistBrandContent: Record<string, BrandRepairContent> = {
     ],
     principles: [
       { title: "30+ Years of Experience", copy: "Established experience in vehicle repairs." },
-      { title: "VACC Approved", copy: "A commitment to safety, quality and industry standards." },
       { title: "Modern Repair Facilities", copy: "Equipment and facilities designed to support quality and efficient repairs." },
       { title: "Insurance Assistance", copy: "Support with claims and communication with insurers." },
       { title: "Replacement Vehicles Available", copy: "Options to help keep you mobile while repairs are underway." },
@@ -92,7 +91,6 @@ export const specialistBrandContent: Record<string, BrandRepairContent> = {
     ],
     principles: [
       { title: "30+ Years of Experience", copy: "Decades of experience in vehicle repairs." },
-      { title: "VACC Approved", copy: "A commitment to quality, safety and industry standards." },
       { title: "Oversized Spray Booths", copy: "Purpose-built facilities for larger vehicles." },
       { title: "Advanced Structural Repair Equipment", copy: "Equipment to support complex repair work." },
       { title: "Spacious Workshop", copy: "Facilities designed to accommodate high-roof vans and light commercial vehicles." },

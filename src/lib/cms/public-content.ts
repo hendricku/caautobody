@@ -127,7 +127,18 @@ export function resolveServicePresentation(value: unknown, slug: string): Servic
   const variant = content?.variant;
   const data = record(content?.data);
   if (variant === "editorial" && data && typeof data.title === "string") return { variant, data: data as unknown as OriginalServicePage };
-  if (variant === "brand" && data && typeof data.title === "string") return { variant, data: data as unknown as BrandRepairContent };
+  if (variant === "brand" && data && typeof data.title === "string") {
+    const brand = data as unknown as BrandRepairContent;
+    // Update the requested legacy entries without changing stored CMS records.
+    if (Array.isArray(brand.principles) && ["prestige-vehicle-repairs", "fleet-vehicle-repairs", "commercial-vehicle-repairs"].includes(slug)) {
+      const principles = brand.principles.flatMap((item) => {
+        if (item.title?.trim().toLowerCase() !== "vacc approved") return [item];
+        return slug === "prestige-vehicle-repairs" ? [{ ...item, title: "OEM- Approved", copy: "A commitment to safety, quality and industry standards." }] : [];
+      });
+      return { variant, data: { ...brand, principles } };
+    }
+    return { variant, data: brand };
+  }
   if (variant === "standard") return { variant };
   return staticPresentation(slug);
 }

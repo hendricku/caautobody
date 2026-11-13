@@ -150,8 +150,6 @@ export default function SiteHeader({ siteSettings, serviceNavigation = defaultSe
           <Image src={media.logo} alt={siteSettings.name}  width={640} height={320} unoptimized />
         </Link>
 
-        {pathname === "/" ? <div id="homepage-audio-slot" className="hp-header__audio-slot" /> : null}
-
         <button
           className="hp-menu-toggle"
           type="button"
