@@ -130,3 +130,4 @@ end $$;
 revoke all on function public.cms_add_limited_member(text,text[]) from public, anon;
 grant execute on function public.cms_add_limited_member(text,text[]) to authenticated;
 commit;
+//aa
