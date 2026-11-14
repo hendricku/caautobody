@@ -37,7 +37,7 @@ const valuesSchema = z.object({
   accidentDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).or(z.literal("")),
   company: z.string().max(0),
 }).strict().superRefine((value, context) => {
-  if (value.enquiryType === "contact" && (!value.email || !value.message)) context.addIssue({ code: "custom", message: "Contact details are incomplete" });
+  if (value.enquiryType === "contact" && (!value.email || !value.message || !value.suburb)) context.addIssue({ code: "custom", message: "Contact details are incomplete" });
   if (value.enquiryType === "brand-assessment" && !value.brand) context.addIssue({ code: "custom", message: "Brand assessment details are incomplete" });
   if (value.enquiryType === "landing-assessment" && (!value.landingPage || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value.landingPage))) context.addIssue({ code: "custom", message: "Assessment details are incomplete" });
 });
@@ -81,6 +81,8 @@ async function uploadsFrom(form: FormData): Promise<Upload[] | null> {
 export async function POST(request: NextRequest) {
   if (!sameOrigin(request)) return NextResponse.json({ error: "Invalid request origin" }, { status: 403 });
   if (!request.headers.get("content-type")?.toLowerCase().startsWith("multipart/form-data")) return NextResponse.json({ error: "Invalid submission" }, { status: 400 });
+  const contentLength = Number(request.headers.get("content-length"));
+  if (Number.isFinite(contentLength) && contentLength > 21 * 1024 * 1024) return NextResponse.json({ error: "Submission is too large." }, { status: 413 });
 
   const form = await request.formData().catch(() => null);
   if (!form) return NextResponse.json({ error: "Invalid submission" }, { status: 400 });
@@ -92,6 +94,7 @@ export async function POST(request: NextRequest) {
   if (!parsed.success) return NextResponse.json({ error: "Please check the required fields and try again." }, { status: 400 });
   const uploads = await uploadsFrom(form);
   if (!uploads) return NextResponse.json({ error: "Photos must be valid images. Upload up to three files, 8 MB each." }, { status: 400 });
+  if (["contact", "landing-assessment"].includes(parsed.data.enquiryType) && (!uploads.length || uploads.reduce((total, file) => total + file.content.length, 0) > 3.5 * 1024 * 1024)) return NextResponse.json({ error: "Please attach 1 to 3 images, up to 3.5 MB combined." }, { status: 400 });
 
   try {
     assertEmailConfiguration();

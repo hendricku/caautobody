@@ -15,6 +15,7 @@ function loadRoute(mocks) {
 
 function setup(offerResult = { data: { slug: "new-offer" }, error: null }) {
   let sent = 0;
+  let delivered;
   const filters = [];
   const database = { from(table) {
     if (table === "cms_offers") {
@@ -32,15 +33,16 @@ function setup(offerResult = { data: { slug: "new-offer" }, error: null }) {
     "next/server": { NextResponse: { json: (body, options = {}) => Response.json(body, options) } },
     "@/lib/cms/admin-server": { sameOrigin: () => true },
     "@/lib/cms/service-client": { serviceClient: () => database },
-    "@/lib/email/resend": { assertEmailConfiguration: () => {}, sendEnquiryEmail: async () => { sent++; } },
+    "@/lib/email/resend": { assertEmailConfiguration: () => {}, sendEnquiryEmail: async (input) => { sent++; delivered = input; } },
     "@/lib/security/public-rate-limit": { consumePublicRateLimit: async () => true },
   });
-  return { route, filters, sent: () => sent };
+  return { route, filters, sent: () => sent, delivered: () => delivered };
 }
 
-function request(slug) {
+function request(slug, photos = 1) {
   const form = new FormData();
   for (const [key, value] of Object.entries({ submissionId: "00000000-0000-4000-8000-000000000001", enquiryType: "landing-assessment", name: "Test", phone: "0400000000", service: "Repairs", landingPage: slug })) form.set(key, value);
+  for (let index = 0; index < photos; index++) form.append("photos", new File([new Uint8Array([0xff, 0xd8, 0xff, 0x00])], `photo-${index}.jpg`, { type: "image/jpeg" }));
   return { headers: new Headers({ "content-type": "multipart/form-data" }), formData: async () => form };
 }
 
@@ -72,4 +74,51 @@ test("existing built-in offer assessments remain available", async () => {
   assert.equal(response.status, 200);
   assert.equal(context.filters.length, 0);
   assert.equal(context.sent(), 1);
+});
+
+test("offer assessments require a photo and send attachments", async () => {
+  const context = setup();
+  assert.equal((await context.route.POST(request("new-offer", 0))).status, 400);
+  assert.equal((await context.route.POST(request("new-offer", 3))).status, 200);
+  assert.equal(context.delivered().attachments.length, 3);
+  assert.equal((await context.route.POST(request("new-offer", 4))).status, 400);
+});
+
+function contactRequest(overrides = {}, photos = 1) {
+  const form = new FormData();
+  const values = { submissionId: "00000000-0000-4000-8000-000000000001", enquiryType: "contact", name: "Test Customer", phone: "0400000000", email: "customer@example.com", suburb: "Chelsea", service: "Repairs", message: "Please contact me.", ...overrides };
+  for (const [key, value] of Object.entries(values)) form.set(key, value);
+  for (let index = 0; index < photos; index++) form.append("photos", new File([new Uint8Array([0xff, 0xd8, 0xff, 0x00])], `photo-${index}.jpg`, { type: "image/jpeg" }));
+  return { headers: new Headers({ "content-type": "multipart/form-data" }), formData: async () => form };
+}
+
+test("contact enquiries deliver up to three images as email attachments", async () => {
+  const context = setup();
+  assert.equal((await context.route.POST(contactRequest({}, 3))).status, 200);
+  assert.equal(context.sent(), 1);
+  assert.equal(context.delivered().attachments.length, 3);
+  assert.equal(context.delivered().attachments[0].contentType, "image/jpeg");
+});
+
+test("contact enquiries reject missing fields, missing photos, excess photos and honeypot input", async () => {
+  const context = setup();
+  for (const overrides of [{ name: "" }, { phone: "" }, { email: "" }, { suburb: "" }, { service: "" }, { message: "" }, { company: "spam" }]) {
+    assert.equal((await context.route.POST(contactRequest(overrides))).status, 400);
+  }
+  assert.equal((await context.route.POST(contactRequest({}, 0))).status, 400);
+  assert.equal((await context.route.POST(contactRequest({}, 4))).status, 400);
+  assert.equal(context.sent(), 0);
+});
+
+test("contact enquiries reject oversized or disguised attachments", async () => {
+  const context = setup();
+  const oversized = contactRequest();
+  const oversizedForm = await oversized.formData();
+  oversizedForm.set("photos", new File([new Uint8Array(3.5 * 1024 * 1024 + 1)], "large.jpg", { type: "image/jpeg" }));
+  assert.equal((await context.route.POST(oversized)).status, 400);
+  const disguised = contactRequest();
+  const disguisedForm = await disguised.formData();
+  disguisedForm.set("photos", new File(["not an image"], "fake.jpg", { type: "image/jpeg" }));
+  assert.equal((await context.route.POST(disguised)).status, 400);
+  assert.equal(context.sent(), 0);
 });

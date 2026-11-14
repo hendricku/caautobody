@@ -6,11 +6,14 @@ import { trackAnalyticsEvent } from "@/lib/analytics/client";
 import type { ContactServiceOption } from "@/lib/contact-options";
 
 const otherSuburb = "Other / outside listed area";
+const maxPhotoBytes = 3.5 * 1024 * 1024;
+const photoTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"]);
 
 export default function ContactForm({ suburbs, serviceOptions }: { suburbs: string[]; serviceOptions: ContactServiceOption[] }) {
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [photoNames, setPhotoNames] = useState(["", "", ""]);
   const [submissionId, setSubmissionId] = useState(() => crypto.randomUUID());
   const [suburbQuery, setSuburbQuery] = useState("");
   const [selectedSuburb, setSelectedSuburb] = useState("");
@@ -55,15 +58,26 @@ export default function ContactForm({ suburbs, serviceOptions }: { suburbs: stri
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    data.set("submissionId", submissionId); data.set("enquiryType", "contact"); data.set("vehicle", ""); data.set("claimStatus", ""); data.set("company", "");
+    const form = event.currentTarget;
+    if (!selectedSuburb) {
+      setError("Please select your suburb from the list.");
+      suburbInput.current?.focus();
+      return;
+    }
+    const data = new FormData(form);
+    const photos = data.getAll("photos").filter((item): item is File => item instanceof File && item.size > 0);
+    if (!photos.length || photos.length > 3 || photos.some((file) => !photoTypes.has(file.type)) || photos.reduce((total, file) => total + file.size, 0) > maxPhotoBytes) {
+      setError("Please attach 1 to 3 JPG, PNG, WebP or HEIC images, up to 3.5 MB combined.");
+      return;
+    }
+    data.set("submissionId", submissionId); data.set("enquiryType", "contact"); data.set("vehicle", ""); data.set("claimStatus", "");
     setBusy(true); setError("");
     try {
       const response = await fetch("/api/enquiries", { method: "POST", body: data });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.error || "Unable to send your enquiry");
       trackAnalyticsEvent("generate_lead", { form_name: "contact_enquiry" });
-      setSent(true); setSubmissionId(crypto.randomUUID()); setSuburbQuery(""); setSelectedSuburb(""); setSuburbListOpen(false); event.currentTarget.reset();
+      form.reset(); setPhotoNames(["", "", ""]); setSent(true); setSubmissionId(crypto.randomUUID()); setSuburbQuery(""); setSelectedSuburb(""); setSuburbListOpen(false);
     } catch (reason) { setError(reason instanceof Error ? reason.message : "Unable to send your enquiry"); }
     finally { setBusy(false); }
   };
@@ -73,9 +87,19 @@ export default function ContactForm({ suburbs, serviceOptions }: { suburbs: stri
   return (
     <form className="contact-form" onSubmit={(event) => void submit(event)}>
       <div className="form-row"><label>Full name<input required name="name" /></label><label>Phone<input required name="phone" /></label></div>
-      <div className="form-row"><label>Email<input required type="email" name="email" /></label><div className="contact-suburb-field"><label htmlFor="contact-suburb-search">Suburb <span>(optional)</span></label><div className="contact-suburb-picker" onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setSuburbListOpen(false); }}><input ref={suburbInput} id="contact-suburb-search" type="search" value={suburbQuery} onChange={(event) => { setSuburbQuery(event.target.value); setSelectedSuburb(""); setSuburbListOpen(true); setActiveSuburbIndex(0); }} onFocus={() => setSuburbListOpen(true)} onKeyDown={handleSuburbKeys} autoComplete="address-level2" placeholder="Start typing your suburb" role="combobox" aria-autocomplete="list" aria-expanded={suburbListOpen} aria-controls="contact-suburb-options" aria-activedescendant={suburbListOpen ? `contact-suburb-option-${activeSuburbIndex}` : undefined} /><input type="hidden" name="suburb" value={selectedSuburb} />{selectedSuburb ? <button className="contact-suburb-picker__clear" type="button" onMouseDown={(event) => event.preventDefault()} onClick={() => { setSuburbQuery(""); setSelectedSuburb(""); setSuburbListOpen(true); suburbInput.current?.focus(); }}>Clear</button> : null}{suburbListOpen ? <div id="contact-suburb-options" className="contact-suburb-picker__menu" role="listbox" aria-label="Melbourne suburbs">{!matchingSuburbs.length ? <p className="contact-suburb-picker__empty">No matching suburb. You can select outside listed area below.</p> : null}{suburbOptions.map((suburb, index) => <button id={`contact-suburb-option-${index}`} className={`contact-suburb-picker__option${index === activeSuburbIndex ? " is-active" : ""}${suburb === otherSuburb ? " is-other" : ""}`} type="button" role="option" aria-selected={suburb === selectedSuburb} key={suburb} onMouseDown={(event) => event.preventDefault()} onMouseEnter={() => setActiveSuburbIndex(index)} onClick={() => selectSuburb(suburb)}>{suburb}</button>)}</div> : null}</div></div></div>
-      <label>How can we help?<select name="service">{serviceGroups.services.length ? <optgroup label="Services">{serviceGroups.services.map((option) => <option key={option.label} value={option.label}>{option.label}</option>)}</optgroup> : null}{serviceGroups.brands.length ? <optgroup label="Brand repairs">{serviceGroups.brands.map((option) => <option key={option.label} value={option.label}>{option.label}</option>)}</optgroup> : null}<option value="Other / not sure">Other / not sure</option></select></label>
+      <div className="form-row"><label>Email<input required type="email" name="email" /></label><div className="contact-suburb-field"><label htmlFor="contact-suburb-search">Suburb</label><div className="contact-suburb-picker" onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setSuburbListOpen(false); }}><input required ref={suburbInput} id="contact-suburb-search" type="search" value={suburbQuery} onChange={(event) => { setSuburbQuery(event.target.value); setSelectedSuburb(""); setSuburbListOpen(true); setActiveSuburbIndex(0); }} onFocus={() => setSuburbListOpen(true)} onKeyDown={handleSuburbKeys} autoComplete="address-level2" placeholder="Start typing your suburb" role="combobox" aria-autocomplete="list" aria-expanded={suburbListOpen} aria-controls="contact-suburb-options" aria-activedescendant={suburbListOpen ? `contact-suburb-option-${activeSuburbIndex}` : undefined} /><input type="hidden" name="suburb" value={selectedSuburb} />{selectedSuburb ? <button className="contact-suburb-picker__clear" type="button" onMouseDown={(event) => event.preventDefault()} onClick={() => { setSuburbQuery(""); setSelectedSuburb(""); setSuburbListOpen(true); suburbInput.current?.focus(); }}>Clear</button> : null}{suburbListOpen ? <div id="contact-suburb-options" className="contact-suburb-picker__menu" role="listbox" aria-label="Melbourne suburbs">{!matchingSuburbs.length ? <p className="contact-suburb-picker__empty">No matching suburb. You can select outside listed area below.</p> : null}{suburbOptions.map((suburb, index) => <button id={`contact-suburb-option-${index}`} className={`contact-suburb-picker__option${index === activeSuburbIndex ? " is-active" : ""}${suburb === otherSuburb ? " is-other" : ""}`} type="button" role="option" aria-selected={suburb === selectedSuburb} key={suburb} onMouseDown={(event) => event.preventDefault()} onMouseEnter={() => setActiveSuburbIndex(index)} onClick={() => selectSuburb(suburb)}>{suburb}</button>)}</div> : null}</div></div></div>
+      <label>How can we help?<select name="service" required defaultValue=""><option value="" disabled>Select a service or brand</option>{serviceGroups.services.length ? <optgroup label="Services">{serviceGroups.services.map((option) => <option key={option.label} value={option.label}>{option.label}</option>)}</optgroup> : null}{serviceGroups.brands.length ? <optgroup label="Brand repairs">{serviceGroups.brands.map((option) => <option key={option.label} value={option.label}>{option.label}</option>)}</optgroup> : null}<option value="Other / not sure">Other / not sure</option></select></label>
       <label>Message<textarea required name="message" rows={6} /></label>
+      <fieldset className="contact-photos">
+        <legend>Photos of your vehicle</legend>
+        <div className="contact-photos__slots">
+          {photoNames.map((name, index) => <label className={name ? "has-file" : ""} key={index}>
+            <span>{name || "Choose File"}</span>
+            <input name="photos" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" aria-label={`Choose vehicle photo ${index + 1}`} aria-describedby="contact-photos-help" onChange={(event) => { const file = event.currentTarget.files?.[0]; setPhotoNames((current) => current.map((item, i) => i === index ? file?.name || "" : item)); setError(""); }} />
+          </label>)}
+        </div>
+        <p id="contact-photos-help">Attach 1 to 3 images, up to 3.5 MB combined. JPG, PNG, WebP or HEIC.</p>
+      </fieldset>
       <input name="company" autoComplete="off" tabIndex={-1} aria-hidden="true" className="form-honeypot" />
       {error ? <p className="brand-assessment-form__error" role="alert">{error}</p> : null}
       <button className="btn btn-gold" type="submit" disabled={busy}>{busy ? "Sending…" : <>Send Enquiry <Icon name="arrow-forward" /></>}</button>

@@ -4,7 +4,7 @@ import { FormEvent, useState } from "react";
 import { trackAnalyticsEvent } from "@/lib/analytics/client";
 import type { AdsLandingPage } from "@/lib/ads-landing-pages";
 
-const maxFileSize = 8 * 1024 * 1024;
+const maxFileSize = 3.5 * 1024 * 1024;
 const acceptedTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"]);
 
 export default function AdsAssessmentForm({ page }: { page: AdsLandingPage }) {
@@ -17,10 +17,11 @@ export default function AdsAssessmentForm({ page }: { page: AdsLandingPage }) {
   const accident = page.kind === "accident";
 
   function selectPhoto(index: number, file: File | undefined, input: HTMLInputElement) {
-    if (!file) return;
+    if (!file) { setPhotos((current) => current.map((name, i) => i === index ? "" : name)); return; }
     if (!acceptedTypes.has(file.type) || file.size > maxFileSize) {
-      setError("Choose a JPG, PNG, WebP or HEIC image up to 8 MB.");
+      setError("Choose a JPG, PNG, WebP or HEIC image. All photos must be 3.5 MB or less combined.");
       input.value = "";
+      setPhotos((current) => current.map((name, i) => i === index ? "" : name));
       return;
     }
     setError("");
@@ -31,6 +32,11 @@ export default function AdsAssessmentForm({ page }: { page: AdsLandingPage }) {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
+    const selectedPhotos = data.getAll("photos").filter((entry): entry is File => entry instanceof File && entry.size > 0);
+    if (!selectedPhotos.length || selectedPhotos.length > 3 || selectedPhotos.some((file) => !acceptedTypes.has(file.type)) || selectedPhotos.reduce((total, file) => total + file.size, 0) > maxFileSize) {
+      setError("Please attach 1 to 3 JPG, PNG, WebP or HEIC images, up to 3.5 MB combined.");
+      return;
+    }
     data.set("submissionId", submissionId);
     data.set("enquiryType", "landing-assessment");
     data.set("landingPage", page.slug);
@@ -73,9 +79,9 @@ export default function AdsAssessmentForm({ page }: { page: AdsLandingPage }) {
       {fleet ? <label>Fleet size<select name="fleetSize" required defaultValue=""><option value="" disabled>Select fleet size</option><option>1–10 vehicles</option><option>11–50 vehicles</option><option>51–200 vehicles</option><option>200+ vehicles</option></select></label> : accident ? <><label>Accident date<input name="accidentDate" required type="date" /></label><label>Claim status<select name="claimStatus" required defaultValue=""><option value="" disabled>Select claim status</option><option>Not lodged yet</option><option>Claim lodged</option><option>Not going through insurance</option><option>Not sure</option></select></label></> : <><label>Vehicle<select name="vehicle" required defaultValue=""><option value="" disabled>Select your model</option>{page.models?.map((model) => <option key={model}>{model}</option>)}</select></label><label>Claim status<select name="claimStatus" required defaultValue=""><option value="" disabled>Select claim status</option><option>Not lodged yet</option><option>Claim lodged</option><option>Not going through insurance</option><option>Not sure</option></select></label></>}
     </div>
     <fieldset className="ads-form__uploads">
-      <legend>{fleet ? "Photos of the vehicles or damage" : "Photos of the damage"} <span>(optional)</span></legend>
-      <div>{photos.map((name, index) => <label key={index} className={name ? "has-file" : ""} htmlFor={`${page.slug}-photo-${index}`}><span>{name || "Choose File"}</span><input id={`${page.slug}-photo-${index}`} name="photos" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" onChange={(event) => selectPhoto(index, event.currentTarget.files?.[0], event.currentTarget)} /></label>)}</div>
-      <p>Up to three photos, 8 MB each. JPG, PNG, WebP or HEIC.</p>
+      <legend>{fleet ? "Photos of the vehicles or damage" : "Photos of the damage"}</legend>
+      <div>{photos.map((name, index) => <label key={index} className={name ? "has-file" : ""} htmlFor={`${page.slug}-photo-${index}`}><span>{name || "Choose File"}</span><input id={`${page.slug}-photo-${index}`} name="photos" type="file" aria-label={`Choose damage photo ${index + 1}`} aria-describedby={`${page.slug}-photo-help`} accept="image/jpeg,image/png,image/webp,image/heic,image/heif" onChange={(event) => selectPhoto(index, event.currentTarget.files?.[0], event.currentTarget)} /></label>)}</div>
+      <p id={`${page.slug}-photo-help`}>Attach 1 to 3 images, up to 3.5 MB combined. JPG, PNG, WebP or HEIC.</p>
     </fieldset>
     <input className="form-honeypot" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" />
     {error ? <p className="ads-form__error" role="alert">{error}</p> : null}
