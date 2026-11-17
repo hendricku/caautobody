@@ -2,13 +2,26 @@
 
 import Script from "next/script";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { trackAnalyticsEvent } from "@/lib/analytics/client";
 
 export default function AnalyticsConsent({ measurementId }: { measurementId: string }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [ready, setReady] = useState(false);
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    if (initialized.current) return;
+    initialized.current = true;
+    window.dataLayer = window.dataLayer || [];
+    // Google's tag consumes the arguments object rather than a rest-parameter array.
+    // eslint-disable-next-line prefer-rest-params
+    window.gtag = window.gtag || function () { window.dataLayer?.push(arguments); };
+    window.gtag("js", new Date());
+    window.gtag("config", measurementId, { send_page_view: false, anonymize_ip: true });
+    setReady(true);
+  }, [measurementId]);
 
   useEffect(() => {
     if (!ready) return;
@@ -38,13 +51,5 @@ export default function AnalyticsConsent({ measurementId }: { measurementId: str
     return () => document.removeEventListener("click", onClick);
   }, [ready]);
 
-  const initialise = () => {
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = (...args: unknown[]) => { window.dataLayer?.push(args); };
-    window.gtag("js", new Date());
-    window.gtag("config", measurementId, { send_page_view: false, anonymize_ip: true });
-    setReady(true);
-  };
-
-  return <Script src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`} strategy="afterInteractive" onLoad={initialise} />;
+  return ready ? <Script src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`} strategy="afterInteractive" /> : null;
 }
