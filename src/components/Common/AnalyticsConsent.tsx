@@ -4,31 +4,42 @@ import Script from "next/script";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { trackAnalyticsEvent } from "@/lib/analytics/client";
+import { createCallForwardingController } from "@/lib/analytics/call-forwarding";
 
 export default function AnalyticsConsent({ measurementId }: { measurementId: string }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [ready, setReady] = useState(false);
   const initialized = useRef(false);
+  const forwarding = useRef<ReturnType<typeof createCallForwardingController> | null>(null);
 
   useEffect(() => {
-    if (initialized.current) return;
-    initialized.current = true;
-    window.dataLayer = window.dataLayer || [];
-    // Google's tag consumes the arguments object rather than a rest-parameter array.
-    // eslint-disable-next-line prefer-rest-params
-    window.gtag = window.gtag || function () { window.dataLayer?.push(arguments); };
-    window.gtag("js", new Date());
-    window.gtag("config", measurementId, { send_page_view: false, anonymize_ip: true });
+    if (!forwarding.current) forwarding.current = createCallForwardingController(document);
+    const controller = forwarding.current;
+    controller.start();
 
-    // Website-call conversions use the existing Google tag and the configured Ads action.
-    const adsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID?.trim() || "AW-18353056138";
-    const callLabel = process.env.NEXT_PUBLIC_GOOGLE_ADS_CALL_LABEL?.trim() || "F9PfCI6X6KodEIrTta9E";
-    if (adsId && /^AW-\d+$/.test(adsId) && callLabel && /^[A-Za-z0-9_-]+$/.test(callLabel)) {
-      window.gtag("config", adsId);
-      window.gtag("config", adsId + "/" + callLabel, { phone_conversion_number: "03 9772 7411" });
+    if (!initialized.current) {
+      initialized.current = true;
+      window.dataLayer = window.dataLayer || [];
+      // Google's tag consumes the arguments object rather than a rest-parameter array.
+      // eslint-disable-next-line prefer-rest-params
+      window.gtag = window.gtag || function () { window.dataLayer?.push(arguments); };
+      window.gtag("js", new Date());
+      window.gtag("config", measurementId, { send_page_view: false, anonymize_ip: true });
+
+      const adsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID?.trim() || "AW-18353056138";
+      const callLabel = process.env.NEXT_PUBLIC_GOOGLE_ADS_CALL_LABEL?.trim() || "F9PfCI6X6KodEIrTta9E";
+      if (/^AW-\d+$/.test(adsId) && /^[A-Za-z0-9_-]+$/.test(callLabel)) {
+        window.gtag("config", adsId);
+        window.gtag("config", adsId + "/" + callLabel, {
+          phone_conversion_number: "03 9772 7411",
+          phone_conversion_callback: (formatted: string, dial: string) => controller.setForwardingNumber(formatted, dial),
+        });
+      }
+      setReady(true);
     }
-    setReady(true);
+
+    return () => controller.stop();
   }, [measurementId]);
 
   useEffect(() => {
