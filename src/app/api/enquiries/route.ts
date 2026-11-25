@@ -9,14 +9,6 @@ export const runtime = "nodejs";
 
 const maxFileSize = 8 * 1024 * 1024;
 const maxTotalFileSize = 20 * 1024 * 1024;
-const paidOfferSlugs = new Set([
-  "lexus-approved-body-shop-melbourne",
-  "fleet-and-commercial-repairs",
-  "byd-approved-repairer-melbourne",
-  "not-at-fault-accident-repairs",
-  "tesla-approved-body-shop-melbourne",
-  "zeekr-authorised-repairer-melbourne",
-]);
 const valuesSchema = z.object({
   submissionId: z.string().uuid(),
   enquiryType: z.enum(["contact", "brand-assessment", "landing-assessment"]),
@@ -100,9 +92,8 @@ export async function POST(request: NextRequest) {
     assertEmailConfiguration();
     const database = serviceClient();
     const values = parsed.data;
-    // The original landing pages are built in; new CMS offers must be published
-    // before their assessment forms can accept public submissions.
-    if (values.enquiryType === "landing-assessment" && values.landingPage && !paidOfferSlugs.has(values.landingPage)) {
+    // All offer forms require a published CMS record.
+    if (values.enquiryType === "landing-assessment" && values.landingPage) {
       const { data: offer, error: offerError } = await database.from("cms_offers").select("slug").eq("slug", values.landingPage).eq("status", "published").maybeSingle();
       if (offerError) return NextResponse.json({ error: "Submissions are temporarily unavailable. Please call us instead." }, { status: 503 });
       if (!offer) return NextResponse.json({ error: "This assessment is unavailable." }, { status: 400 });

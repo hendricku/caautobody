@@ -3,7 +3,7 @@ import { cache } from "react";
 import { brandRepairContent, type BrandRepairContent } from "@/lib/brandRepairContent";
 import { youtubeVideoId } from "@/lib/homepage-video";
 import { getEditorialServiceCopy, type OriginalServicePage } from "@/lib/originalServiceCopy";
-import { blogs, faqs, gallery, locations, offers, services } from "@/lib/siteContent";
+import { blogs, faqs, gallery, locations, services } from "@/lib/siteContent";
 import { media } from "@/lib/media";
 import { asServiceArrangement, orderByPreference, SERVICE_ARRANGEMENT_KEY } from "@/lib/cms/service-arrangement";
 import type { BlogContent, FAQContent, GalleryContent, LocationContent, OfferContent, OfferSection, ServiceContent } from "@/types/content";
@@ -172,6 +172,7 @@ export function mapLocation(row: CmsRow): LocationContent {
 
 export function mapOffer(row: CmsRow): OfferContent {
   return {
+    status: row.status === "published" ? "published" : "draft",
     slug: asString(row.slug), title: asString(row.title), seoTitle: asString(row.seo_title), eyebrow: asString(row.eyebrow),
     intro: asString(row.intro), body: asStringArray(row.body), image: asString(row.image_path), bullets: asStringArray(row.bullets),
     sections: offerSections(row.content_json),
@@ -294,7 +295,8 @@ export const getPublishedServiceCarousel = cache(async (): Promise<ServiceCarous
 });
 
 export const getPublishedLocations = cache(async () => readRows("cms_locations", locations, mapLocation));
-export const getPublishedOffers = cache(async () => readRows("cms_offers", offers, mapOffer));
+// Offers must fail closed: an unavailable CMS must not republish drafts.
+export const getPublishedOffers = cache(async () => readRows("cms_offers", [], mapOffer));
 export const getPublishedBlogs = cache(async () => readRows("cms_blog_posts", blogs, mapBlog));
 export const getPublishedFaqs = cache(async () => {
   const rows = await readRows("cms_faqs", faqs.filter((item) => !/^(byd|lexus)-question-/.test(item.id)), mapFaq);

@@ -68,12 +68,12 @@ test("database errors fail closed, and malformed slugs are rejected", async () =
   assert.equal(context.sent(), 0);
 });
 
-test("existing built-in offer assessments remain available", async () => {
+test("built-in offer assessments also require publication", async () => {
   const context = setup({ data: null, error: null });
   const response = await context.route.POST(request("tesla-approved-body-shop-melbourne"));
-  assert.equal(response.status, 200);
-  assert.equal(context.filters.length, 0);
-  assert.equal(context.sent(), 1);
+  assert.equal(response.status, 400);
+  assert.deepEqual(context.filters, [["slug", "tesla-approved-body-shop-melbourne"], ["status", "published"]]);
+  assert.equal(context.sent(), 0);
 });
 
 test("offer assessments require a photo and send attachments", async () => {
