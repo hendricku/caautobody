@@ -20,6 +20,14 @@ export default function AnalyticsConsent({ measurementId }: { measurementId: str
     window.gtag = window.gtag || function () { window.dataLayer?.push(arguments); };
     window.gtag("js", new Date());
     window.gtag("config", measurementId, { send_page_view: false, anonymize_ip: true });
+
+    // Website-call conversions use the existing Google tag and the configured Ads action.
+    const adsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID?.trim() || "AW-18353056138";
+    const callLabel = process.env.NEXT_PUBLIC_GOOGLE_ADS_CALL_LABEL?.trim() || "F9PfCI6X6KodEIrTta9E";
+    if (adsId && /^AW-\d+$/.test(adsId) && callLabel && /^[A-Za-z0-9_-]+$/.test(callLabel)) {
+      window.gtag("config", adsId);
+      window.gtag("config", adsId + "/" + callLabel, { phone_conversion_number: "03 9772 7411" });
+    }
     setReady(true);
   }, [measurementId]);
 
